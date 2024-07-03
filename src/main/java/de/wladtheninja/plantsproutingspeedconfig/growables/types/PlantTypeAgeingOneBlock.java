@@ -1,0 +1,9 @@
+package de.wladtheninja.plantsproutingspeedconfig.growables.types;
+
+import de.wladtheninja.plantsproutingspeedconfig.growables.concepts.IPlantConceptGrowthInformation;
+import de.wladtheninja.plantsproutingspeedconfig.growables.concepts.IPlantConceptAge;
+import de.wladtheninja.plantsproutingspeedconfig.growables.concepts.IPlantConceptSingleMaterial;
+
+public abstract class PlantTypeAgeingOneBlock implements IPlantConceptGrowthInformation, IPlantConceptAge, IPlantConceptSingleMaterial {
+
+}
