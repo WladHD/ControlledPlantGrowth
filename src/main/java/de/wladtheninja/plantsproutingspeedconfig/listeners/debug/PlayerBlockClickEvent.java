@@ -31,9 +31,11 @@ public class PlayerBlockClickEvent implements Listener {
                                 -1));
 
         if (event.getClickedBlock().getBlockData() instanceof Ageable) {
+            Bukkit.getLogger().log(Level.FINER, "Trying to increase age ...");
             Ageable ag = (Ageable) event.getClickedBlock().getBlockData();
 
             ag.setAge(Math.min(ag.getAge() + 1, ag.getMaximumAge()));
+            event.getClickedBlock().setBlockData(ag);
         }
     }
 

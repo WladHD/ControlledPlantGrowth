@@ -1,9 +1,11 @@
 package de.wladtheninja.plantsproutingspeedconfig.growables.concepts;
 
-public interface IPlantConceptGrowthInformation {
+import org.bukkit.block.Block;
 
-    boolean isMature();
+public interface IPlantConceptGrowthInformation extends IPlantConcept {
 
-    void setToFullyMature();
+    boolean isMature(Block b);
+
+    void setToFullyMature(Block b);
 
 }

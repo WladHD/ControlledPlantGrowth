@@ -1,11 +1,13 @@
 package de.wladtheninja.plantsproutingspeedconfig.growables.concepts;
 
-public interface IPlantConceptAge {
+import org.bukkit.block.Block;
 
-    int getCurrentAge();
+public interface IPlantConceptAge extends IPlantConcept{
 
-    void setCurrentAge(int age);
+    int getCurrentAge(Block b);
 
-    int getMaximumAge();
+    void setCurrentAge(Block b, int age);
+
+    int getMaximumAge(Block b);
 
 }
