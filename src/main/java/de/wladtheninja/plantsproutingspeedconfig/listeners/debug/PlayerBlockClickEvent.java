@@ -1,11 +1,15 @@
 package de.wladtheninja.plantsproutingspeedconfig.listeners.debug;
 
+import de.wladtheninja.plantsproutingspeedconfig.data.HibernateUtil;
+import de.wladtheninja.plantsproutingspeedconfig.data.PlantBaseBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.text.MessageFormat;
 import java.util.logging.Level;
@@ -36,6 +40,16 @@ public class PlayerBlockClickEvent implements Listener {
 
             ag.setAge(Math.min(ag.getAge() + 1, ag.getMaximumAge()));
             event.getClickedBlock().setBlockData(ag);
+        }
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            PlantBaseBlock ye = new PlantBaseBlock(event.getClickedBlock().getLocation());
+            session.persist(ye);
+            transaction.commit();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
     }
 

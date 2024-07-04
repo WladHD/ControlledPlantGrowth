@@ -1,5 +1,6 @@
 package de.wladtheninja.plantsproutingspeedconfig;
 
+import de.wladtheninja.plantsproutingspeedconfig.data.HibernateUtil;
 import de.wladtheninja.plantsproutingspeedconfig.listeners.debug.PlayerBlockClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,12 +27,13 @@ public final class PlantSproutingSpeedConfig extends JavaPlugin {
 
         Bukkit.getLogger().log(Level.FINER, "Logging level set to FINER");
 
+        HibernateUtil.setup();
 
         getServer().getPluginManager().registerEvents(new PlayerBlockClickEvent(), this);
     }
 
     @Override
     public void onDisable() {
-
+        HibernateUtil.shutdown();
     }
 }
