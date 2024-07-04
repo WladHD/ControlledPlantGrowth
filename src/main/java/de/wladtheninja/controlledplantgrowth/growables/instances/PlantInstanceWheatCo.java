@@ -1,6 +1,6 @@
-package de.wladtheninja.plantsproutingspeedconfig.growables.instances;
+package de.wladtheninja.controlledplantgrowth.growables.instances;
 
-import de.wladtheninja.plantsproutingspeedconfig.growables.types.PlantTypeAgeingOneBlock;
+import de.wladtheninja.controlledplantgrowth.growables.types.PlantTypeAgeingOneBlock;
 import org.bukkit.Material;
 
 import java.util.ArrayList;

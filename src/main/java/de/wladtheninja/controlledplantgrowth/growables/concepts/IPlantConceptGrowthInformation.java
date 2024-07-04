@@ -1,4 +1,4 @@
-package de.wladtheninja.plantsproutingspeedconfig.growables.concepts;
+package de.wladtheninja.controlledplantgrowth.growables.concepts;
 
 import org.bukkit.block.Block;
 

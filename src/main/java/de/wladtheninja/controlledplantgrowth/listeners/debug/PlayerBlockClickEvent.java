@@ -1,7 +1,7 @@
-package de.wladtheninja.plantsproutingspeedconfig.listeners.debug;
+package de.wladtheninja.controlledplantgrowth.listeners.debug;
 
-import de.wladtheninja.plantsproutingspeedconfig.data.HibernateUtil;
-import de.wladtheninja.plantsproutingspeedconfig.data.PlantBaseBlock;
+import de.wladtheninja.controlledplantgrowth.data.utils.DatabaseHibernateUtil;
+import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
 import org.bukkit.Bukkit;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.event.EventHandler;
@@ -42,10 +42,10 @@ public class PlayerBlockClickEvent implements Listener {
             event.getClickedBlock().setBlockData(ag);
         }
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = DatabaseHibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
-            PlantBaseBlock ye = new PlantBaseBlock(event.getClickedBlock().getLocation());
+            PlantBaseBlockDTO ye = new PlantBaseBlockDTO(event.getClickedBlock().getLocation());
             session.persist(ye);
             transaction.commit();
         } catch (Exception exception) {

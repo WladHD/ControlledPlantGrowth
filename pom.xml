@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.wladtheninja</groupId>
-    <artifactId>PlantSproutingSpeedConfig</artifactId>
+    <artifactId>ControlledPlantGrowth</artifactId>
     <version>0.1-BETA</version>
     <packaging>jar</packaging>
 
-    <name>PlantSproutingSpeedConfig</name>
+    <name>ControlledPlantGrowth</name>
 
     <description>A plugin for specifying sprout and maturing timers for plants. Plants will fully mature in the defined
         amount, even if the player leaves the chunk. Due to it working differntly from a chunkloader, it introduces less
@@ -83,6 +83,13 @@
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>6.5.2.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+            <scope>provided</scope>
         </dependency>
 
 

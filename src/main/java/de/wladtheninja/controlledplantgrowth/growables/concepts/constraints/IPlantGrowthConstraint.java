@@ -1,6 +1,6 @@
-package de.wladtheninja.plantsproutingspeedconfig.growables.concepts.constraints;
+package de.wladtheninja.controlledplantgrowth.growables.concepts.constraints;
 
-import de.wladtheninja.plantsproutingspeedconfig.growables.concepts.IPlantConcept;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
 import org.bukkit.block.Block;
 
 public interface IPlantGrowthConstraint {

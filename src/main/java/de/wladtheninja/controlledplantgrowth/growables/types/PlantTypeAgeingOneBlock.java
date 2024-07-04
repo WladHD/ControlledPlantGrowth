@@ -1,10 +1,10 @@
-package de.wladtheninja.plantsproutingspeedconfig.growables.types;
+package de.wladtheninja.controlledplantgrowth.growables.types;
 
-import de.wladtheninja.plantsproutingspeedconfig.growables.concepts.IPlantConceptAge;
-import de.wladtheninja.plantsproutingspeedconfig.growables.concepts.IPlantConceptGrowthConstraints;
-import de.wladtheninja.plantsproutingspeedconfig.growables.concepts.IPlantConceptGrowthInformation;
-import de.wladtheninja.plantsproutingspeedconfig.growables.concepts.IPlantConceptLocation;
-import de.wladtheninja.plantsproutingspeedconfig.growables.concepts.constraints.IPlantGrowthConstraint;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptAge;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptGrowthConstraints;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptGrowthInformation;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptLocation;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.constraints.IPlantGrowthConstraint;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -107,17 +107,17 @@ public abstract class PlantTypeAgeingOneBlock implements IPlantConceptGrowthInfo
 
     @Override
     public Block getGroundBlock(Block b) {
-        return b;
+        // assuming this plant will only grow on the ground
+        return b.getRelative(0, -1, 0);
     }
 
     @Override
     public Block getPlantRootBlock(Block b) {
-        // assuming this plant will only grow on the ground
-        return b.getRelative(0, 1, 0);
+        return b;
     }
 
     @Override
-    public Material getSproutMaterial(Block b) {
+    public Material getPlantRootMaterial(Block b) {
         return getPlantRootBlock(b).getType();
     }
 }

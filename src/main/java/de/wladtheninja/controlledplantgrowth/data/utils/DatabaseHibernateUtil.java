@@ -1,11 +1,13 @@
-package de.wladtheninja.plantsproutingspeedconfig.data;
+package de.wladtheninja.controlledplantgrowth.data.utils;
 
+import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
+import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
-public class HibernateUtil {
+public class DatabaseHibernateUtil {
     private static SessionFactory sessionFactory;
 
     public static void setup() {
@@ -14,7 +16,9 @@ public class HibernateUtil {
         }
 
         Configuration configuration = new Configuration();
-        configuration.addAnnotatedClass(PlantBaseBlock.class); // Add your entity class here
+        configuration.addAnnotatedClass(PlantBaseBlockDTO.class);
+        configuration.addAnnotatedClass(SettingsDTO.class);
+
         configuration.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
         configuration.setProperty("hibernate.connection.url", "jdbc:h2:./plugins/YourPlugin/data/db;AUTO_SERVER=TRUE");
         configuration.setProperty("hibernate.connection.username", "sa");

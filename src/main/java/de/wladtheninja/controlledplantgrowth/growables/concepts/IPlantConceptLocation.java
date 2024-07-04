@@ -1,4 +1,4 @@
-package de.wladtheninja.plantsproutingspeedconfig.growables.concepts;
+package de.wladtheninja.controlledplantgrowth.growables.concepts;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -10,6 +10,6 @@ public interface IPlantConceptLocation extends IPlantConcept {
 
     Block getPlantRootBlock(Block b);
 
-    Material getSproutMaterial(Block b);
+    Material getPlantRootMaterial(Block b);
 
 }
