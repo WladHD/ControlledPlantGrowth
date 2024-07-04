@@ -2,9 +2,8 @@ package de.wladtheninja.controlledplantgrowth.setup;
 
 import org.bukkit.Bukkit;
 
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
+import java.text.MessageFormat;
+import java.util.logging.*;
 
 public class SetupDebugLogger implements Runnable {
     @Override
@@ -17,9 +16,16 @@ public class SetupDebugLogger implements Runnable {
 
         Handler consoleHandler = new ConsoleHandler();
         consoleHandler.setLevel(Level.FINER);
+        consoleHandler.setFormatter(new CustomFormatter());
 
         Bukkit.getLogger().addHandler(consoleHandler);
 
         Bukkit.getLogger().log(Level.FINER, "Logging level set to FINER");
+    }
+
+    private static class CustomFormatter extends SimpleFormatter {
+        public String format(LogRecord record) {
+            return MessageFormat.format("[ControlledPlantGrowth DEBUG] {0}\n", record.getMessage());
+        }
     }
 }

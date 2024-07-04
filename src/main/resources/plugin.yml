@@ -4,4 +4,4 @@ main: de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth
 api-version: '1.21'
 prefix: ControlledPlantGrowth
 authors: [wladtheninja]
-description: A plugin for specifying sprout and maturing timers for plants. Plants will fully mature in the defined amount, even if the player leaves the chunk. Due to it working differntly from a chunkloader, it introduces less server load.
+description: '${project.description}'

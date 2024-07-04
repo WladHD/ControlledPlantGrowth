@@ -2,15 +2,24 @@ package de.wladtheninja.controlledplantgrowth.data.utils;
 
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
-public class DatabaseHibernateUtil {
-    private static SessionFactory sessionFactory;
+import java.text.MessageFormat;
 
-    public static void setup() {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class DatabaseHibernateUtil {
+
+    @Getter(lazy = true)
+    private static final DatabaseHibernateUtil instance = new DatabaseHibernateUtil();
+    private SessionFactory sessionFactory;
+
+    public void setup() {
         if (sessionFactory != null) {
             return;
         }
@@ -20,7 +29,10 @@ public class DatabaseHibernateUtil {
         configuration.addAnnotatedClass(SettingsDTO.class);
 
         configuration.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
-        configuration.setProperty("hibernate.connection.url", "jdbc:h2:./plugins/YourPlugin/data/db;AUTO_SERVER=TRUE");
+        configuration.setProperty("hibernate.connection.url",
+                                  MessageFormat.format(
+                                          "jdbc:h2:./plugins/ControlledPlantGrowth/data/db;AUTO_SERVER=TRUE",
+                                          ""));
         configuration.setProperty("hibernate.connection.username", "sa");
         configuration.setProperty("hibernate.connection.password", "");
         configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
@@ -33,7 +45,7 @@ public class DatabaseHibernateUtil {
         sessionFactory = configuration.buildSessionFactory(serviceRegistry);
     }
 
-    public static SessionFactory getSessionFactory() {
+    public SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             setup();
         }
@@ -41,7 +53,7 @@ public class DatabaseHibernateUtil {
         return sessionFactory;
     }
 
-    public static void shutdown() {
+    public void shutdown() {
         getSessionFactory().close();
     }
 }

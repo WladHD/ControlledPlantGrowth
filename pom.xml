@@ -12,8 +12,8 @@
     <name>ControlledPlantGrowth</name>
 
     <description>A plugin for specifying sprout and maturing timers for plants. Plants will fully mature in the defined
-        amount, even if the player leaves the chunk. Due to it working differntly from a chunkloader, it introduces less
-        server load.
+        amount, even if the player leaves the chunk. It is not a chunk loader, so it introduces less stress on the
+        server.
     </description>
     <properties>
         <java.version>1.8</java.version>

@@ -27,6 +27,6 @@ public final class ControlledPlantGrowth extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        DatabaseHibernateUtil.shutdown();
+        DatabaseHibernateUtil.getInstance().shutdown();
     }
 }

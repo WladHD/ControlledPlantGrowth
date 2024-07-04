@@ -1,5 +1,7 @@
 package de.wladtheninja.controlledplantgrowth.setup;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
 import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.SettingsPlantGrowthDTO;
@@ -32,12 +34,22 @@ public class SetupSettings implements Runnable {
 
         SettingsDAO.getInstance().setCurrentSettings(activeSettings.getFirst());
 
-        if(SettingsDAO.getInstance().getCurrentSettings() == null)
+        if (SettingsDAO.getInstance().getCurrentSettings() == null) {
             throw new RuntimeException("Could not find settings");
+        }
 
         Bukkit.getLogger()
-                .log(Level.FINER, MessageFormat.format("Active settings with id {0} loaded successfully",
-                        SettingsDAO.getInstance().getCurrentSettings().getId()));
+                .log(Level.FINER,
+                     MessageFormat.format("Active settings with id {0} loaded successfully. Full config below: ",
+                                          SettingsDAO.getInstance().getCurrentSettings().getId()));
+
+        Bukkit.getLogger()
+                .log(Level.FINER,
+                     MessageFormat.format("Settings contain {0} records for plants",
+                                          SettingsDAO.getInstance().getCurrentSettings().getPlantGrowthList().size()));
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Bukkit.getLogger().log(Level.FINER, gson.toJson(SettingsDAO.getInstance().getCurrentSettings()));
     }
 
     public SettingsDTO getDefaultSettings() {

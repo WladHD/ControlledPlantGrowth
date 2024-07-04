@@ -44,6 +44,9 @@ public class PlantBaseBlockDTO {
         setY(loc.getBlockY());
         setZ(loc.getBlockZ());
 
+        setXChunk(loc.getChunk().getX());
+        setZChunk(loc.getChunk().getZ());
+
         setWorldUID(loc.getWorld().getUID());
     }
 

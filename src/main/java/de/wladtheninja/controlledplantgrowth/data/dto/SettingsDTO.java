@@ -17,6 +17,6 @@ public class SettingsDTO {
 
     private boolean active;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<SettingsPlantGrowthDTO> plantGrowthList;
 }

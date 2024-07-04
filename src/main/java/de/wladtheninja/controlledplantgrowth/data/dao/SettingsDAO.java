@@ -26,13 +26,13 @@ public class SettingsDAO {
     public List<SettingsDTO> getAllActiveSettings() {
         List<SettingsDTO> activeSettings = null;
 
-        try (Session session = DatabaseHibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             String hql = "FROM SettingsDTO WHERE active = true";
             Query<SettingsDTO> query = session.createQuery(hql, SettingsDTO.class);
 
-            activeSettings = query.list();
+            activeSettings = query.getResultList();
 
             transaction.commit();
         } catch (Exception exception) {
@@ -43,7 +43,7 @@ public class SettingsDAO {
     }
 
     public void saveSettings(SettingsDTO settings) {
-        try (Session session = DatabaseHibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             session.persist(settings);
