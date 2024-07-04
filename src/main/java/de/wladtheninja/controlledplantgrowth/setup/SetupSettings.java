@@ -61,6 +61,7 @@ public class SetupSettings implements Runnable {
 
         // grow wheat in 10 seconds
         settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.WHEAT, true, 10, new int[0]));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.BEETROOT, true, 60 * 2, new int[0]));
 
         defaultSettings.setPlantGrowthList(settingsPlantGrowths);
 

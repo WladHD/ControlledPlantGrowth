@@ -11,13 +11,8 @@ public final class ControlledPlantGrowth extends JavaPlugin {
     private final Runnable[] setups;
 
     public ControlledPlantGrowth() {
-        setups = new Runnable[] {
-                new SetupDebugLogger(), // TODO remove or hide behind setting
-                new SetupDatabase(),
-                new SetupSettings(),
-                new SetupPlantConcepts(),
-                new SetupEvents(this)
-        };
+        setups = new Runnable[]{new SetupDebugLogger(), // TODO remove or hide behind setting
+                new SetupDatabase(), new SetupSettings(), new SetupPlantConcepts(), new SetupEvents(this)};
     }
 
     @Override

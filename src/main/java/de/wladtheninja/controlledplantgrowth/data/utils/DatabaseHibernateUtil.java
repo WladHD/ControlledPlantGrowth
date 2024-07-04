@@ -1,7 +1,9 @@
 package de.wladtheninja.controlledplantgrowth.data.utils;
 
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
+import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockIdDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
+import de.wladtheninja.controlledplantgrowth.data.dto.SettingsPlantGrowthDTO;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +28,9 @@ public class DatabaseHibernateUtil {
 
         Configuration configuration = new Configuration();
         configuration.addAnnotatedClass(PlantBaseBlockDTO.class);
+        configuration.addAnnotatedClass(PlantBaseBlockIdDTO.class);
         configuration.addAnnotatedClass(SettingsDTO.class);
+        configuration.addAnnotatedClass(SettingsPlantGrowthDTO.class);
 
         configuration.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
         configuration.setProperty("hibernate.connection.url",

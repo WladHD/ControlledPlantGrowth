@@ -1,38 +1,30 @@
 package de.wladtheninja.controlledplantgrowth.data.dto;
 
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import java.util.UUID;
-
 @Entity
 @Getter
 @Setter
 public class PlantBaseBlockDTO {
-    private int x;
-    private int y;
-    private int z;
+
+    @EmbeddedId
+    private PlantBaseBlockIdDTO plantBaseBlockIdDTO;
 
     private int xChunk;
     private int zChunk;
+    private boolean markedAsOfflineChunk;
 
     private int currentPlantStage;
     private long timeNextGrowthStage;
-    private long timeFullGrowthStage;
 
     private transient Location location;
-
-    private UUID worldUID;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     public PlantBaseBlockDTO(Location loc) {
         this();
@@ -40,24 +32,25 @@ public class PlantBaseBlockDTO {
             throw new RuntimeException("World is null...");
         }
 
-        setX(loc.getBlockX());
-        setY(loc.getBlockY());
-        setZ(loc.getBlockZ());
+        plantBaseBlockIdDTO.setX(loc.getBlockX());
+        plantBaseBlockIdDTO.setY(loc.getBlockY());
+        plantBaseBlockIdDTO.setZ(loc.getBlockZ());
+        plantBaseBlockIdDTO.setWorldUID(loc.getWorld().getUID());
 
         setXChunk(loc.getChunk().getX());
         setZChunk(loc.getChunk().getZ());
 
-        setWorldUID(loc.getWorld().getUID());
     }
 
     public PlantBaseBlockDTO() {
+        plantBaseBlockIdDTO = new PlantBaseBlockIdDTO();
         setCurrentPlantStage(-1);
-        setTimeFullGrowthStage(-1);
-        setTimeFullGrowthStage(-1);
+        setTimeNextGrowthStage(-1);
     }
 
+    @Transient
     public Location getLocation() {
-        final World world = Bukkit.getWorld(worldUID);
+        final World world = Bukkit.getWorld(plantBaseBlockIdDTO.getWorldUID());
 
         if (world == null) {
             return null;
@@ -65,9 +58,21 @@ public class PlantBaseBlockDTO {
 
         if (location == null) {
             // TODO efficient to keep object persisted during runtime? maybe just return the object idk
-            setLocation(new Location(world, x, y, z));
+            setLocation(new Location(world,
+                                     plantBaseBlockIdDTO.getX(),
+                                     plantBaseBlockIdDTO.getY(),
+                                     plantBaseBlockIdDTO.getZ()));
         }
 
         return location;
+    }
+
+    @Transient
+    public boolean equals(Object o) {
+        if (!(o instanceof PlantBaseBlockDTO)) {
+            return false;
+        }
+
+        return ((PlantBaseBlockDTO) o).plantBaseBlockIdDTO.equals(plantBaseBlockIdDTO);
     }
 }

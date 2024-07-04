@@ -15,7 +15,8 @@ public class PlantConceptManager {
     @Getter(lazy = true)
     private static final PlantConceptManager instance = new PlantConceptManager();
 
-    IPlantClockwork clockwork = new PlantClockworkV1();
+    @Getter
+    private final IPlantClockwork clockwork = new PlantClockworkV1();
 
     private final List<IPlantConcept> plantConceptInstances;
 

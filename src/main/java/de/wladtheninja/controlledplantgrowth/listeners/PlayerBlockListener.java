@@ -14,11 +14,22 @@ import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.server.ServerLoadEvent;
 
 import java.text.MessageFormat;
 import java.util.logging.Level;
 
 public class PlayerBlockListener implements Listener {
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerHarvestBlockEvent(ServerLoadEvent event) {
+        Bukkit.getLogger()
+                .log(Level.FINER,
+                     "Server loaded event received. Starting Clockwork.");
+
+        PlantConceptManager.getInstance().getClockwork().queueNextBlockToUpdate();
+    }
+
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerHarvestBlockEvent(PlayerHarvestBlockEvent event) {
@@ -31,7 +42,7 @@ public class PlayerBlockListener implements Listener {
 
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onBlockGrowEvent(BlockGrowEvent event) {
         Bukkit.getLogger()
                 .log(Level.FINER,
@@ -56,7 +67,7 @@ public class PlayerBlockListener implements Listener {
             return;
         }
 
-        int deletedCount = PlantBaseBlockDAO.getInstance().unregisterPlantBase(event.getBlock());
+        int deletedCount = PlantBaseBlockDAO.getInstance().deletePlantBase(event.getBlock());
         Bukkit.getLogger()
                 .log(Level.FINER,
                      MessageFormat.format("Deleted {0} entries with block at {1}",
@@ -82,11 +93,18 @@ public class PlayerBlockListener implements Listener {
         IPlantConcept ipc =
                 PlantConceptManager.getInstance().retrieveSuitedPlantConcept(event.getBlockPlaced().getType());
 
+        Bukkit.getLogger()
+                .log(Level.FINER,
+                     MessageFormat.format("The placed block had {0} plant concept",
+                                          ipc == null ?
+                                                  "no" :
+                                                  "a retrieved"));
+
         if (ipc == null) {
             return;
         }
 
-        PlantBaseBlockDAO.getInstance().registerPlantBase(ipc, event.getBlockPlaced());
+        PlantBaseBlockDAO.getInstance().persistNewPlantBase(ipc, event.getBlockPlaced());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

@@ -61,7 +61,7 @@ public abstract class PlantTypeAgeingOneBlock implements IPlantConceptGrowthInfo
     @Override
     public int getCurrentAge(Block b) {
         if (!(b.getBlockData() instanceof Ageable)) {
-            throw new RuntimeException("Block dies not inherit Ageable interface.");
+            throw new RuntimeException("Block does not inherit Ageable interface.");
         }
 
         final Ageable ag = (Ageable) b.getBlockData();
@@ -72,7 +72,7 @@ public abstract class PlantTypeAgeingOneBlock implements IPlantConceptGrowthInfo
     public void setCurrentAge(Block b,
                               int age) {
         if (!(b.getBlockData() instanceof Ageable)) {
-            throw new RuntimeException("Block dies not inherit Ageable interface.");
+            throw new RuntimeException("Block does not inherit Ageable interface.");
         }
 
         if (!isAllowedToGrow(b)) {
