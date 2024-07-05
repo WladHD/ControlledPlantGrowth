@@ -15,6 +15,7 @@ import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
 
+
 @NoArgsConstructor(access = PRIVATE)
 public class SettingsDAO {
 

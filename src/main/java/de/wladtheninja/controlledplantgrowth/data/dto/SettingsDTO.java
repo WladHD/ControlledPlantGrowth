@@ -4,12 +4,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @Setter
-@Entity
-public class SettingsDTO {
+@Entity(name = "SettingsDTO")
+public class SettingsDTO implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,4 +20,8 @@ public class SettingsDTO {
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<SettingsPlantGrowthDTO> plantGrowthList;
+
+    private int maximumAmountOfPlantsInATimeWindowCluster;
+
+    private int maximumTimeWindowInMillisecondsForPlantsToBeClustered;
 }

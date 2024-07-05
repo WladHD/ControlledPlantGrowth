@@ -8,4 +8,6 @@ public interface IPlantConceptGrowthInformation extends IPlantConcept {
 
     void setToFullyMature(Block b);
 
+    void increaseGrowthStep(Block b);
+
 }

@@ -86,6 +86,11 @@ public abstract class PlantTypeAgeingOneBlock implements IPlantConceptGrowthInfo
     }
 
     @Override
+    public void increaseGrowthStep(Block b) {
+        setCurrentAge(b, getCurrentAge(b) + 1);
+    }
+
+    @Override
     public int getMaximumAge(Block b) {
         if (!(b.getBlockData() instanceof Ageable)) {
             throw new RuntimeException("Block is registered as Ageable, yet does not inherit Ageable interface.");

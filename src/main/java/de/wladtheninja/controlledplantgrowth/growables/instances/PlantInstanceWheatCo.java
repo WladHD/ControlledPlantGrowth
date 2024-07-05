@@ -13,7 +13,7 @@ public class PlantInstanceWheatCo extends PlantTypeAgeingOneBlock {
     public PlantInstanceWheatCo() {
         acceptedMaterials = new ArrayList<>();
 
-        addAcceptedPlantMaterial(Material.WHEAT, Material.BEETROOT);
+        addAcceptedPlantMaterial(Material.WHEAT, Material.BEETROOTS);
     }
 
 

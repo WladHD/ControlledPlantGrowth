@@ -41,10 +41,22 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/maven/**</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
+
+
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -61,6 +73,11 @@
         <repository>
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>
+        <!-- Libby (AlessioDP) Repository -->
+        <repository>
+            <id>AlessioDP</id>
+            <url>https://repo.alessiodp.com/releases/</url>
         </repository>
     </repositories>
 
@@ -91,8 +108,6 @@
             <version>1.18.30</version>
             <scope>provided</scope>
         </dependency>
-
-
     </dependencies>
 
 </project>

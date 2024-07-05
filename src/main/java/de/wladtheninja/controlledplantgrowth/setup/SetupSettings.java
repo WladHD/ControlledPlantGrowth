@@ -55,15 +55,18 @@ public class SetupSettings implements Runnable {
     public SettingsDTO getDefaultSettings() {
         SettingsDTO defaultSettings = new SettingsDTO();
 
+        defaultSettings.setMaximumAmountOfPlantsInATimeWindowCluster(50);
+        defaultSettings.setMaximumTimeWindowInMillisecondsForPlantsToBeClustered(1000);
         defaultSettings.setActive(true);
 
         ArrayList<SettingsPlantGrowthDTO> settingsPlantGrowths = new ArrayList<>();
 
         // grow wheat in 10 seconds
         settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.WHEAT, true, 10, new int[0]));
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.BEETROOT, true, 60 * 2, new int[0]));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.BEETROOTS, true, 60 * 2, new int[0]));
 
         defaultSettings.setPlantGrowthList(settingsPlantGrowths);
+
 
         return defaultSettings;
     }

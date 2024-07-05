@@ -17,6 +17,7 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -99,16 +100,21 @@ public class PlantBaseBlockDAO {
         return pbb;
     }
 
-    public PlantBaseBlockDTO getNextFutureUpdate(long timeEpoch) {
+    public List<PlantBaseBlockDTO> getNextFutureUpdate(long timeBoundaryLow,
+                                                       long clusterWindowMilliseconds) {
         List<PlantBaseBlockDTO> pbb;
 
         try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
-            String hql = "FROM PlantBaseBlockDTO WHERE timeNextGrowthStage != -1 AND timeNextGrowthStage > :timeEpoch" +
-                    " ORDER BY timeNextGrowthStage ASC LIMIT 1";
+            String hql = "FROM PlantBaseBlockDTO WHERE timeNextGrowthStage != -1 AND timeNextGrowthStage > " +
+                    ":timeBoundaryLow ORDER BY timeNextGrowthStage ASC LIMIT :limitAmount";
             Query<PlantBaseBlockDTO> query = session.createQuery(hql, PlantBaseBlockDTO.class);
-            query.setParameter("timeEpoch", timeEpoch); // IGNORE TIME EPOCH FOR NOW; HANDLE OLD PLANTS TOO
+            query.setParameter("timeBoundaryLow", timeBoundaryLow);
+            query.setParameter("limitAmount",
+                               SettingsDAO.getInstance()
+                                       .getCurrentSettings()
+                                       .getMaximumAmountOfPlantsInATimeWindowCluster());
 
             pbb = query.getResultList();
 
@@ -121,11 +127,16 @@ public class PlantBaseBlockDAO {
             return null;
         }
 
-        if (pbb.isEmpty()) {
-            return null;
+        if (!pbb.isEmpty()) {
+            PlantBaseBlockDTO first = pbb.getFirst();
+
+            return pbb.stream()
+                    .filter(others -> Math.abs(others.getTimeNextGrowthStage() - first.getTimeNextGrowthStage()) <
+                            clusterWindowMilliseconds)
+                    .collect(Collectors.toList());
         }
 
-        return pbb.getFirst();
+        return pbb;
     }
 
     public void persistNewPlantBase(IPlantConcept ipc,
