@@ -9,4 +9,5 @@ public interface IPlantGrowthConstraint {
     boolean isGrowthConditionFulfilled(IPlantConcept pos,
                                        Block b);
 
+    String getGeneralViolationMessage();
 }

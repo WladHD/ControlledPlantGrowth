@@ -1,5 +1,6 @@
 package de.wladtheninja.controlledplantgrowth.data.dto;
 
+import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Transient;
@@ -17,9 +18,9 @@ public class PlantBaseBlockDTO {
     @EmbeddedId
     private PlantBaseBlockIdDTO plantBaseBlockIdDTO;
 
-    private int xChunk;
-    private int zChunk;
-    private boolean markedAsOfflineChunk;
+    @Embedded
+    private PlantBaseBlockChunkDTO plantBaseBlockChunkDTO;
+
 
     private int currentPlantStage;
     private long timeNextGrowthStage;
@@ -37,8 +38,8 @@ public class PlantBaseBlockDTO {
         plantBaseBlockIdDTO.setZ(loc.getBlockZ());
         plantBaseBlockIdDTO.setWorldUID(loc.getWorld().getUID());
 
-        setXChunk(loc.getChunk().getX());
-        setZChunk(loc.getChunk().getZ());
+        plantBaseBlockChunkDTO.setXChunk(loc.getChunk().getX());
+        plantBaseBlockChunkDTO.setZChunk(loc.getChunk().getZ());
 
     }
 

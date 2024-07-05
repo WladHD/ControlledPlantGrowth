@@ -1,6 +1,7 @@
 package de.wladtheninja.controlledplantgrowth.data.dao;
 
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
+import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
 import de.wladtheninja.controlledplantgrowth.data.utils.DatabaseHibernateUtil;
 import de.wladtheninja.controlledplantgrowth.growables.PlantConceptManager;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
@@ -26,6 +27,34 @@ public class PlantBaseBlockDAO {
 
     @Getter(lazy = true)
     private static final PlantBaseBlockDAO instance = new PlantBaseBlockDAO();
+
+    public List<PlantBaseBlockDTO> getPlantBaseByBlock(Block b) {
+        List<PlantBaseBlockDTO> retrievedBlocks = null;
+
+        try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            String hql = "FROM PlantBaseBlockDTO WHERE plantBaseBlockIdDTO.x = :x AND plantBaseBlockIdDTO.y = :y AND " +
+                    "plantBaseBlockIdDTO.z = :z AND plantBaseBlockIdDTO.worldUID = :worldUID";
+            Query<PlantBaseBlockDTO> query = session.createQuery(hql, PlantBaseBlockDTO.class);
+            query.setParameter("x", b.getLocation().getBlockX());
+            query.setParameter("y", b.getLocation().getBlockY());
+            query.setParameter("z", b.getLocation().getBlockZ());
+
+            if(b.getLocation().getWorld() == null)
+                throw new RuntimeException("World in given location is null.");
+
+            query.setParameter("worldUID", b.getLocation().getWorld().getUID());
+
+            retrievedBlocks = query.getResultList();
+
+            transaction.commit();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return retrievedBlocks;
+    }
 
     public int deletePlantBase(Block b) {
         int deletedCount = 0;
@@ -104,17 +133,20 @@ public class PlantBaseBlockDAO {
                                                        long clusterWindowMilliseconds) {
         List<PlantBaseBlockDTO> pbb;
 
+        clusterWindowMilliseconds = Math.max(1, clusterWindowMilliseconds);
+
         try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             String hql = "FROM PlantBaseBlockDTO WHERE timeNextGrowthStage != -1 AND timeNextGrowthStage > " +
-                    ":timeBoundaryLow ORDER BY timeNextGrowthStage ASC LIMIT :limitAmount";
+                    ":timeBoundaryLow ORDER BY timeNextGrowthStage ASC " +
+                    "LIMIT :limitAmount";
             Query<PlantBaseBlockDTO> query = session.createQuery(hql, PlantBaseBlockDTO.class);
             query.setParameter("timeBoundaryLow", timeBoundaryLow);
             query.setParameter("limitAmount",
-                               SettingsDAO.getInstance()
+                               Math.max(1, SettingsDAO.getInstance()
                                        .getCurrentSettings()
-                                       .getMaximumAmountOfPlantsInATimeWindowCluster());
+                                       .getMaximumAmountOfPlantsInATimeWindowCluster()));
 
             pbb = query.getResultList();
 
@@ -130,9 +162,10 @@ public class PlantBaseBlockDAO {
         if (!pbb.isEmpty()) {
             PlantBaseBlockDTO first = pbb.getFirst();
 
+            final long finalClusterWindowMilliseconds = clusterWindowMilliseconds;
             return pbb.stream()
                     .filter(others -> Math.abs(others.getTimeNextGrowthStage() - first.getTimeNextGrowthStage()) <
-                            clusterWindowMilliseconds)
+                            finalClusterWindowMilliseconds)
                     .collect(Collectors.toList());
         }
 

@@ -55,8 +55,8 @@ public class SetupSettings implements Runnable {
     public SettingsDTO getDefaultSettings() {
         SettingsDTO defaultSettings = new SettingsDTO();
 
-        defaultSettings.setMaximumAmountOfPlantsInATimeWindowCluster(50);
-        defaultSettings.setMaximumTimeWindowInMillisecondsForPlantsToBeClustered(1000);
+        defaultSettings.setMaximumAmountOfPlantsInATimeWindowCluster(-3); // TODO remove... testing sanitization
+        defaultSettings.setMaximumTimeWindowInMillisecondsForPlantsToBeClustered(-3);
         defaultSettings.setActive(true);
         defaultSettings.setShowInfoWhenDefaultSettingIsUsed(true);
 

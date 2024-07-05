@@ -3,7 +3,9 @@ package de.wladtheninja.controlledplantgrowth.listeners;
 import de.wladtheninja.controlledplantgrowth.data.dao.PlantBaseBlockDAO;
 import de.wladtheninja.controlledplantgrowth.growables.PlantConceptManager;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptLocation;
 import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -104,7 +106,14 @@ public class PlayerBlockListener implements Listener {
             return;
         }
 
-        PlantBaseBlockDAO.getInstance().persistNewPlantBase(ipc, event.getBlockPlaced());
+        Block plantRoot = event.getBlockPlaced();
+
+        if (ipc instanceof IPlantConceptLocation) {
+            IPlantConceptLocation loc = (IPlantConceptLocation) ipc;
+            plantRoot = loc.getPlantRootBlock(plantRoot);
+        }
+
+        PlantBaseBlockDAO.getInstance().persistNewPlantBase(ipc, plantRoot);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

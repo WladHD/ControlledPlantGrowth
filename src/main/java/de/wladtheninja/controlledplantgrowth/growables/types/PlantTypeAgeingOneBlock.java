@@ -1,61 +1,25 @@
 package de.wladtheninja.controlledplantgrowth.growables.types;
 
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptAge;
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptGrowthConstraints;
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptGrowthInformation;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptLocation;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.constraints.IPlantGrowthConstraint;
-import org.bukkit.Bukkit;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantConstraintViolationException;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
-public abstract class PlantTypeAgeingOneBlock implements IPlantConceptGrowthInformation, IPlantConceptAge,
-        IPlantConceptLocation, IPlantConceptGrowthConstraints {
+public abstract class PlantTypeAgeingOneBlock extends PlantTypeBasic implements IPlantConceptAge,
+        IPlantConceptLocation {
 
-    ArrayList<IPlantGrowthConstraint> constraints;
-
-    public PlantTypeAgeingOneBlock() {
-        constraints = new ArrayList<>();
+    public PlantTypeAgeingOneBlock(List<Material> acceptedMaterials) {
+        super(acceptedMaterials);
     }
 
-    public PlantTypeAgeingOneBlock(List<IPlantGrowthConstraint> constraints) {
-        this();
-
-        if (constraints == null) {
-            return;
-        }
-
-        getGrowthConstraints().addAll(constraints);
-    }
-
-    @Override
-    public boolean isAllowedToGrow(Block b) {
-        for (IPlantGrowthConstraint pgc : getGrowthConstraints()) {
-            if (!pgc.isGrowthConditionFulfilled(this, b)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    @Override
-    public void addGrowthConstraint(IPlantGrowthConstraint constraint) {
-        if (constraint == null) {
-            return;
-        }
-
-        getGrowthConstraints().add(constraint);
-    }
-
-    @Override
-    public List<IPlantGrowthConstraint> getGrowthConstraints() {
-        return constraints;
+    public PlantTypeAgeingOneBlock(List<Material> acceptedMaterials,
+                                   List<IPlantGrowthConstraint> constraints) {
+        super(acceptedMaterials, constraints);
     }
 
     @Override
@@ -75,8 +39,10 @@ public abstract class PlantTypeAgeingOneBlock implements IPlantConceptGrowthInfo
             throw new RuntimeException("Block does not inherit Ageable interface.");
         }
 
-        if (!isAllowedToGrow(b)) {
-            Bukkit.getLogger().log(Level.FINER, "Constraint was not fulfilled, plant can't grow.");
+        try {
+            handleConstraintCheckOrElseThrowError(this, b);
+        } catch (PlantConstraintViolationException e) {
+            e.printInformation();
             return;
         }
 
@@ -98,16 +64,6 @@ public abstract class PlantTypeAgeingOneBlock implements IPlantConceptGrowthInfo
 
         final Ageable ag = (Ageable) b.getBlockData();
         return ag.getMaximumAge();
-    }
-
-    @Override
-    public boolean isMature(Block b) {
-        return getCurrentAge(b) == getMaximumAge(b);
-    }
-
-    @Override
-    public void setToFullyMature(Block b) {
-        setCurrentAge(b, getMaximumAge(b));
     }
 
     @Override
