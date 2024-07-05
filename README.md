@@ -29,6 +29,9 @@ main types of growable plants.
 - Sugar cane
 - Saplings
 
+### Tested on Server Software
+- Paper 1.21 Build 40 (experimental)
+
 ## Personal Note
 
 My goal is to develop a plugin that can adjust growing rates. The player can be online AS WELL AS offline or

@@ -6,12 +6,15 @@ import de.wladtheninja.controlledplantgrowth.data.utils.DatabaseHibernateUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.text.MessageFormat;
 import java.util.List;
+import java.util.logging.Level;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -46,11 +49,32 @@ public class SettingsDAO {
     }
 
     public SettingsPlantGrowthDTO getPlantSettings(Material m) {
-        return getCurrentSettings().getPlantGrowthList()
+        final SettingsPlantGrowthDTO s = getCurrentSettings().getPlantGrowthList()
                 .stream()
                 .filter(entry -> entry.getMaterial() == m)
                 .findFirst()
                 .orElse(null);
+
+
+        if (s != null) {
+            return s;
+        }
+
+        if (getCurrentSettings().isShowInfoWhenDefaultSettingIsUsed()) {
+            Bukkit.getLogger()
+                    .log(Level.INFO,
+                         MessageFormat.format("Plant {0} had no rules for growing defined. Using the default rules " +
+                                                      "instead. If this behaviour is wanted, ignore this message or " +
+                                                      "turn the setting showInfoWhenDefaultSettingIsUsed to false.",
+                                              m));
+        }
+
+        return getCurrentSettings().getPlantGrowthList()
+                .stream()
+                .filter(entry -> entry.getMaterial() == Material.AIR)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException(
+                        "Settings may be corrupted. Could not locate the default settings."));
     }
 
     public void saveSettings(SettingsDTO settings) {

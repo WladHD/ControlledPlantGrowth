@@ -18,6 +18,8 @@ public class SettingsDTO implements Serializable {
 
     private boolean active;
 
+    private boolean showInfoWhenDefaultSettingIsUsed;
+
     @ElementCollection(fetch = FetchType.EAGER)
     private List<SettingsPlantGrowthDTO> plantGrowthList;
 
