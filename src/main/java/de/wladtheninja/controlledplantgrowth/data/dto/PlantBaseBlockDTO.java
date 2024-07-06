@@ -45,6 +45,7 @@ public class PlantBaseBlockDTO {
 
     public PlantBaseBlockDTO() {
         plantBaseBlockIdDTO = new PlantBaseBlockIdDTO();
+        plantBaseBlockChunkDTO = new PlantBaseBlockChunkDTO();
         setCurrentPlantStage(-1);
         setTimeNextGrowthStage(-1);
     }

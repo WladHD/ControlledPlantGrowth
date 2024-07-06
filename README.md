@@ -22,11 +22,12 @@ main types of growable plants.
 
 - Wheat
 - Beetroot
+- Potatoes
+- Cactus
+- Sugar Cane
 
 ### In Development
 
-- Cactus
-- Sugar cane
 - Saplings
 
 ### Tested on Server Software

@@ -1,14 +1,11 @@
 package de.wladtheninja.controlledplantgrowth.data.dao;
 
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
-import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
 import de.wladtheninja.controlledplantgrowth.data.utils.DatabaseHibernateUtil;
-import de.wladtheninja.controlledplantgrowth.growables.PlantConceptManager;
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptLocation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -28,7 +25,30 @@ public class PlantBaseBlockDAO {
     @Getter(lazy = true)
     private static final PlantBaseBlockDAO instance = new PlantBaseBlockDAO();
 
-    public List<PlantBaseBlockDTO> getPlantBaseByBlock(Block b) {
+    public List<PlantBaseBlockDTO> getPlantBaseBlocksByChunk(Chunk c) {
+        List<PlantBaseBlockDTO> retrievedBlocks = null;
+
+        try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            String hql = "FROM PlantBaseBlockDTO WHERE plantBaseBlockChunkDTO.xChunk = :xChunk " +
+                    "AND plantBaseBlockChunkDTO.zChunk = :zChunk AND plantBaseBlockIdDTO.worldUID = :worldUID";
+            Query<PlantBaseBlockDTO> query = session.createQuery(hql, PlantBaseBlockDTO.class);
+            query.setParameter("xChunk", c.getX());
+            query.setParameter("zChunk", c.getZ());
+            query.setParameter("worldUID", c.getWorld().getUID());
+
+            retrievedBlocks = query.getResultList();
+
+            transaction.commit();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return retrievedBlocks;
+    }
+
+    public PlantBaseBlockDTO getPlantBaseBlockByBlock(Block b) {
         List<PlantBaseBlockDTO> retrievedBlocks = null;
 
         try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
@@ -41,8 +61,9 @@ public class PlantBaseBlockDAO {
             query.setParameter("y", b.getLocation().getBlockY());
             query.setParameter("z", b.getLocation().getBlockZ());
 
-            if(b.getLocation().getWorld() == null)
+            if (b.getLocation().getWorld() == null) {
                 throw new RuntimeException("World in given location is null.");
+            }
 
             query.setParameter("worldUID", b.getLocation().getWorld().getUID());
 
@@ -53,10 +74,21 @@ public class PlantBaseBlockDAO {
             exception.printStackTrace();
         }
 
-        return retrievedBlocks;
+        if (retrievedBlocks == null) {
+            return null;
+        }
+
+        if (retrievedBlocks.size() > 1) {
+            throw new RuntimeException(
+                    "This is illegal since the cords are treated as unique primary key ... but yet here we are.");
+        }
+
+        return retrievedBlocks.isEmpty() ?
+                null :
+                retrievedBlocks.getFirst();
     }
 
-    public int deletePlantBase(Block b) {
+    public boolean deletePlantBaseBlock(Block b) {
         int deletedCount = 0;
 
         try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
@@ -82,10 +114,10 @@ public class PlantBaseBlockDAO {
             exception.printStackTrace();
         }
 
-        return deletedCount;
+        return deletedCount != 0;
     }
 
-    public void updatePlantBaseBlockDTO(PlantBaseBlockDTO updatedDto) {
+    public void updatePlantBaseBlock(PlantBaseBlockDTO updatedDto) {
         if (updatedDto.getPlantBaseBlockIdDTO() == null) {
             throw new RuntimeException("Primary key missing");
         }
@@ -172,16 +204,7 @@ public class PlantBaseBlockDAO {
         return pbb;
     }
 
-    public void persistNewPlantBase(IPlantConcept ipc,
-                                    Block b) {
-        if (!(ipc instanceof IPlantConceptLocation)) {
-            throw new RuntimeException("Plant did not provide location information.");
-        }
-
-        final Block plantBlock = ((IPlantConceptLocation) ipc).getPlantRootBlock(b);
-        PlantBaseBlockDTO pbb = new PlantBaseBlockDTO(plantBlock.getLocation());
-        PlantConceptManager.getInstance().getClockwork().onPreSaveNewPlantBaseBlockEvent(ipc, pbb);
-
+    public void persistNewPlantBaseBlock(PlantBaseBlockDTO pbb) {
 
         try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -193,15 +216,12 @@ public class PlantBaseBlockDAO {
             Bukkit.getLogger()
                     .log(Level.FINER,
                          MessageFormat.format("Registered {0} at {1} with a current plant stage of {2}",
-                                              plantBlock.getType(),
-                                              plantBlock.getLocation().toVector(),
+                                              pbb.getLocation().getBlock().getType(),
+                                              pbb.getLocation().getBlock().getLocation().toVector(),
                                               pbb.getCurrentPlantStage()));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
-
-        PlantConceptManager.getInstance().getClockwork().onAfterSaveNewPlantEvent();
     }
 
 }

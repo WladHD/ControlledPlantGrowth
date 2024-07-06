@@ -1,10 +1,8 @@
 package de.wladtheninja.controlledplantgrowth.data.utils;
 
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
-import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockIdDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
-import de.wladtheninja.controlledplantgrowth.data.dto.SettingsPlantGrowthDTO;
-import de.wladtheninja.controlledplantgrowth.growables.PlantConceptManager;
+import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,7 +43,7 @@ public class DatabaseHibernateUtil {
             Bukkit.getLogger().log(Level.FINER,
                                    Configuration.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 
-            File f = new File("./plugins/" + new java.io.File(PlantConceptManager.class.getProtectionDomain()
+            File f = new File("./plugins/" + new java.io.File(ControlledPlantGrowthManager.class.getProtectionDomain()
                                                                     .getCodeSource()
                                                                     .getLocation()
                                                                     .getPath())

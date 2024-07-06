@@ -1,8 +1,10 @@
 package de.wladtheninja.controlledplantgrowth.growables;
 
-import de.wladtheninja.controlledplantgrowth.growables.clockwork.IPlantClockwork;
-import de.wladtheninja.controlledplantgrowth.growables.clockwork.PlantClockworkV1;
+import de.wladtheninja.controlledplantgrowth.growables.growthlogic.IPlantClockwork;
+import de.wladtheninja.controlledplantgrowth.growables.growthlogic.IPlantInternEventListener;
+import de.wladtheninja.controlledplantgrowth.growables.growthlogic.PlantClockwork;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
+import de.wladtheninja.controlledplantgrowth.growables.growthlogic.PlantInternEventListener;
 import lombok.Getter;
 import org.bukkit.Material;
 
@@ -10,17 +12,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class PlantConceptManager {
+public class ControlledPlantGrowthManager {
 
     @Getter(lazy = true)
-    private static final PlantConceptManager instance = new PlantConceptManager();
+    private static final ControlledPlantGrowthManager instance = new ControlledPlantGrowthManager();
 
     @Getter
-    private final IPlantClockwork clockwork = new PlantClockworkV1();
+    private final IPlantClockwork clockwork = new PlantClockwork();
+
+    @Getter
+    private final IPlantInternEventListener internEventListener = new PlantInternEventListener();
 
     private final List<IPlantConcept> plantConceptInstances;
 
-    private PlantConceptManager() {
+    private ControlledPlantGrowthManager() {
         plantConceptInstances = new ArrayList<>();
     }
 

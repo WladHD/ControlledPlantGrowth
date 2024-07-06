@@ -1,7 +1,8 @@
 package de.wladtheninja.controlledplantgrowth.listeners;
 
 import de.wladtheninja.controlledplantgrowth.data.dao.PlantBaseBlockDAO;
-import de.wladtheninja.controlledplantgrowth.growables.PlantConceptManager;
+import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
+import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptLocation;
 import org.bukkit.Bukkit;
@@ -29,7 +30,7 @@ public class PlayerBlockListener implements Listener {
                 .log(Level.FINER,
                      "Server loaded event received. Starting Clockwork.");
 
-        PlantConceptManager.getInstance().getClockwork().queueNextBlockToUpdate();
+        ControlledPlantGrowthManager.getInstance().getClockwork().startPlantUpdateQueue();
     }
 
 
@@ -65,16 +66,34 @@ public class PlayerBlockListener implements Listener {
                                           event.getBlock().getType(),
                                           event.getBlock().getLocation().toVector()));
 
-        if (!PlantConceptManager.getInstance().hasSuitedPlantConcept(event.getBlock().getType())) {
+        IPlantConcept ipc = ControlledPlantGrowthManager.getInstance().retrieveSuitedPlantConcept(event.getBlock().getType());
+
+        if (ipc == null) {
             return;
         }
 
-        int deletedCount = PlantBaseBlockDAO.getInstance().deletePlantBase(event.getBlock());
-        Bukkit.getLogger()
-                .log(Level.FINER,
-                     MessageFormat.format("Deleted {0} entries with block at {1}",
-                                          deletedCount,
-                                          event.getBlock().getLocation().toVector()));
+        Block plantRoot = event.getBlock();
+
+        if (ipc instanceof IPlantConceptLocation) {
+            IPlantConceptLocation loc = (IPlantConceptLocation) ipc;
+            plantRoot = loc.getPlantRootBlock(plantRoot);
+        }
+
+        PlantBaseBlockDTO registeredPlant = PlantBaseBlockDAO.getInstance().getPlantBaseBlockByBlock(plantRoot);
+
+        if (registeredPlant == null) {
+            ControlledPlantGrowthManager.getInstance()
+                    .getInternEventListener()
+                    .onUnexpectedUnregisteredPlantPlayerBreakEvent(ipc,
+                                                                   new PlantBaseBlockDTO(plantRoot.getLocation()),
+                                                                   event.getBlock());
+
+        }
+        else {
+            ControlledPlantGrowthManager.getInstance()
+                    .getInternEventListener()
+                    .onUnexpectedRegisteredPlantPlayerBreakEvent(ipc, registeredPlant, event.getBlock());
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -93,7 +112,7 @@ public class PlayerBlockListener implements Listener {
                                           event.getBlockPlaced().getLocation().toVector()));
 
         IPlantConcept ipc =
-                PlantConceptManager.getInstance().retrieveSuitedPlantConcept(event.getBlockPlaced().getType());
+                ControlledPlantGrowthManager.getInstance().retrieveSuitedPlantConcept(event.getBlockPlaced().getType());
 
         Bukkit.getLogger()
                 .log(Level.FINER,
@@ -113,7 +132,22 @@ public class PlayerBlockListener implements Listener {
             plantRoot = loc.getPlantRootBlock(plantRoot);
         }
 
-        PlantBaseBlockDAO.getInstance().persistNewPlantBase(ipc, plantRoot);
+        PlantBaseBlockDTO registeredPlant = PlantBaseBlockDAO.getInstance().getPlantBaseBlockByBlock(plantRoot);
+
+        if (registeredPlant != null) {
+            Bukkit.getLogger()
+                    .log(Level.FINER, MessageFormat.format("The newly placed {0} is part of a registered plant " +
+                                                                   "structure. Updating.", plantRoot.getType()));
+
+            ControlledPlantGrowthManager.getInstance()
+                    .getInternEventListener()
+                    .onUnexpectedRegisteredPlantPlayerPlaceEvent(ipc, registeredPlant);
+        }
+        else {
+            ControlledPlantGrowthManager.getInstance()
+                    .getInternEventListener()
+                    .onUnexpectedUnregisteredPlantPlayerPlaceEvent(ipc, new PlantBaseBlockDTO(plantRoot.getLocation()));
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

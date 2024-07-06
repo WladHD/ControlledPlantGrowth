@@ -2,6 +2,7 @@ package de.wladtheninja.controlledplantgrowth.growables.types;
 
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptAge;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptLocation;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptMultiBlockGrowthVertical;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.constraints.IPlantGrowthConstraint;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantConstraintViolationException;
 import org.bukkit.Material;
@@ -10,16 +11,16 @@ import org.bukkit.block.BlockFace;
 
 import java.util.List;
 
-public abstract class PlantTypeAgeingMultiBlockUpwards extends PlantTypeBasic implements IPlantConceptAge,
-        IPlantConceptLocation {
+public abstract class PlantTypeAgeingMultiBlockVertical extends PlantTypeBasic implements IPlantConceptAge,
+        IPlantConceptLocation, IPlantConceptMultiBlockGrowthVertical {
 
 
-    public PlantTypeAgeingMultiBlockUpwards(List<Material> acceptedMaterials) {
+    public PlantTypeAgeingMultiBlockVertical(List<Material> acceptedMaterials) {
         super(acceptedMaterials);
     }
 
-    public PlantTypeAgeingMultiBlockUpwards(List<Material> acceptedMaterials,
-                                            List<IPlantGrowthConstraint> constraints) {
+    public PlantTypeAgeingMultiBlockVertical(List<Material> acceptedMaterials,
+                                             List<IPlantGrowthConstraint> constraints) {
         super(acceptedMaterials, constraints);
     }
 

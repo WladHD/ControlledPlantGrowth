@@ -63,7 +63,7 @@ public class SetupSettings implements Runnable {
         ArrayList<SettingsPlantGrowthDTO> settingsPlantGrowths = new ArrayList<>();
 
         // grow wheat in 10 seconds
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.WHEAT, true, 10, new int[0]));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.WHEAT, false, 10, new int[]{1, 2, 3, 4, 5, 6}));
         settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.BEETROOTS, true, 60 * 2, new int[0]));
 
         // AIR == default setting parsed when none is found
