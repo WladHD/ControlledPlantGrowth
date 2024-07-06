@@ -32,7 +32,9 @@ public class PlantDataUtils {
             throw new RuntimeException("Plant does not have any levels of age ...");
         }
 
-        if (conceptGrowthInformation.isMature(b)) {
+        boolean isMature = conceptGrowthInformation.isMature(b);
+
+        if (isMature) {
             return -1;
         }
 

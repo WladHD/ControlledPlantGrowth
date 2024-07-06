@@ -8,14 +8,14 @@ import java.util.logging.*;
 public class SetupDebugLogger implements Runnable {
     @Override
     public void run() {
-        Bukkit.getLogger().setLevel(Level.FINER);
+        Bukkit.getLogger().setLevel(Level.ALL);
         Bukkit.getLogger().setFilter(record -> {
-            record.setLevel(Level.FINER);
+            record.setLevel(Level.ALL);
             return true;
         });
 
         Handler consoleHandler = new ConsoleHandler();
-        consoleHandler.setLevel(Level.FINER);
+        consoleHandler.setLevel(Level.ALL);
         consoleHandler.setFormatter(new CustomFormatter());
 
         Bukkit.getLogger().addHandler(consoleHandler);

@@ -1,8 +1,11 @@
 package de.wladtheninja.controlledplantgrowth.data.dao;
 
+import de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth;
+import de.wladtheninja.controlledplantgrowth.data.dto.ConfigDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.SettingsPlantGrowthDTO;
 import de.wladtheninja.controlledplantgrowth.data.utils.DatabaseHibernateUtil;
+import de.wladtheninja.controlledplantgrowth.setup.SetupConfig;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +15,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.logging.Level;
@@ -25,6 +29,10 @@ public class SettingsDAO {
     @Getter
     @Setter
     private SettingsDTO currentSettings;
+
+    @Getter
+    @Setter
+    private ConfigDTO currentConfig;
 
     @Getter(lazy = true)
     private static final SettingsDAO instance = new SettingsDAO();
@@ -77,15 +85,43 @@ public class SettingsDAO {
                         "Settings may be corrupted. Could not locate the default settings."));
     }
 
+    public int deleteSettings() {
+        int result = 0;
+
+        try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            String hql = "DELETE FROM SettingsDTO WHERE active = true";
+            result = session.createMutationQuery(hql).executeUpdate();
+
+            transaction.commit();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return result;
+    }
+
     public void saveSettings(SettingsDTO settings) {
+        if (!getCurrentConfig().isLoadConfigFromDatabase()) {
+            getCurrentConfig().setPlantGrowthSettings(settings);
+            try {
+                SetupConfig.saveConfig(getCurrentConfig(),
+                                       ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class).getDataFolder());
+            } catch (IOException e) {
+                Bukkit.getLogger().log(Level.SEVERE, e.getMessage(), e);
+                return;
+            }
+        }
+
         try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             session.persist(settings);
 
             transaction.commit();
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        } catch (Exception e) {
+            Bukkit.getLogger().log(Level.SEVERE, e.getMessage(), e);
         }
     }
 

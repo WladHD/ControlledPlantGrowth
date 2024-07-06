@@ -16,9 +16,8 @@ import java.util.logging.Level;
 
 @RequiredArgsConstructor
 public class SetupSettings implements Runnable {
-    @Override
-    public void run() {
-        Bukkit.getLogger().log(Level.FINER, "Trying to load settings from database");
+    public static void loadSettingsFromDatabase() {
+        Bukkit.getLogger().log(Level.INFO, "Trying to load settings from database");
 
         // should really be only 0 or 1...
         List<SettingsDTO> activeSettings = SettingsDAO.getInstance().getAllActiveSettings();
@@ -52,18 +51,18 @@ public class SetupSettings implements Runnable {
         Bukkit.getLogger().log(Level.FINER, gson.toJson(SettingsDAO.getInstance().getCurrentSettings()));
     }
 
-    public SettingsDTO getDefaultSettings() {
+    public static SettingsDTO getDefaultSettings() {
         SettingsDTO defaultSettings = new SettingsDTO();
 
-        defaultSettings.setMaximumAmountOfPlantsInATimeWindowCluster(-3); // TODO remove... testing sanitization
-        defaultSettings.setMaximumTimeWindowInMillisecondsForPlantsToBeClustered(-3);
+        defaultSettings.setMaximumAmountOfPlantsInATimeWindowCluster(1); // TODO remove... testing sanitization
+        defaultSettings.setMaximumTimeWindowInMillisecondsForPlantsToBeClustered(1);
         defaultSettings.setActive(true);
         defaultSettings.setShowInfoWhenDefaultSettingIsUsed(true);
 
         ArrayList<SettingsPlantGrowthDTO> settingsPlantGrowths = new ArrayList<>();
 
         // grow wheat in 10 seconds
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.WHEAT, false, 10, new int[]{1, 2, 3, 4, 5, 6}));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.WHEAT, false, 10, new int[]{1, 2, 3, 4, 5, 6, 7}));
         settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.BEETROOTS, true, 60 * 2, new int[0]));
 
         // AIR == default setting parsed when none is found
@@ -73,5 +72,26 @@ public class SetupSettings implements Runnable {
 
 
         return defaultSettings;
+    }
+
+    @Override
+    public void run() {
+        if (SettingsDAO.getInstance().getCurrentConfig().isLoadConfigFromDatabase()) {
+            loadSettingsFromDatabase();
+            return;
+        }
+
+        SettingsDAO.getInstance().deleteSettings();
+
+        SettingsDAO.getInstance()
+                .setCurrentSettings(SettingsDAO.getInstance().getCurrentConfig().getPlantGrowthSettings());
+
+        Bukkit.getLogger()
+                .log(Level.FINER,
+                     MessageFormat.format("Settings imported from config.yml",
+                                          SettingsDAO.getInstance().getCurrentSettings().getId()));
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Bukkit.getLogger().log(Level.FINER, gson.toJson(SettingsDAO.getInstance().getCurrentSettings()));
     }
 }

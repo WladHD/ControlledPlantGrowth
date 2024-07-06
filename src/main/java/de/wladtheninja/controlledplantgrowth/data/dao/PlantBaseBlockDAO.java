@@ -170,17 +170,16 @@ public class PlantBaseBlockDAO {
         try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
-            String hql = "FROM PlantBaseBlockDTO WHERE timeNextGrowthStage != -1 AND timeNextGrowthStage > " +
-                    ":timeBoundaryLow ORDER BY timeNextGrowthStage ASC " +
-                    "LIMIT :limitAmount";
+            String hql = "FROM PlantBaseBlockDTO WHERE timeNextGrowthStage != -1 " +
+                    "AND timeNextGrowthStage > :timeBoundaryLow ORDER BY timeNextGrowthStage ASC";
             Query<PlantBaseBlockDTO> query = session.createQuery(hql, PlantBaseBlockDTO.class);
             query.setParameter("timeBoundaryLow", timeBoundaryLow);
-            query.setParameter("limitAmount",
-                               Math.max(1, SettingsDAO.getInstance()
-                                       .getCurrentSettings()
-                                       .getMaximumAmountOfPlantsInATimeWindowCluster()));
-
+            query.setMaxResults(Math.max(1,
+                                         SettingsDAO.getInstance()
+                                                 .getCurrentSettings()
+                                                 .getMaximumAmountOfPlantsInATimeWindowCluster()));
             pbb = query.getResultList();
+
 
             transaction.commit();
             Bukkit.getLogger()
@@ -209,7 +208,7 @@ public class PlantBaseBlockDAO {
         try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
-            session.persist(pbb);
+            session.merge(pbb);
 
             transaction.commit();
 

@@ -1,7 +1,9 @@
 package de.wladtheninja.controlledplantgrowth.growables.growthlogic;
 
+import de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth;
 import de.wladtheninja.controlledplantgrowth.data.dao.PlantBaseBlockDAO;
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
+import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockIdDTO;
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptGrowthInformation;
@@ -9,23 +11,50 @@ import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptLoc
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptMultiBlockGrowthVertical;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 public class PlantInternEventListener implements IPlantInternEventListener {
+
+    HashMap<PlantBaseBlockIdDTO, BukkitTask> delayedTasks = new HashMap<>();
+
     @Override
+
     public void onUnexpectedRegisteredPlantPlayerPlaceEvent(IPlantConcept ipc,
                                                             PlantBaseBlockDTO pbb) {
-        evaluateAgeOfPlantAndUpdateInDatabaseIfNotMatureDeleteAndContinueQueue(ipc, pbb);
+
+        onPlantPlayerRescanEventAsync(pbb);
     }
 
     @Override
-    public void onUnexpectedUnregisteredPlantPlayerPlaceEvent(IPlantConcept ipc,
+    public void onUnexpectedUnregisteredPlantPlayerPlaceEvent(IPlantConcept ignored,
                                                               PlantBaseBlockDTO pbb) {
-        PlantDataUtils.fillPlantBaseBlockDTOWithCurrentAgeAndNextUpdateTimestamp(ipc, pbb);
-        PlantBaseBlockDAO.getInstance().persistNewPlantBaseBlock(pbb);
-        ControlledPlantGrowthManager.getInstance().getClockwork().startPlantUpdateQueue();
+
+        onPlantPlayerRescanEventAsync(pbb);
+    }
+
+    public void onPlantPlayerRescanEventAsync(PlantBaseBlockDTO pbb) {
+        if (delayedTasks.containsKey(pbb.getPlantBaseBlockIdDTO())) {
+            delayedTasks.get(pbb.getPlantBaseBlockIdDTO()).cancel();
+        }
+
+        delayedTasks.put(pbb.getPlantBaseBlockIdDTO(),
+                         Bukkit.getScheduler()
+                                 .runTaskLater(ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class), () -> {
+                                     final IPlantConcept rescan = checkIfBlockHasPlantConceptOtherwiseDelete(pbb);
+
+                                     if (rescan == null) {
+                                         delayedTasks.remove(pbb.getPlantBaseBlockIdDTO());
+                                         return;
+                                     }
+
+                                     evaluateAgeOfPlantAndUpdateInDatabaseIfNotMatureDeleteAndContinueQueue(rescan,
+                                                                                                            pbb);
+                                     delayedTasks.remove(pbb.getPlantBaseBlockIdDTO());
+                                 }, 1));
     }
 
     public void evaluateAgeOfPlantAndUpdateInDatabaseIfNotMatureDeleteAndContinueQueue(IPlantConcept ipc,
@@ -69,14 +98,14 @@ public class PlantInternEventListener implements IPlantInternEventListener {
             Bukkit.getLogger()
                     .log(Level.FINER,
                          MessageFormat.format("{0} at {1} was part of a plant structure. The plugin does not " +
-                                                      "support a modification in that structure yet and is ignoring " +
+                                                      "support a modification of that structure yet and is ignoring " +
                                                       "it.",
                                               brokenBlock.getType(),
                                               brokenBlock.getLocation().toVector()));
             return;
         }
 
-        evaluateAgeOfPlantAndUpdateInDatabaseIfNotMatureDeleteAndContinueQueue(ipc, pbb);
+        onPlantPlayerRescanEventAsync(pbb);
     }
 
     @Override
@@ -91,7 +120,20 @@ public class PlantInternEventListener implements IPlantInternEventListener {
             return;
         }
 
+        // onUnexpectedUnregisteredPlantPlayerPlaceEvent already has a delayed task
         onUnexpectedUnregisteredPlantPlayerPlaceEvent(ipc, pbb);
+    }
+
+    public IPlantConcept checkIfBlockHasPlantConceptOtherwiseDelete(PlantBaseBlockDTO plant) {
+        IPlantConcept ipc = ControlledPlantGrowthManager.getInstance()
+                .retrieveSuitedPlantConcept(plant.getLocation().getBlock().getType());
+
+        if (ipc == null) {
+            PlantBaseBlockDAO.getInstance().deletePlantBaseBlock(plant.getLocation().getBlock());
+            return null;
+        }
+
+        return ipc;
     }
 
     @Override
@@ -100,11 +142,9 @@ public class PlantInternEventListener implements IPlantInternEventListener {
             return;
         }
 
-        IPlantConcept ipc = ControlledPlantGrowthManager.getInstance()
-                .retrieveSuitedPlantConcept(plant.getLocation().getBlock().getType());
+        IPlantConcept ipc = checkIfBlockHasPlantConceptOtherwiseDelete(plant);
 
         if (ipc == null) {
-            PlantBaseBlockDAO.getInstance().deletePlantBaseBlock(plant.getLocation().getBlock());
             return;
         }
 

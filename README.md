@@ -31,7 +31,7 @@ main types of growable plants.
 - Saplings
 
 ### Tested on Server Software
-- Paper 1.21 Build 40 (experimental)
+- Paper 1.21 Build #44, #40 (experimental)
 
 ## Personal Note
 
@@ -46,7 +46,7 @@ ideas of new functionality or just feedback.
 
 I quite like the general structure of this project. Plants can be put together using different concepts, making new
 plant types fairly simple to implement.
-The most overhead comes from the massive chungus of a database I added as dependency (for mainly the reason of not
+~~The most overhead comes from the massive chungus of a database I added as dependency (for mainly the reason of not
 wanting to do it myself). Don't get me wrong, Hibernate ORM with a H2 Database is bonkers. The problem lies in the
 size of the finished .jar that exceeds 20 MB.
 Although I don't dislike FatJars I don't think it is in the nature of Spigot Plugins to be that big.
@@ -57,7 +57,19 @@ DTOClasses. Reverting the change and shading it into my plugin resolves the prob
 torturing myself with changing pointless stuff, I came to
 the conclusion to
 postpone this "problem". I'll firstly focus on the actual features, before implementing a lightweight database or
-outsourcing the big dependencies to the server software.
+outsourcing the big dependencies to the server software.~~
+
+FINALLY!!!
+I found a way to relocate the loading of Hibernate the server software making my plugin desirably slim.
+:)
+The thread https://hub.spigotmc.org/jira/si/jira.issueviews:issue-html/SPIGOT-6569/SPIGOT-6569.html helped me out.
+A simple BootstrapServiceRegistry was all it took for Hibernate to locate my smol classes.
+Here I would like to make an honorable mention to https://github.com/Byteflux/libby. In the end, I decided against its
+integration, but still enjoyed the functionality.
+Maybe there will be a time when I rethink that decision, but for now Spigots/Papers lib loader seems to work fine.
+With the newfound certainty, that I will keep the Hibernate framework, I will adjust the current database classes to be
+more presentable and follow the normal conventions.
 
 # LICENSE
+
 MIT License
