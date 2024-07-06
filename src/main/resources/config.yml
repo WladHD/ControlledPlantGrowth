@@ -1,0 +1,38 @@
+# THIS FILE IS GENERATED AND DIRECT CHANGES WILL NOT AFFECT THE PLUGIN.
+# CHANGE THE config.yml FILE UNDER plugins/ControlledPlantGrowth/config.yml INSTEAD
+loadConfigFromDatabase: false
+enableDebugLog: true # DEBUG ENABLED
+plantGrowthSettings:
+  id: null
+  active: true
+  showInfoWhenDefaultSettingIsUsed: true
+  plantGrowthList:
+    - material: "WHEAT"
+      useTimeForPlantMature: false
+      timeForPlantMature: 10
+      timeForNextPlantGrowthInSteps:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+    - material: "BEETROOTS"
+      useTimeForPlantMature: true
+      timeForPlantMature: 120
+      timeForNextPlantGrowthInSteps: []
+    - material: "AIR"
+      useTimeForPlantMature: true
+      timeForPlantMature: 30
+      timeForNextPlantGrowthInSteps: []
+  maximumAmountOfPlantsInATimeWindowCluster: 1
+  maximumTimeWindowInMillisecondsForPlantsToBeClustered: 1
+databaseHibernateSettings:
+  hibernate.connection.driver_class: "org.h2.Driver"
+  hibernate.connection.url: "jdbc:h2:./plugins/ControlledPlantGrowth/data/db;AUTO_SERVER=TRUE"
+  hibernate.hbm2ddl.auto: "update"
+  hibernate.dialect: "org.hibernate.dialect.H2Dialect"
+  hibernate.show_sql: "true" # DEBUG ENABLED
+  hibernate.connection.password: ""
+  hibernate.connection.username: "sa"
