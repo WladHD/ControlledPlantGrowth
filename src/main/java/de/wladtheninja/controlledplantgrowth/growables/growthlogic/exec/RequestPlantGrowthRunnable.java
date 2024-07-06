@@ -33,7 +33,7 @@ public class RequestPlantGrowthRunnable implements Runnable {
             return;
         }
 
-        plants.forEach(ControlledPlantGrowthManager.getInstance().getInternEventListener()::onDTOPlantGrowthRequest);
+        plants.forEach(ControlledPlantGrowthManager.getInstance().getInternEventListener()::requestGrowthForPlant);
 
         if (updateQueueWhenCompleted) {
             ControlledPlantGrowthManager.getInstance().getClockwork().startPlantUpdateQueue();

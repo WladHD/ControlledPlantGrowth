@@ -5,7 +5,6 @@ import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
 import de.wladtheninja.controlledplantgrowth.data.dto.ConfigDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
-import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,8 +16,9 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
-import java.io.File;
 import java.util.logging.Level;
+
+import static java.util.logging.Logger.getLogger;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DatabaseHibernateUtil {
@@ -28,6 +28,8 @@ public class DatabaseHibernateUtil {
     private SessionFactory sessionFactory;
 
     public void setup() {
+
+        getLogger("org.hibernate").setLevel(Level.SEVERE);
 
         Bukkit.getLogger().log(Level.FINER, "Setting up database 1");
 

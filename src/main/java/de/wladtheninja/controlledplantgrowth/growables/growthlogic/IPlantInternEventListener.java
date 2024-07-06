@@ -6,19 +6,41 @@ import org.bukkit.block.Block;
 
 public interface IPlantInternEventListener {
 
-    void onUnexpectedRegisteredPlantPlayerPlaceEvent(IPlantConcept ipc,
-                                                     PlantBaseBlockDTO pbb);
+    // onArtificialGrowthRegisteredPlant
+    void onArtificialGrowthRegisteredPlantEvent(IPlantConcept ipc,
+                                                PlantBaseBlockDTO pbb);
 
-    void onUnexpectedUnregisteredPlantPlayerPlaceEvent(IPlantConcept ipc,
-                                                       PlantBaseBlockDTO pbb);
+    default void onArtificialGrowthHarvestInlineEvent(IPlantConcept ipc,
+                                                      Block potentialPlantRoot,
+                                                      boolean breakEvent) {
+        if (ipc == null || potentialPlantRoot == null) {
+            return;
+        }
 
-    void onUnexpectedRegisteredPlantPlayerBreakEvent(IPlantConcept ipc,
-                                                     PlantBaseBlockDTO pbb,
-                                                     Block brokenBlock);
+        if (breakEvent) {
+            onArtificialHarvestEvent(ipc, potentialPlantRoot);
+        }
+        else {
+            onArtificialGrowthEvent(ipc, potentialPlantRoot);
+        }
+    }
 
-    void onUnexpectedUnregisteredPlantPlayerBreakEvent(IPlantConcept ipc,
-                                                       PlantBaseBlockDTO pbb,
-                                                       Block brokenBlock);
+    void onArtificialGrowthEvent(IPlantConcept ipc,
+                                 Block placedBlock);
 
-    void onDTOPlantGrowthRequest(PlantBaseBlockDTO pbb);
+    void onArtificialGrowthUnregisteredPlantEvent(IPlantConcept ipc,
+                                                  PlantBaseBlockDTO pbb);
+
+    void onArtificialHarvestRegisteredPlantEvent(IPlantConcept ipc,
+                                                 PlantBaseBlockDTO pbb,
+                                                 Block brokenBlock);
+
+    void onArtificialHarvestUnregisteredPlantEvent(IPlantConcept ipc,
+                                                   PlantBaseBlockDTO pbb,
+                                                   Block brokenBlock);
+
+    void onArtificialHarvestEvent(IPlantConcept ipc,
+                                  Block brokenBlock);
+
+    void requestGrowthForPlant(PlantBaseBlockDTO pbb);
 }

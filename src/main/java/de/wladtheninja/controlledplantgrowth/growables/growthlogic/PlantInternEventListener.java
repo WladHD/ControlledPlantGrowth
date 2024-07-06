@@ -23,15 +23,42 @@ public class PlantInternEventListener implements IPlantInternEventListener {
 
     @Override
 
-    public void onUnexpectedRegisteredPlantPlayerPlaceEvent(IPlantConcept ipc,
-                                                            PlantBaseBlockDTO pbb) {
+    public void onArtificialGrowthRegisteredPlantEvent(IPlantConcept ipc,
+                                                       PlantBaseBlockDTO pbb) {
 
         onPlantPlayerRescanEventAsync(pbb);
     }
 
     @Override
-    public void onUnexpectedUnregisteredPlantPlayerPlaceEvent(IPlantConcept ignored,
-                                                              PlantBaseBlockDTO pbb) {
+    public void onArtificialGrowthEvent(IPlantConcept ipc,
+                                        Block plantRoot) {
+        if (ipc instanceof IPlantConceptLocation) {
+            IPlantConceptLocation loc = (IPlantConceptLocation) ipc;
+            plantRoot = loc.getPlantRootBlock(plantRoot);
+        }
+
+        PlantBaseBlockDTO registeredPlant = PlantBaseBlockDAO.getInstance().getPlantBaseBlockByBlock(plantRoot);
+
+        if (registeredPlant != null) {
+            Bukkit.getLogger()
+                    .log(Level.FINER,
+                         MessageFormat.format("Natural growth occurred for registered structure. Update.",
+                                              plantRoot.getType()));
+
+            ControlledPlantGrowthManager.getInstance()
+                    .getInternEventListener()
+                    .onArtificialGrowthRegisteredPlantEvent(ipc, registeredPlant);
+        }
+        else {
+            ControlledPlantGrowthManager.getInstance()
+                    .getInternEventListener()
+                    .onArtificialGrowthUnregisteredPlantEvent(ipc, new PlantBaseBlockDTO(plantRoot.getLocation()));
+        }
+    }
+
+    @Override
+    public void onArtificialGrowthUnregisteredPlantEvent(IPlantConcept ignored,
+                                                         PlantBaseBlockDTO pbb) {
 
         onPlantPlayerRescanEventAsync(pbb);
     }
@@ -70,9 +97,9 @@ public class PlantInternEventListener implements IPlantInternEventListener {
     }
 
     @Override
-    public void onUnexpectedRegisteredPlantPlayerBreakEvent(IPlantConcept ipc,
-                                                            PlantBaseBlockDTO pbb,
-                                                            Block brokenBlock) {
+    public void onArtificialHarvestRegisteredPlantEvent(IPlantConcept ipc,
+                                                        PlantBaseBlockDTO pbb,
+                                                        Block brokenBlock) {
 
         if (!(ipc instanceof IPlantConceptLocation)) {
             throw new RuntimeException("Plant did not provide location information");
@@ -109,9 +136,9 @@ public class PlantInternEventListener implements IPlantInternEventListener {
     }
 
     @Override
-    public void onUnexpectedUnregisteredPlantPlayerBreakEvent(IPlantConcept ipc,
-                                                              PlantBaseBlockDTO pbb,
-                                                              Block brokenBlock) {
+    public void onArtificialHarvestUnregisteredPlantEvent(IPlantConcept ipc,
+                                                          PlantBaseBlockDTO pbb,
+                                                          Block brokenBlock) {
         if (!(ipc instanceof IPlantConceptLocation)) {
             throw new RuntimeException("Plant did not provide location information");
         }
@@ -121,7 +148,34 @@ public class PlantInternEventListener implements IPlantInternEventListener {
         }
 
         // onUnexpectedUnregisteredPlantPlayerPlaceEvent already has a delayed task
-        onUnexpectedUnregisteredPlantPlayerPlaceEvent(ipc, pbb);
+        onArtificialGrowthUnregisteredPlantEvent(ipc, pbb);
+    }
+
+    @Override
+    public void onArtificialHarvestEvent(IPlantConcept ipc,
+                                         Block plantRoot) {
+
+        if (ipc instanceof IPlantConceptLocation) {
+            IPlantConceptLocation loc = (IPlantConceptLocation) ipc;
+            plantRoot = loc.getPlantRootBlock(plantRoot);
+        }
+
+        PlantBaseBlockDTO registeredPlant = PlantBaseBlockDAO.getInstance().getPlantBaseBlockByBlock(plantRoot);
+
+        if (registeredPlant == null) {
+            ControlledPlantGrowthManager.getInstance()
+                    .getInternEventListener()
+                    .onArtificialHarvestUnregisteredPlantEvent(ipc,
+                                                               new PlantBaseBlockDTO(plantRoot.getLocation()),
+                                                               plantRoot);
+
+        }
+        else {
+            ControlledPlantGrowthManager.getInstance()
+                    .getInternEventListener()
+                    .onArtificialHarvestRegisteredPlantEvent(ipc, registeredPlant, plantRoot);
+        }
+
     }
 
     public IPlantConcept checkIfBlockHasPlantConceptOtherwiseDelete(PlantBaseBlockDTO plant) {
@@ -137,7 +191,7 @@ public class PlantInternEventListener implements IPlantInternEventListener {
     }
 
     @Override
-    public void onDTOPlantGrowthRequest(PlantBaseBlockDTO plant) {
+    public void requestGrowthForPlant(PlantBaseBlockDTO plant) {
         if (plant == null) {
             return;
         }

@@ -1,6 +1,6 @@
 package de.wladtheninja.controlledplantgrowth.setup;
 
-import de.wladtheninja.controlledplantgrowth.listeners.PlayerBlockListener;
+import de.wladtheninja.controlledplantgrowth.listeners.BlockInteractionEventListener;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.plugin.Plugin;
 
@@ -13,6 +13,6 @@ public class SetupEvents implements Runnable {
 
     @Override
     public void run() {
-        getServer().getPluginManager().registerEvents(new PlayerBlockListener(), plugin);
+        getServer().getPluginManager().registerEvents(new BlockInteractionEventListener(), plugin);
     }
 }

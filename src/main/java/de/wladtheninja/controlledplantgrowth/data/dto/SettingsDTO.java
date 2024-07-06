@@ -18,6 +18,8 @@ public class SettingsDTO implements Serializable {
 
     private boolean active;
 
+    private boolean disableNaturalGrowth;
+
     private boolean showInfoWhenDefaultSettingIsUsed;
 
     @ElementCollection(fetch = FetchType.EAGER)

@@ -58,7 +58,7 @@ public class SetupConfig implements Runnable {
         hib.put("hibernate.connection.username", "sa");
         hib.put("hibernate.connection.password", "");
         hib.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-        hib.put("hibernate.show_sql", "true"); // TODO REMOVE
+        // hib.put("hibernate.show_sql", "true");
         hib.put("hibernate.hbm2ddl.auto", "update");
 
         return hib;
