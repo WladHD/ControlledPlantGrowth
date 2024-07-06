@@ -90,6 +90,8 @@ public class PlantInternEventListener implements IPlantInternEventListener {
         if (!(ipc instanceof IPlantConceptMultiBlockGrowthVertical)) {
             return;
         }
+
+        onUnexpectedUnregisteredPlantPlayerPlaceEvent(ipc, pbb);
     }
 
     @Override
