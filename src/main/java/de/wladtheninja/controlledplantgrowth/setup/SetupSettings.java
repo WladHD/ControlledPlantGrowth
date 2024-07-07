@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 @RequiredArgsConstructor
@@ -63,12 +64,33 @@ public class SetupSettings implements Runnable {
         ArrayList<SettingsPlantGrowthDTO> settingsPlantGrowths = new ArrayList<>();
 
         // grow wheat in 10 seconds
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.WHEAT, false, 10, new int[]{1, 2, 3, 4, 5, 6, 7}));
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.BEETROOTS, true, 60 * 2, new int[0]));
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.POTATOES, true, 20, new int[0]));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.WHEAT,
+                                                            false,
+                                                            1,
+                                                            new int[]{
+                                                                    (int) TimeUnit.SECONDS.convert(3, TimeUnit.MINUTES),
+                                                                    (int) TimeUnit.SECONDS.convert(3, TimeUnit.MINUTES),
+                                                                    (int) TimeUnit.SECONDS.convert(3, TimeUnit.MINUTES),
+                                                                    (int) TimeUnit.SECONDS.convert(4, TimeUnit.MINUTES),
+                                                                    (int) TimeUnit.SECONDS.convert(2, TimeUnit.MINUTES),
+                                                                    (int) TimeUnit.SECONDS.convert(2, TimeUnit.MINUTES),
+                                                                    (int) TimeUnit.SECONDS.convert(1,
+                                                                                                   TimeUnit.MINUTES)}));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.BEETROOTS,
+                                                            true,
+                                                            (int) TimeUnit.SECONDS.convert(18, TimeUnit.MINUTES),
+                                                            new int[0]));
+
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.POTATOES,
+                                                            true,
+                                                            (int) TimeUnit.SECONDS.convert(18, TimeUnit.MINUTES),
+                                                            new int[0]));
 
         // AIR == default setting parsed when none is found
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.AIR, true, 30, new int[0]));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.AIR,
+                                                            true,
+                                                            (int) TimeUnit.SECONDS.convert(20, TimeUnit.MINUTES),
+                                                            new int[0]));
 
         defaultSettings.setPlantGrowthList(settingsPlantGrowths);
 

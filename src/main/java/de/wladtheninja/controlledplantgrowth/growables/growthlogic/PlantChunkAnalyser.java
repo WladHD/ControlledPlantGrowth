@@ -36,6 +36,10 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
 
     @Override
     public void checkForPlantsInChunk(Chunk cs) {
+        if (cs == null) {
+            return;
+        }
+
         arrayDeque.add(cs.getChunkSnapshot(true, false, false));
 
         if (!running) {

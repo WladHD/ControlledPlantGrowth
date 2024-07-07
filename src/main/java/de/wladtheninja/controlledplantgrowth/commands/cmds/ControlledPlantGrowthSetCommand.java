@@ -105,7 +105,7 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
 
         if (sdf.isPresent()) {
             sdf.get().setUseTimeForPlantMature(true);
-            sdf.get().setTimeForPlantMature((int) parsedTimeUnit.convert(parsedTime, TimeUnit.SECONDS));
+            sdf.get().setTimeForPlantMature((int) TimeUnit.SECONDS.convert(parsedTime, parsedTimeUnit));
             SettingsDAO.getInstance().saveSettings();
 
             sender.sendMessage(MessageFormat.format("Growth time for {0} was successfully updated to {1} {2}.",
@@ -119,7 +119,7 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
         }
 
         SettingsPlantGrowthDTO settingsPlantGrowthDTO = new SettingsPlantGrowthDTO();
-        settingsPlantGrowthDTO.setTimeForPlantMature((int) parsedTimeUnit.convert(parsedTime, TimeUnit.SECONDS));
+        settingsPlantGrowthDTO.setTimeForPlantMature((int) TimeUnit.SECONDS.convert(parsedTime, parsedTimeUnit));
         settingsPlantGrowthDTO.setMaterial(parsedMat);
         settingsPlantGrowthDTO.setTimeForNextPlantGrowthInSteps(new int[0]);
         settingsPlantGrowthDTO.setUseTimeForPlantMature(true);

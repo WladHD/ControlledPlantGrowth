@@ -50,7 +50,7 @@ public class BlockInteractionEventListener implements Listener {
             return;
         }
 
-        ControlledPlantGrowthManager.getInstance().getChunkAnalyser().checkForPlantsInChunk(event.getChunk());
+        ControlledPlantGrowthManager.getInstance().getChunkAnalyser().chunkUnloaded(event.getChunk());
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
