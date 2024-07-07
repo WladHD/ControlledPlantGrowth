@@ -2,6 +2,7 @@ package de.wladtheninja.controlledplantgrowth.growables.types;
 
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantAttachedFruit;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.constraints.IPlantGrowthConstraint;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantConstraintViolationException;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -75,6 +76,13 @@ public class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgeingOneBloc
     public void setCurrentAge(Block b, int age) {
         Bukkit.getLogger().log(Level.FINER, MessageFormat.format("Growing {0}, reaching age: {1}", b.getType(), age));
         if (isBlockException(b)) {
+            return;
+        }
+
+        try {
+            handleConstraintCheckOrElseThrowError(this, b);
+        } catch (PlantConstraintViolationException e) {
+            e.printInformation();
             return;
         }
 
