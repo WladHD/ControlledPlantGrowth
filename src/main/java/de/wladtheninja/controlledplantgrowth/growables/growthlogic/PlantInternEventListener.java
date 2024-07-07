@@ -29,6 +29,15 @@ public class PlantInternEventListener implements IPlantInternEventListener {
     }
 
     @Override
+    public void queueRecheckOfBlock(IPlantConcept ipc, Block b) {
+
+        Bukkit.getScheduler().runTaskLater(ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class), () -> {
+            evaluateAgeOfPlantAndUpdateInDatabaseIfMatureDeleteAndContinueQueue(ipc,
+                    new PlantBaseBlockDTO(b.getLocation(), b.getType()));
+        }, 1);
+    }
+
+    @Override
     public void onForcePlantsReloadByTypeEvent(Material material) {
         List<PlantBaseBlockDTO> list = PlantBaseBlockDAO.getInstance().getPlantBaseBlocksByType(material);
 
@@ -89,6 +98,10 @@ public class PlantInternEventListener implements IPlantInternEventListener {
                     .onArtificialGrowthRegisteredPlantEvent(ipc, registeredPlant);
         }
         else {
+            if (plantRoot.getType() == Material.AIR) {
+                return;
+            }
+
             if (ipc instanceof IPlantConceptGrowthInformation &&
                     ((IPlantConceptGrowthInformation) ipc).isMature(plantRoot)) {
                 return;
@@ -131,6 +144,11 @@ public class PlantInternEventListener implements IPlantInternEventListener {
 
     public void evaluateAgeOfPlantAndUpdateInDatabaseIfMatureDeleteAndContinueQueue(IPlantConcept ipc,
                                                                                     PlantBaseBlockDTO pbb) {
+        if (pbb.getLocation().getBlock().getType() == Material.AIR) {
+            PlantBaseBlockDAO.getInstance().deletePlantBaseBlock(pbb.getLocation().getBlock());
+            return;
+        }
+
         PlantDataUtils.fillPlantBaseBlockDTOWithCurrentAgeAndNextUpdateTimestamp(ipc, pbb);
 
         if (ifMatureDeleteAndReturnTrue(ipc, pbb)) {

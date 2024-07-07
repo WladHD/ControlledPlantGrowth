@@ -18,7 +18,6 @@ import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
-import java.text.MessageFormat;
 import java.util.logging.Level;
 
 public class BlockInteractionEventListener implements Listener {
@@ -64,25 +63,42 @@ public class BlockInteractionEventListener implements Listener {
 
         IPlantConcept ipc = ControlledPlantGrowthManager.getInstance()
                 .retrieveSuitedPlantConcept(breakEvent ?
+                        event.getBlock().getType() :
+                        event.getTo());
+
+        if (ipc == null) {
+            return;
+        }
+
+        ControlledPlantGrowthManager.getInstance().getInternEventListener().queueRecheckOfBlock(ipc, event.getBlock());
+
+        /*boolean breakEvent = event.getTo() == Material.AIR;
+
+
+        IPlantConcept ipc = ControlledPlantGrowthManager.getInstance()
+                .retrieveSuitedPlantConcept(breakEvent ?
                                                     event.getBlock().getType() :
                                                     event.getTo());
 
-        ControlledPlantGrowthManager.getInstance()
-                .getInternEventListener()
-                .onArtificialGrowthHarvestInlineEvent(ipc, event.getBlock(), breakEvent);
+        Bukkit.getScheduler().runTaskLater(ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class), () -> {
+            ControlledPlantGrowthManager.getInstance()
+                    .getInternEventListener()
+                    .onArtificialGrowthHarvestInlineEvent(ipc, event.getBlock(), breakEvent);
+        }, 1); */
     }
 
-
-    // WHAT EVEN IS THAT LOL
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerHarvestBlockEvent(PlayerHarvestBlockEvent event) {
-        Bukkit.getLogger()
-                .log(Level.FINER,
-                     MessageFormat.format("Player {0} has harvested {1} at {2}",
-                                          event.getPlayer().getName(),
-                                          event.getHarvestedBlock().getType(),
-                                          event.getHarvestedBlock().getLocation().toVector()));
+        IPlantConcept ipc = ControlledPlantGrowthManager.getInstance()
+                .retrieveSuitedPlantConcept(event.getHarvestedBlock().getType());
 
+        if (ipc == null) {
+            return;
+        }
+
+        ControlledPlantGrowthManager.getInstance()
+                .getInternEventListener()
+                .onArtificialGrowthHarvestInlineEvent(ipc, event.getHarvestedBlock(), true);
     }
 
 

@@ -26,7 +26,8 @@ public abstract class PlantTypeAgeingOneBlock extends PlantTypeBasic implements 
     @Override
     public int getCurrentAge(Block b) {
         if (!(b.getBlockData() instanceof Ageable)) {
-            throw new RuntimeException("Block does not inherit Ageable interface.");
+            throw new RuntimeException(MessageFormat.format("Block {0} at {1} does not inherit Ageable interface.",
+                    b.getType(), b.getLocation().toVector()));
         }
 
         final Ageable ag = (Ageable) b.getBlockData();

@@ -11,6 +11,8 @@ public interface IPlantInternEventListener {
     void onArtificialGrowthRegisteredPlantEvent(IPlantConcept ipc,
                                                 PlantBaseBlockDTO pbb);
 
+    void queueRecheckOfBlock(IPlantConcept ipc, Block b);
+
     default void onArtificialGrowthHarvestInlineEvent(IPlantConcept ipc,
                                                       Block potentialPlantRoot,
                                                       boolean breakEvent) {
