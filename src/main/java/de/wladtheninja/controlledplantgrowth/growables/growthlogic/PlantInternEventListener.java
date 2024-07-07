@@ -229,7 +229,7 @@ public class PlantInternEventListener implements IPlantInternEventListener {
     }
 
     public boolean ifMatureDeleteAndReturnTrue(IPlantConcept ipc,
-                                                      PlantBaseBlockDTO plant) {
+                                               PlantBaseBlockDTO plant) {
         IPlantConceptGrowthInformation conceptGrowthInformation = (IPlantConceptGrowthInformation) ipc;
 
         if (!conceptGrowthInformation.isMature(plant.getLocation().getBlock())) {

@@ -1,7 +1,5 @@
 package de.wladtheninja.controlledplantgrowth.data.dto;
 
-import com.fasterxml.jackson.annotation.JacksonAnnotation;
-import com.fasterxml.jackson.annotation.JacksonInject;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.PostLoad;

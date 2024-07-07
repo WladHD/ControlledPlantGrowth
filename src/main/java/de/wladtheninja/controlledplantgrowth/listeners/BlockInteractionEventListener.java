@@ -48,7 +48,9 @@ public class BlockInteractionEventListener implements Listener {
             return;
         }
 
-        Bukkit.getLogger().log(Level.FINER, MessageFormat.format("Entity {0} changed {1} at {2} to {3}",
+        Bukkit.getLogger()
+                .log(Level.FINER,
+                     MessageFormat.format("Entity {0} changed {1} at {2} to {3}",
                                           event.getEntity().getName(),
                                           event.getBlock().getType(),
                                           event.getBlock().getLocation().toVector(),

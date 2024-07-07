@@ -26,16 +26,14 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor(access = PRIVATE)
 public class SettingsDAO {
 
+    @Getter(lazy = true)
+    private static final SettingsDAO instance = new SettingsDAO();
     @Getter
     @Setter
     private SettingsDTO currentSettings;
-
     @Getter
     @Setter
     private ConfigDTO currentConfig;
-
-    @Getter(lazy = true)
-    private static final SettingsDAO instance = new SettingsDAO();
 
     public List<SettingsDTO> getAllActiveSettings() {
         List<SettingsDTO> activeSettings = null;
