@@ -44,6 +44,8 @@ ideas of new functionality or just feedback.
 - Sweet Berry Bush
 - Cactus
 - Sugar Cane
+- Melons
+- Pumpkins
 
 ### In Development
 
