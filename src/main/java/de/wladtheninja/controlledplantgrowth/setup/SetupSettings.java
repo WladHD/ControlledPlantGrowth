@@ -86,6 +86,32 @@ public class SetupSettings implements Runnable {
                                                             (int) TimeUnit.SECONDS.convert(18, TimeUnit.MINUTES),
                                                             new int[0]));
 
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.CARROTS,
+                true,
+                (int) TimeUnit.SECONDS.convert(18, TimeUnit.MINUTES),
+                new int[0]));
+
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.NETHER_WART,
+                true,
+                (int) TimeUnit.SECONDS.convert(30, TimeUnit.MINUTES),
+                new int[0]));
+
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.SWEET_BERRY_BUSH,
+                true,
+                (int) TimeUnit.SECONDS.convert(18, TimeUnit.MINUTES),
+                new int[0]));
+
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.MELON,
+                false,
+                1,
+                new int[] {2, 2, 2, 4, 2, 2, 1, 3}));
+
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.PUMPKIN,
+                false,
+                1,
+                new int[] {2, 3, 1, 4, 2, 2, 1, 3}));
+
+
         // AIR == default setting parsed when none is found
         settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.AIR,
                                                             true,

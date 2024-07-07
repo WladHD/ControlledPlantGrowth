@@ -56,10 +56,10 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
         final List<Material> acceptedMats = ControlledPlantGrowthManager.getInstance()
                 .retrieveAllSupportedMaterialsForSettings();
 
-        String material = args[1];
+        String material = args[1].toUpperCase();
         String timeInSeconds = args[2];
         String timeType = args.length == 4 ?
-                args[3] :
+                args[3].toUpperCase() :
                 null;
 
         Material parsedMat;
