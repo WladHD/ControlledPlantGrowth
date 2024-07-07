@@ -16,7 +16,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
 
-@PlantCommandData(name = "info",
+@PlantCommandData(name = "forceload",
         onlyPlayerCMD = false,
         permission = "controlledplantgrowth.forceload",
         usage = "forceload",

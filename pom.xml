@@ -6,14 +6,15 @@
 
     <groupId>de.wladtheninja</groupId>
     <artifactId>ControlledPlantGrowth</artifactId>
-    <version>0.6-BETA</version>
+    <version>0.9</version>
     <packaging>jar</packaging>
 
     <name>ControlledPlantGrowth</name>
 
-    <description>A plugin for specifying sprout and maturing timers for plants. Plants will fully mature in the defined
-        amount, even if the player leaves the chunk. It is not a chunk loader, so it introduces less stress on the
-        server.
+    <description>A plugin for specifying maturing timers for plants.
+        Plants will fully mature in the defined
+        amount, even if the player leaves the chunk.
+        The plugin affects the real time growth as well as the offline growth, making it as immersive as possible.
     </description>
     <properties>
         <java.version>1.8</java.version>
