@@ -10,3 +10,9 @@ libraries:
   - org.hibernate.orm:hibernate-core:6.5.2.Final
   - com.fasterxml.jackson.core:jackson-core:2.17.1
   - com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.1
+commands:
+  controlledPlantGrowth:
+    description: Command to configure the ControlledPlantGrowth plugin
+    usage: /cpg help
+    aliases: [cpg]
+    permission: controlledplantgrowth.configure

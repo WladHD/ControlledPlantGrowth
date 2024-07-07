@@ -2,13 +2,17 @@ package de.wladtheninja.controlledplantgrowth.growables;
 
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
 import de.wladtheninja.controlledplantgrowth.growables.growthlogic.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.bukkit.Material;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ControlledPlantGrowthManager {
 
     @Getter(lazy = true)
@@ -23,30 +27,23 @@ public class ControlledPlantGrowthManager {
     @Getter
     private final IPlantChunkAnalyser chunkAnalyser = new PlantChunkAnalyser();
 
-    private final List<IPlantConcept> plantConceptInstances;
-
-    private ControlledPlantGrowthManager() {
-        plantConceptInstances = new ArrayList<>();
-    }
+    @Getter
+    private final HashMap<Material, IPlantConcept> hashMapRetrieve = new HashMap<>();
 
     public void registerPlantConceptInstance(IPlantConcept i) {
         if (i == null) {
             return;
         }
 
-        plantConceptInstances.add(i);
+        i.getAcceptedPlantMaterials().forEach(mat -> hashMapRetrieve.put(mat, i));
     }
 
     public IPlantConcept retrieveSuitedPlantConcept(Material m) {
-        return plantConceptInstances.stream().filter(pc -> pc.hasAcceptedMaterial(m)).findFirst().orElse(null);
+        return hashMapRetrieve.get(m);
     }
 
     public List<Material> retrieveAllSupportedMaterials() {
-        List<Material> ls = new ArrayList<>();
-
-        plantConceptInstances.forEach(pc -> ls.addAll(pc.getAcceptedPlantMaterials()));
-
-        return ls;
+        return new ArrayList<>(hashMapRetrieve.keySet());
     }
 
 }

@@ -13,7 +13,7 @@ public final class ControlledPlantGrowth extends JavaPlugin {
 
     public ControlledPlantGrowth() {
         setups = new Runnable[]{new SetupDatabase(), new SetupSettings(), new SetupPlantConcepts(),
-                new SetupEvents(this)};
+                new SetupEvents(this), new SetupCommands()};
     }
 
     @Override

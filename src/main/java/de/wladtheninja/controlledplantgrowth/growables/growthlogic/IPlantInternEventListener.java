@@ -2,6 +2,7 @@ package de.wladtheninja.controlledplantgrowth.growables.growthlogic;
 
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 public interface IPlantInternEventListener {
@@ -24,6 +25,8 @@ public interface IPlantInternEventListener {
             onArtificialGrowthEvent(ipc, potentialPlantRoot);
         }
     }
+
+    void onForcePlantsReloadByTypeEvent(Material material);
 
     void onArtificialGrowthEvent(IPlantConcept ipc,
                                  Block placedBlock);

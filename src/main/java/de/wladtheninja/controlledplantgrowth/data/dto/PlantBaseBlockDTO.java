@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 
 @Entity(name = "PlantBaseBlockDTO")
@@ -24,10 +25,13 @@ public class PlantBaseBlockDTO {
 
     private int currentPlantStage;
     private long timeNextGrowthStage;
+    private Material plantType;
+
 
     private transient Location location;
 
-    public PlantBaseBlockDTO(Location loc) {
+    public PlantBaseBlockDTO(Location loc,
+                             Material m) {
         this();
         if (loc.getWorld() == null) {
             throw new RuntimeException("World is null...");
@@ -38,6 +42,9 @@ public class PlantBaseBlockDTO {
         plantBaseBlockIdDTO.setZ(loc.getBlockZ());
         plantBaseBlockIdDTO.setWorldUID(loc.getWorld().getUID());
 
+        setPlantType(m);
+
+        // TODO remove ... seems like it was not needed
         plantBaseBlockChunkDTO.setXChunk(loc.getChunk().getX());
         plantBaseBlockChunkDTO.setZChunk(loc.getChunk().getZ());
 
@@ -48,6 +55,7 @@ public class PlantBaseBlockDTO {
         plantBaseBlockChunkDTO = new PlantBaseBlockChunkDTO();
         setCurrentPlantStage(-1);
         setTimeNextGrowthStage(-1);
+        setPlantType(Material.AIR);
     }
 
     @Transient

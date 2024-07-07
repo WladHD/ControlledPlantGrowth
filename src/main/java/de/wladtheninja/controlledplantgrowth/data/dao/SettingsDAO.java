@@ -100,6 +100,10 @@ public class SettingsDAO {
         return result;
     }
 
+    public void saveSettings() {
+        saveSettings(getCurrentSettings());
+    }
+
     public void saveSettings(SettingsDTO settings) {
         if (!getCurrentConfig().isLoadConfigFromDatabase()) {
             getCurrentConfig().setPlantGrowthSettings(settings);
@@ -110,6 +114,8 @@ public class SettingsDAO {
                 Bukkit.getLogger().log(Level.SEVERE, e.getMessage(), e);
                 return;
             }
+
+            return;
         }
 
         try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {

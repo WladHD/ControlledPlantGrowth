@@ -6,4 +6,6 @@ public interface IPlantChunkAnalyser {
 
     void checkForPlantsInChunk(Chunk c);
 
+    void chunkUnloaded(Chunk c);
+
 }

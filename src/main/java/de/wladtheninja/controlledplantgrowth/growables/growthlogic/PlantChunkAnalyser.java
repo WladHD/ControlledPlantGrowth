@@ -43,6 +43,12 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
         }
     }
 
+    @Override
+    public void chunkUnloaded(Chunk c) {
+        arrayDeque.removeIf(chunkSnapshot -> chunkSnapshot.getX() == c.getX() && chunkSnapshot.getZ() == c.getZ() &&
+                c.getWorld().getName().equals(chunkSnapshot.getWorldName()));
+    }
+
     public void reloadSupportedMaterials() {
         cacheSupportedBlockData = new ArrayList<>();
         cacheSupportedMaterials = new ArrayList<>();

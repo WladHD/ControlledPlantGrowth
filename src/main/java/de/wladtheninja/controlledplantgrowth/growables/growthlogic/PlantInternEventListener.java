@@ -10,11 +10,13 @@ import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptGro
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptLocation;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptMultiBlockGrowthVertical;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 
 public class PlantInternEventListener implements IPlantInternEventListener {
@@ -30,6 +32,23 @@ public class PlantInternEventListener implements IPlantInternEventListener {
     }
 
     @Override
+    public void onForcePlantsReloadByTypeEvent(Material material) {
+        List<PlantBaseBlockDTO> list = PlantBaseBlockDAO.getInstance().getPlantBaseBlocksByType(material);
+
+
+        list.forEach(s -> {
+            IPlantConcept ipc = ControlledPlantGrowthManager.getInstance().retrieveSuitedPlantConcept(material);
+            evaluateAgeOfPlantAndUpdateInDatabaseIfMatureDeleteAndContinueQueue(ipc, s);
+        });
+
+        Bukkit.getLogger()
+                .log(Level.INFO,
+                     MessageFormat.format("Plant {0} was successfully reloaded. {1} plants were affected.",
+                                          material,
+                                          list.size()));
+    }
+
+    @Override
     public void onArtificialGrowthEvent(IPlantConcept ipc,
                                         Block plantRoot) {
         onArtificialGrowthEvent(ipc, plantRoot, false);
@@ -39,6 +58,9 @@ public class PlantInternEventListener implements IPlantInternEventListener {
     public void onArtificialGrowthEvent(IPlantConcept ipc,
                                         Block plantRoot,
                                         boolean ifExistsIgnore) {
+        if (!plantRoot.getChunk().isLoaded()) {
+            return;
+        }
 
         if (ipc instanceof IPlantConceptLocation) {
             IPlantConceptLocation loc = (IPlantConceptLocation) ipc;
@@ -64,7 +86,9 @@ public class PlantInternEventListener implements IPlantInternEventListener {
         else {
             ControlledPlantGrowthManager.getInstance()
                     .getInternEventListener()
-                    .onArtificialGrowthUnregisteredPlantEvent(ipc, new PlantBaseBlockDTO(plantRoot.getLocation()));
+                    .onArtificialGrowthUnregisteredPlantEvent(ipc,
+                                                              new PlantBaseBlockDTO(plantRoot.getLocation(),
+                                                                                    plantRoot.getType()));
         }
     }
 
@@ -90,14 +114,13 @@ public class PlantInternEventListener implements IPlantInternEventListener {
                                          return;
                                      }
 
-                                     evaluateAgeOfPlantAndUpdateInDatabaseIfNotMatureDeleteAndContinueQueue(rescan,
-                                                                                                            pbb);
+                                     evaluateAgeOfPlantAndUpdateInDatabaseIfMatureDeleteAndContinueQueue(rescan, pbb);
                                      delayedTasks.remove(pbb.getPlantBaseBlockIdDTO());
                                  }, 1));
     }
 
-    public void evaluateAgeOfPlantAndUpdateInDatabaseIfNotMatureDeleteAndContinueQueue(IPlantConcept ipc,
-                                                                                       PlantBaseBlockDTO pbb) {
+    public void evaluateAgeOfPlantAndUpdateInDatabaseIfMatureDeleteAndContinueQueue(IPlantConcept ipc,
+                                                                                    PlantBaseBlockDTO pbb) {
         PlantDataUtils.fillPlantBaseBlockDTOWithCurrentAgeAndNextUpdateTimestamp(ipc, pbb);
 
         if (ifMatureDeleteAndReturnTrue(ipc, pbb)) {
@@ -178,7 +201,8 @@ public class PlantInternEventListener implements IPlantInternEventListener {
             ControlledPlantGrowthManager.getInstance()
                     .getInternEventListener()
                     .onArtificialHarvestUnregisteredPlantEvent(ipc,
-                                                               new PlantBaseBlockDTO(plantRoot.getLocation()),
+                                                               new PlantBaseBlockDTO(plantRoot.getLocation(),
+                                                                                     plantRoot.getType()),
                                                                plantRoot);
 
         }

@@ -31,15 +31,11 @@ public class DatabaseHibernateUtil {
 
         getLogger("org.hibernate").setLevel(Level.SEVERE);
 
-        Bukkit.getLogger().log(Level.FINER, "Setting up database 1");
-
         if (sessionFactory != null) {
             return;
         }
 
         try {
-            Bukkit.getLogger().log(Level.FINER, "Setting up database 2");
-
             Configuration configuration = new Configuration();
             configuration.addAnnotatedClass(SettingsDTO.class);
             configuration.addAnnotatedClass(PlantBaseBlockDTO.class);
@@ -48,8 +44,6 @@ public class DatabaseHibernateUtil {
 
             pluginConfig.getDatabaseHibernateSettings().forEach(configuration::setProperty);
 
-            Bukkit.getLogger().log(Level.FINER, "Setting up database 4");
-
             BootstrapServiceRegistry brs =
                     new BootstrapServiceRegistryBuilder().applyClassLoader(ControlledPlantGrowth.class.getClassLoader())
                             .enableAutoClose()
@@ -57,12 +51,9 @@ public class DatabaseHibernateUtil {
 
             StandardServiceRegistry serviceRegistry =
                     new StandardServiceRegistryBuilder(brs).applySettings(configuration.getProperties()).build();
-            Bukkit.getLogger().log(Level.FINER, "Setting up database 5");
 
             sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-            Bukkit.getLogger().log(Level.FINER, "Setting up database 6");
         } catch (Throwable t) {
-            Bukkit.getLogger().log(Level.FINER, "Setting up database 7");
             Bukkit.getLogger().log(Level.SEVERE, t.getMessage(), t);
         }
     }

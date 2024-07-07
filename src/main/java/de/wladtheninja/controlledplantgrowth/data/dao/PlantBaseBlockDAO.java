@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -37,6 +38,26 @@ public class PlantBaseBlockDAO {
             query.setParameter("xChunk", c.getX());
             query.setParameter("zChunk", c.getZ());
             query.setParameter("worldUID", c.getWorld().getUID());
+
+            retrievedBlocks = query.getResultList();
+
+            transaction.commit();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return retrievedBlocks;
+    }
+
+    public List<PlantBaseBlockDTO> getPlantBaseBlocksByType(Material m) {
+        List<PlantBaseBlockDTO> retrievedBlocks = null;
+
+        try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            String hql = "FROM PlantBaseBlockDTO WHERE plantType = :plant";
+            Query<PlantBaseBlockDTO> query = session.createQuery(hql, PlantBaseBlockDTO.class);
+            query.setParameter("plant", m);
 
             retrievedBlocks = query.getResultList();
 
@@ -150,9 +171,6 @@ public class PlantBaseBlockDAO {
             pbb = query.getResultList();
 
             transaction.commit();
-            Bukkit.getLogger()
-                    .log(Level.FINER, MessageFormat.format("Retrieved {0} records for past updates", pbb.size()));
-
         } catch (Exception exception) {
             exception.printStackTrace();
             return null;
@@ -182,9 +200,6 @@ public class PlantBaseBlockDAO {
 
 
             transaction.commit();
-            Bukkit.getLogger()
-                    .log(Level.FINER, MessageFormat.format("Retrieved {0} records for future updates", pbb.size()));
-
         } catch (Exception exception) {
             exception.printStackTrace();
             return null;
