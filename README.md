@@ -3,9 +3,20 @@
 Do you remember the times when you planted all your seeds, went on a long mining spree and came back to the same
 progress at what you left? This plugin combats that.
 
-This is a project that I'm working on mainly for my use cases. It is fairly new and I expect myself to implement the
-main types of growable plants.
+My goal is to develop a plugin that can force plants to be grown in a specific timespan.
+**It is not dependent on solely the player;
+Plants placed by villagers and plants in general will be managed too.** 
+
+Plants with multiple age levels will reflect those changes on each level as well.
+So you won't have a wheat field that instantly grows, which is not immersive.
+The change will influence all age levels, too.
+
+Here is a gif of how you can adjust the grow time and its effects.
+The default setting of 20 minutes was changed to 5 seconds.
 ![GIF of planting potatoes and showcasing the growth setting](https://github.com/WladHD/ControlledPlantGrowth/blob/assets/assets/ezgif-7-4abf2ad084.gif?raw=true)
+
+That being said, if someone stumbles upon this site and actually tries my plugin, feel free to open a new issue with
+ideas of new functionality or just feedback.
 
 ### Tested on Server Software
 
@@ -28,6 +39,8 @@ main types of growable plants.
 - Wheat
 - Beetroot
 - Potatoes
+- Carrots
+- Sweet Berry Bush
 - Cactus
 - Sugar Cane
 
@@ -85,6 +98,47 @@ plantGrowthSettings:
       useTimeForPlantMature: true
       timeForPlantMature: 1080
       timeForNextPlantGrowthInSteps: [ ]
+    - material: "CARROTS"
+      useTimeForPlantMature: true
+      timeForPlantMature: 1080
+      timeForNextPlantGrowthInSteps: [ ]
+    - material: "NETHER_WART"
+      useTimeForPlantMature: true
+      timeForPlantMature: 1800
+      timeForNextPlantGrowthInSteps: [ ]
+    - material: "SWEET_BERRY_BUSH"
+      useTimeForPlantMature: true
+      timeForPlantMature: 1080
+      timeForNextPlantGrowthInSteps: [ ]
+      # EXAMPLE OF ATTACHED PLANT WITH NON-LINEAR GROWTH
+      # (melon has 8 age steps and one where the fruit is grown, so in total 9)
+      # ERGO: we need 8 entries of times (last time is when the root is mature 
+      # and a melon block wants to spawn)
+    - material: "MELON_STEM"
+      useTimeForPlantMature: false
+      timeForPlantMature: 1
+      timeForNextPlantGrowthInSteps:
+        - 120
+        - 120
+        - 120
+        - 240
+        - 120
+        - 120
+        - 60
+        - 180
+    # same concept as in MELON_STEM
+    - material: "PUMPKIN_STEM"
+      useTimeForPlantMature: false
+      timeForPlantMature: 1
+      timeForNextPlantGrowthInSteps:
+        - 120
+        - 180
+        - 60
+        - 240
+        - 120
+        - 120
+        - 60
+        - 180
     # DEFAULT SETTING
     - material: "AIR"
       useTimeForPlantMature: true
@@ -106,43 +160,6 @@ databaseHibernateSettings:
   hibernate.connection.password: ""
   hibernate.connection.username: "sa"
 ```
-
-## Personal Note
-
-My goal is to develop a plugin that can adjust growing rates. The player can be online as well as offline or
-outside the chunk without using drastic measures such as chunk loading... they (iirc) don't send random ticks, which
-are the reason for vanilla plant growth. :D
-
-That being said, if someone stumbles upon this site and actually tries my plugin, feel free to open a new Issue with
-ideas of new functionality or just feedback.
-
-## Personal Programming Road
-
-I quite like the general structure of this project. Plants can be put together using different concepts, making new
-plant types fairly simple to implement.
-~~The most overhead comes from the massive chungus of a database I added as dependency (for mainly the reason of not
-wanting to do it myself). Don't get me wrong, Hibernate ORM with a H2 Database is bonkers. The problem lies in the
-size of the finished .jar that exceeds 20 MB.
-Although I don't dislike FatJars I don't think it is in the nature of Spigot Plugins to be that big.
-Trying out the feature of `libraries` in `plugin.yml` did sadly not work, otherwise I wouldn't be even complaining here.
-Maybe because of my server software (haven't tested it rigorously yet) Hibernates new ClassLoader (because it's a
-standalone .jar now) for the love of god can't detect my
-DTOClasses. Reverting the change and shading it into my plugin resolves the problem instantly. After 2 hours of
-torturing myself with changing pointless stuff, I came to
-the conclusion to
-postpone this "problem". I'll firstly focus on the actual features, before implementing a lightweight database or
-outsourcing the big dependencies to the server software.~~
-
-FINALLY!!!
-I found a way to relocate the loading of Hibernate the server software making my plugin desirably slim.
-:)
-The thread https://hub.spigotmc.org/jira/si/jira.issueviews:issue-html/SPIGOT-6569/SPIGOT-6569.html helped me out.
-A simple BootstrapServiceRegistry was all it took for Hibernate to locate my smol classes.
-Here I would like to make an honorable mention to https://github.com/Byteflux/libby. In the end, I decided against its
-integration, but still enjoyed the functionality.
-Maybe there will be a time when I rethink that decision, but for now Spigots/Papers lib loader seems to work fine.
-With the newfound certainty, that I will keep the Hibernate framework, I will adjust the current database classes to be
-more presentable and follow the normal conventions.
 
 # LICENSE
 

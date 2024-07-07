@@ -18,11 +18,6 @@ public class SetupDebugLogger implements Runnable {
         consoleHandler.setLevel(Level.ALL);
         consoleHandler.setFormatter(new CustomFormatter());
 
-        Handler consoleHandler2 = new ConsoleHandler();
-        consoleHandler.setLevel(Level.SEVERE);
-        consoleHandler.setFormatter(new CustomFormatter());
-
-        Bukkit.getLogger().addHandler(consoleHandler2);
         Bukkit.getLogger().addHandler(consoleHandler);
 
 

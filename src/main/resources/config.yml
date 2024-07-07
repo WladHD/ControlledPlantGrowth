@@ -1,30 +1,72 @@
 # THIS FILE IS GENERATED AND DIRECT CHANGES WILL NOT AFFECT THE PLUGIN.
 # CHANGE THE config.yml FILE UNDER plugins/ControlledPlantGrowth/config.yml INSTEAD
 loadConfigFromDatabase: false
-enableDebugLog: true # DEBUG ENABLED
+enableDebugLog: false
 plantGrowthSettings:
   id: null
   active: true
-  showInfoWhenDefaultSettingIsUsed: true
+  disableNaturalGrowth: false
+  showInfoWhenDefaultSettingIsUsed: false
+  useAggressiveChunkAnalysisAndLookForUnregisteredPlants: true
   plantGrowthList:
     - material: "WHEAT"
       useTimeForPlantMature: false
-      timeForPlantMature: 10
+      timeForPlantMature: 1
       timeForNextPlantGrowthInSteps:
-        - 1
-        - 2
-        - 3
-        - 4
-        - 5
-        - 6
-        - 7
+        - 180
+        - 180
+        - 180
+        - 240
+        - 120
+        - 120
+        - 60
     - material: "BEETROOTS"
       useTimeForPlantMature: true
-      timeForPlantMature: 120
+      timeForPlantMature: 1080
       timeForNextPlantGrowthInSteps: []
+    - material: "POTATOES"
+      useTimeForPlantMature: true
+      timeForPlantMature: 1080
+      timeForNextPlantGrowthInSteps: []
+    - material: "CARROTS"
+      useTimeForPlantMature: true
+      timeForPlantMature: 1080
+      timeForNextPlantGrowthInSteps: []
+    - material: "NETHER_WART"
+      useTimeForPlantMature: true
+      timeForPlantMature: 1800
+      timeForNextPlantGrowthInSteps: []
+    - material: "SWEET_BERRY_BUSH"
+      useTimeForPlantMature: true
+      timeForPlantMature: 1080
+      timeForNextPlantGrowthInSteps: []
+    - material: "MELON_STEM"
+      useTimeForPlantMature: false
+      timeForPlantMature: 1
+      timeForNextPlantGrowthInSteps:
+        - 120
+        - 120
+        - 120
+        - 240
+        - 120
+        - 120
+        - 60
+        - 180
+    - material: "PUMPKIN_STEM"
+      useTimeForPlantMature: false
+      timeForPlantMature: 1
+      timeForNextPlantGrowthInSteps:
+        - 120
+        - 180
+        - 60
+        - 240
+        - 120
+        - 120
+        - 60
+        - 180
     - material: "AIR"
       useTimeForPlantMature: true
-      timeForPlantMature: 30
+      timeForPlantMature: 1200
       timeForNextPlantGrowthInSteps: []
   maximumAmountOfPlantsInATimeWindowCluster: 1
   maximumTimeWindowInMillisecondsForPlantsToBeClustered: 1
@@ -33,6 +75,5 @@ databaseHibernateSettings:
   hibernate.connection.url: "jdbc:h2:./plugins/ControlledPlantGrowth/data/db;AUTO_SERVER=TRUE"
   hibernate.hbm2ddl.auto: "update"
   hibernate.dialect: "org.hibernate.dialect.H2Dialect"
-  hibernate.show_sql: "true" # DEBUG ENABLED
   hibernate.connection.password: ""
   hibernate.connection.username: "sa"

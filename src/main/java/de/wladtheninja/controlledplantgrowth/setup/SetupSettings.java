@@ -64,64 +64,39 @@ public class SetupSettings implements Runnable {
         ArrayList<SettingsPlantGrowthDTO> settingsPlantGrowths = new ArrayList<>();
 
         // grow wheat in 10 seconds
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.WHEAT,
-                                                            false,
-                                                            1,
-                                                            new int[]{
-                                                                    (int) TimeUnit.SECONDS.convert(3, TimeUnit.MINUTES),
-                                                                    (int) TimeUnit.SECONDS.convert(3, TimeUnit.MINUTES),
-                                                                    (int) TimeUnit.SECONDS.convert(3, TimeUnit.MINUTES),
-                                                                    (int) TimeUnit.SECONDS.convert(4, TimeUnit.MINUTES),
-                                                                    (int) TimeUnit.SECONDS.convert(2, TimeUnit.MINUTES),
-                                                                    (int) TimeUnit.SECONDS.convert(2, TimeUnit.MINUTES),
-                                                                    (int) TimeUnit.SECONDS.convert(1,
-                                                                                                   TimeUnit.MINUTES)}));
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.BEETROOTS,
-                                                            true,
-                                                            (int) TimeUnit.SECONDS.convert(18, TimeUnit.MINUTES),
-                                                            new int[0]));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.WHEAT, false, 1, new int[]{
+                min2sec(3), min2sec(3), min2sec(3), min2sec(4), min2sec(2), min2sec(2), min2sec(1)
+        }));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.BEETROOTS, true, min2sec(18), new int[0]));
 
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.POTATOES,
-                                                            true,
-                                                            (int) TimeUnit.SECONDS.convert(18, TimeUnit.MINUTES),
-                                                            new int[0]));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.POTATOES, true, min2sec(18), new int[0]));
 
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.CARROTS,
-                true,
-                (int) TimeUnit.SECONDS.convert(18, TimeUnit.MINUTES),
-                new int[0]));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.CARROTS, true, min2sec(18), new int[0]));
 
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.NETHER_WART,
-                true,
-                (int) TimeUnit.SECONDS.convert(30, TimeUnit.MINUTES),
-                new int[0]));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.NETHER_WART, true, min2sec(30), new int[0]));
 
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.SWEET_BERRY_BUSH,
-                true,
-                (int) TimeUnit.SECONDS.convert(18, TimeUnit.MINUTES),
-                new int[0]));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.SWEET_BERRY_BUSH, true, min2sec(18), new int[0]));
 
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.MELON,
-                false,
-                1,
-                new int[] {2, 2, 2, 4, 2, 2, 1, 3}));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.MELON_STEM, false, 1, new int[]{
+                min2sec(2), min2sec(2), min2sec(2), min2sec(4), min2sec(2), min2sec(2), min2sec(1), min2sec(3)
+        }));
 
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.PUMPKIN,
-                false,
-                1,
-                new int[] {2, 3, 1, 4, 2, 2, 1, 3}));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.PUMPKIN_STEM, false, 1, new int[]{
+                min2sec(2), min2sec(3), min2sec(1), min2sec(4), min2sec(2), min2sec(2), min2sec(1), min2sec(3)
+        }));
 
 
         // AIR == default setting parsed when none is found
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.AIR,
-                                                            true,
-                                                            (int) TimeUnit.SECONDS.convert(20, TimeUnit.MINUTES),
-                                                            new int[0]));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.AIR, true, min2sec(20), new int[0]));
 
         defaultSettings.setPlantGrowthList(settingsPlantGrowths);
 
 
         return defaultSettings;
+    }
+
+    public static int min2sec(int min) {
+        return (int) TimeUnit.SECONDS.convert(min, TimeUnit.MINUTES);
     }
 
     @Override
