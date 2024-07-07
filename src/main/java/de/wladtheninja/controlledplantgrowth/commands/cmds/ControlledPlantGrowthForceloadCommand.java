@@ -28,8 +28,7 @@ public class ControlledPlantGrowthForceloadCommand implements IPlantCommandExecu
                              @NonNull String label,
                              String @NonNull [] args) {
 
-        if (SettingsDAO.getInstance().getCurrentSettings().isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants() &&
-                args.length != 2 && !args[1].equalsIgnoreCase("confirm")) {
+        if (SettingsDAO.getInstance().getCurrentSettings().isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants() && args.length >= 2 && !args[1].equalsIgnoreCase("confirm")) {
             sender.sendMessage("Plugin already checks all chunks on load due to the setting " +
                                        "useAggressiveChunkAnalysisAndLookForUnregisteredPlants " +
                                        "in config is true.");
