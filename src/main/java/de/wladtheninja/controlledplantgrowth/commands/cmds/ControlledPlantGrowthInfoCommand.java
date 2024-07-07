@@ -26,7 +26,7 @@ public class ControlledPlantGrowthInfoCommand implements IPlantCommandExecutor {
         SettingsDAO.getInstance()
                 .getCurrentSettings()
                 .getPlantGrowthList()
-                .forEach(pgl -> sender.sendMessage(MessageFormat.format("{1} - {2}s",
+                .forEach(pgl -> sender.sendMessage(MessageFormat.format("{0} - {1}s",
                                                                         pgl.getMaterial(),
                                                                         pgl.isUseTimeForPlantMature() ?
                                                                                 pgl.getTimeForPlantMature() :
