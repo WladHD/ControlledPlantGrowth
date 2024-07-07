@@ -53,7 +53,8 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
             return false;
         }
 
-        final List<Material> acceptedMats = ControlledPlantGrowthManager.getInstance().retrieveAllSupportedMaterials();
+        final List<Material> acceptedMats = ControlledPlantGrowthManager.getInstance()
+                .retrieveAllSupportedMaterialsForSettings();
 
         String material = args[1];
         String timeInSeconds = args[2];
@@ -142,7 +143,7 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
                                       String[] args) {
 
         final List<String> acceptedMats = ControlledPlantGrowthManager.getInstance()
-                .retrieveAllSupportedMaterials()
+                .retrieveAllSupportedMaterialsForSettings()
                 .stream()
                 .map(Enum::toString)
                 .collect(Collectors.toList());

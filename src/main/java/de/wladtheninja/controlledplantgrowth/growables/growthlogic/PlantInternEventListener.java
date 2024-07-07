@@ -5,10 +5,7 @@ import de.wladtheninja.controlledplantgrowth.data.dao.PlantBaseBlockDAO;
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockIdDTO;
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptGrowthInformation;
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptLocation;
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptMultiBlockGrowthVertical;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -62,6 +59,14 @@ public class PlantInternEventListener implements IPlantInternEventListener {
             return;
         }
 
+        if (ipc instanceof IPlantAttachedFruit) {
+            IPlantAttachedFruit iPlantAttachedFruit = (IPlantAttachedFruit) ipc;
+            if (iPlantAttachedFruit.getFruitMaterial() == plantRoot.getType() &&
+                    iPlantAttachedFruit.getPlantRootBlockByFruitBlock(plantRoot) == null) {
+                return;
+            }
+        }
+
         if (ipc instanceof IPlantConceptLocation) {
             IPlantConceptLocation loc = (IPlantConceptLocation) ipc;
             plantRoot = loc.getPlantRootBlock(plantRoot);
@@ -84,11 +89,16 @@ public class PlantInternEventListener implements IPlantInternEventListener {
                     .onArtificialGrowthRegisteredPlantEvent(ipc, registeredPlant);
         }
         else {
+            if (ipc instanceof IPlantConceptGrowthInformation &&
+                    ((IPlantConceptGrowthInformation) ipc).isMature(plantRoot)) {
+                return;
+            }
+
             ControlledPlantGrowthManager.getInstance()
                     .getInternEventListener()
                     .onArtificialGrowthUnregisteredPlantEvent(ipc,
-                                                              new PlantBaseBlockDTO(plantRoot.getLocation(),
-                                                                                    plantRoot.getType()));
+                            new PlantBaseBlockDTO(plantRoot.getLocation(),
+                                    plantRoot.getType()));
         }
     }
 
@@ -142,16 +152,22 @@ public class PlantInternEventListener implements IPlantInternEventListener {
 
         IPlantConceptLocation loc = (IPlantConceptLocation) ipc;
 
+        if (ipc instanceof IPlantAttachedFruit) {
+            onPlantPlayerRescanEventAsync(pbb);
+            return;
+        }
+
+
         if (brokenBlock.equals(loc.getPlantRootBlock(brokenBlock))) {
             boolean wasDeleted = PlantBaseBlockDAO.getInstance().deletePlantBaseBlock(brokenBlock);
             Bukkit.getLogger()
                     .log(Level.FINER,
-                         MessageFormat.format("{0} at {1} {2} deleted.",
-                                              brokenBlock.getType(),
-                                              brokenBlock.getLocation().toVector(),
-                                              wasDeleted ?
-                                                      "was successfully" :
-                                                      "has failed to be"));
+                            MessageFormat.format("{0} at {1} {2} deleted.",
+                                    brokenBlock.getType(),
+                                    brokenBlock.getLocation().toVector(),
+                                    wasDeleted ?
+                                            "was successfully" :
+                                            "has failed to be"));
 
             return;
         }

@@ -116,7 +116,6 @@ public class BlockInteractionEventListener implements Listener {
         ControlledPlantGrowthManager.getInstance()
                 .getInternEventListener()
                 .onArtificialGrowthHarvestInlineEvent(ipc, event.getBlock(), true);
-
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

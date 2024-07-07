@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 public abstract class PlantTypeAgeingOneBlock extends PlantTypeBasic implements IPlantConceptAge,
@@ -59,7 +60,8 @@ public abstract class PlantTypeAgeingOneBlock extends PlantTypeBasic implements 
     @Override
     public int getMaximumAge(Block b) {
         if (!(b.getBlockData() instanceof Ageable)) {
-            throw new RuntimeException("Block is registered as Ageable, yet does not inherit Ageable interface.");
+            throw new RuntimeException(MessageFormat.format("Block {0} is provided as Ageable, yet does not inherit" +
+                    " Ageable interface.", b.getType()));
         }
 
         final Ageable ag = (Ageable) b.getBlockData();

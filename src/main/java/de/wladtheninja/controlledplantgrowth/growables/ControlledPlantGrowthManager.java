@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.bukkit.Material;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,16 +31,28 @@ public class ControlledPlantGrowthManager {
     @Getter
     private final HashMap<Material, IPlantConcept> hashMapRetrieve = new HashMap<>();
 
+    @Getter
+    private final List<Material> materialsForSettings = new ArrayList<>();
+
+    public void registerPlantConceptInstance(IPlantConcept... i) {
+        Arrays.stream(i).forEach(this::registerPlantConceptInstance);
+    }
+
     public void registerPlantConceptInstance(IPlantConcept i) {
         if (i == null) {
             return;
         }
 
         i.getAcceptedPlantMaterials().forEach(mat -> hashMapRetrieve.put(mat, i));
+        materialsForSettings.addAll(i.getAcceptedSettingPlantMaterials());
     }
 
     public IPlantConcept retrieveSuitedPlantConcept(Material m) {
         return hashMapRetrieve.get(m);
+    }
+
+    public List<Material> retrieveAllSupportedMaterialsForSettings() {
+        return materialsForSettings;
     }
 
     public List<Material> retrieveAllSupportedMaterials() {

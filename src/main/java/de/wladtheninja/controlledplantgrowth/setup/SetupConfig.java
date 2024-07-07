@@ -27,7 +27,7 @@ public class SetupConfig implements Runnable {
         Bukkit.getLogger().log(Level.FINER, "Config.yml does not exist, creating one.");
 
         ConfigDTO configDTO = new ConfigDTO();
-        configDTO.setEnableDebugLog(false);
+        configDTO.setEnableDebugLog(true);
         configDTO.setLoadConfigFromDatabase(false);
         configDTO.setPlantGrowthSettings(SetupSettings.getDefaultSettings());
         configDTO.setDatabaseHibernateSettings(getDefaultHibernateSettings(pluginDirectory));

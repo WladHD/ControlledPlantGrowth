@@ -8,6 +8,10 @@ public interface IPlantConcept {
 
     List<Material> getAcceptedPlantMaterials();
 
+    default List<Material> getAcceptedSettingPlantMaterials() {
+        return getAcceptedPlantMaterials();
+    }
+
     void addAcceptedPlantMaterial(Material... mat);
 
     default boolean hasAcceptedMaterial(Material mat) {
