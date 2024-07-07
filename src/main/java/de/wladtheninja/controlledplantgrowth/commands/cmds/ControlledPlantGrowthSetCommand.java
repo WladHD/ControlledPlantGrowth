@@ -69,21 +69,21 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
             parsedMat = Material.valueOf(material);
         } catch (IllegalArgumentException e) {
             sender.sendMessage(MessageFormat.format("{0} is not a valid material. Check for typos.", material));
-            return false;
+            return true;
         }
 
         if (!acceptedMats.contains(parsedMat)) {
             sender.sendMessage(MessageFormat.format("{0} is not a supported material. Supported materials are: ",
                                                     material,
                                                     Arrays.toString(acceptedMats.toArray())));
-            return false;
+            return true;
         }
 
         try {
             parsedTime = Integer.parseInt(timeInSeconds);
         } catch (Exception ex) {
             sender.sendMessage(MessageFormat.format("{0} is not a number.", parsedTime));
-            return false;
+            return true;
         }
 
         if (timeType != null) {
@@ -92,7 +92,7 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
             } catch (IllegalArgumentException e) {
                 sender.sendMessage(MessageFormat.format("{0} is not a valid time unit. Supported time units are:",
                                                         Arrays.toString(acceptedTimeUnits.toArray())));
-                return false;
+                return true;
             }
         }
 

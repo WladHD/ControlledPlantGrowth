@@ -28,19 +28,21 @@ public class ControlledPlantGrowthForceloadCommand implements IPlantCommandExecu
                              @NonNull String label,
                              String @NonNull [] args) {
 
-        if (SettingsDAO.getInstance().getCurrentSettings().isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants() && args.length >= 2 && !args[1].equalsIgnoreCase("confirm")) {
+        if (SettingsDAO.getInstance().getCurrentSettings().isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants() &&
+                (args.length != 2 || !args[1].equalsIgnoreCase("confirm"))) {
             sender.sendMessage("Plugin already checks all chunks on load due to the setting " +
                                        "useAggressiveChunkAnalysisAndLookForUnregisteredPlants " +
                                        "in config is true.");
             sender.sendMessage(
-                    "Rescan is most likely redundant. Do you still want to continue? Then click the command below or " +
-                            "type it.");
+                    "Rescan is most likely redundant. Do you still want to continue?");
 
             TextComponent message = new TextComponent(MessageFormat.format("/{0} forceload confirm", label));
             message.setColor(ChatColor.RED);
             message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                                                  MessageFormat.format("{0} forceload confirm", label)));
-            return false;
+
+            sender.spigot().sendMessage(message);
+            return true;
         }
 
         Bukkit.getWorlds()
