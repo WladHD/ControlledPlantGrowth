@@ -57,13 +57,15 @@ public class SetupSettings implements Runnable {
         defaultSettings.setMaximumAmountOfPlantsInATimeWindowCluster(1); // TODO remove... testing sanitization
         defaultSettings.setMaximumTimeWindowInMillisecondsForPlantsToBeClustered(1);
         defaultSettings.setActive(true);
-        defaultSettings.setShowInfoWhenDefaultSettingIsUsed(true);
+        defaultSettings.setUseAggressiveChunkAnalysisAndLookForUnregisteredPlants(true);
+        defaultSettings.setShowInfoWhenDefaultSettingIsUsed(false);
 
         ArrayList<SettingsPlantGrowthDTO> settingsPlantGrowths = new ArrayList<>();
 
         // grow wheat in 10 seconds
         settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.WHEAT, false, 10, new int[]{1, 2, 3, 4, 5, 6, 7}));
         settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.BEETROOTS, true, 60 * 2, new int[0]));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.POTATOES, true, 20, new int[0]));
 
         // AIR == default setting parsed when none is found
         settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.AIR, true, 30, new int[0]));

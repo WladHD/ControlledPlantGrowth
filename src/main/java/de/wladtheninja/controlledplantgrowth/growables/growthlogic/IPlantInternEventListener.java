@@ -28,6 +28,9 @@ public interface IPlantInternEventListener {
     void onArtificialGrowthEvent(IPlantConcept ipc,
                                  Block placedBlock);
 
+    void onArtificialGrowthEvent(IPlantConcept ipc,
+                                 Block placedBlock, boolean ifExistsIgnore);
+
     void onArtificialGrowthUnregisteredPlantEvent(IPlantConcept ipc,
                                                   PlantBaseBlockDTO pbb);
 

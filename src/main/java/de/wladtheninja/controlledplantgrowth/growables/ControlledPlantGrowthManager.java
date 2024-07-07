@@ -1,10 +1,7 @@
 package de.wladtheninja.controlledplantgrowth.growables;
 
-import de.wladtheninja.controlledplantgrowth.growables.growthlogic.IPlantClockwork;
-import de.wladtheninja.controlledplantgrowth.growables.growthlogic.IPlantInternEventListener;
-import de.wladtheninja.controlledplantgrowth.growables.growthlogic.PlantClockwork;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
-import de.wladtheninja.controlledplantgrowth.growables.growthlogic.PlantInternEventListener;
+import de.wladtheninja.controlledplantgrowth.growables.growthlogic.*;
 import lombok.Getter;
 import org.bukkit.Material;
 
@@ -22,6 +19,9 @@ public class ControlledPlantGrowthManager {
 
     @Getter
     private final IPlantInternEventListener internEventListener = new PlantInternEventListener();
+
+    @Getter
+    private final IPlantChunkAnalyser chunkAnalyser = new PlantChunkAnalyser();
 
     private final List<IPlantConcept> plantConceptInstances;
 
@@ -41,8 +41,12 @@ public class ControlledPlantGrowthManager {
         return plantConceptInstances.stream().filter(pc -> pc.hasAcceptedMaterial(m)).findFirst().orElse(null);
     }
 
-    public boolean hasSuitedPlantConcept(Material m) {
-        return plantConceptInstances.stream().anyMatch(pc -> pc.hasAcceptedMaterial(m));
+    public List<Material> retrieveAllSupportedMaterials() {
+        List<Material> ls = new ArrayList<>();
+
+        plantConceptInstances.forEach(pc -> ls.addAll(pc.getAcceptedPlantMaterials()));
+
+        return ls;
     }
 
 }

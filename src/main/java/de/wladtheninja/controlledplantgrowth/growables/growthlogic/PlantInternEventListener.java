@@ -32,12 +32,24 @@ public class PlantInternEventListener implements IPlantInternEventListener {
     @Override
     public void onArtificialGrowthEvent(IPlantConcept ipc,
                                         Block plantRoot) {
+        onArtificialGrowthEvent(ipc, plantRoot, false);
+    }
+
+    @Override
+    public void onArtificialGrowthEvent(IPlantConcept ipc,
+                                        Block plantRoot,
+                                        boolean ifExistsIgnore) {
+
         if (ipc instanceof IPlantConceptLocation) {
             IPlantConceptLocation loc = (IPlantConceptLocation) ipc;
             plantRoot = loc.getPlantRootBlock(plantRoot);
         }
 
         PlantBaseBlockDTO registeredPlant = PlantBaseBlockDAO.getInstance().getPlantBaseBlockByBlock(plantRoot);
+
+        if (ifExistsIgnore && registeredPlant != null) {
+            return;
+        }
 
         if (registeredPlant != null) {
             Bukkit.getLogger()

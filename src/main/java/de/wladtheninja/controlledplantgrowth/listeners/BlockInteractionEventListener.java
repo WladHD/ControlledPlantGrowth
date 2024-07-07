@@ -16,6 +16,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.event.server.ServerLoadEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 
 import java.text.MessageFormat;
 import java.util.logging.Level;
@@ -31,14 +32,23 @@ public class BlockInteractionEventListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
+    public void onChunkLoad(ChunkLoadEvent event) {
+        if (!SettingsDAO.getInstance()
+                .getCurrentSettings()
+                .isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants()) {
+            return;
+        }
+
+        ControlledPlantGrowthManager.getInstance().getChunkAnalyser().checkForPlantsInChunk(event.getChunk());
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onEntityChangeBlockEvent(EntityChangeBlockEvent event) {
         if (event.getEntity() instanceof Player) {
             return;
         }
 
-        Bukkit.getLogger()
-                .log(Level.FINER,
-                     MessageFormat.format("Entity {0} changed {1} at {2} to {3}",
+        Bukkit.getLogger().log(Level.FINER, MessageFormat.format("Entity {0} changed {1} at {2} to {3}",
                                           event.getEntity().getName(),
                                           event.getBlock().getType(),
                                           event.getBlock().getLocation().toVector(),

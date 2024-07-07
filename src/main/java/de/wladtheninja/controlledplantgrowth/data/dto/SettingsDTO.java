@@ -22,6 +22,8 @@ public class SettingsDTO implements Serializable {
 
     private boolean showInfoWhenDefaultSettingIsUsed;
 
+    private boolean useAggressiveChunkAnalysisAndLookForUnregisteredPlants;
+
     @ElementCollection(fetch = FetchType.EAGER)
     private List<SettingsPlantGrowthDTO> plantGrowthList;
 
