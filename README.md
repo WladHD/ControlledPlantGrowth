@@ -13,6 +13,7 @@ The change will influence all age levels, too.
 
 Here is a gif of how you can adjust the grow time and its effects.
 The default setting of 20 minutes was changed to 5 seconds.
+
 ![GIF of planting potatoes and showcasing the growth setting](https://github.com/WladHD/ControlledPlantGrowth/blob/assets/assets/ezgif-7-4abf2ad084.gif?raw=true)
 
 That being said, if someone stumbles upon this site and actually tries my plugin, feel free to open a new issue with
