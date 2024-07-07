@@ -5,6 +5,7 @@ progress at what you left? This plugin combats that.
 
 This is a project that I'm working on mainly for my use cases. It is fairly new and I expect myself to implement the
 main types of growable plants.
+![GIF of planting potatoes and showcasing the growth setting](https://github.com/WladHD/ControlledPlantGrowth/blob/assets/assets/ezgif-7-4abf2ad084.gif?raw=true)
 
 ## Features
 
