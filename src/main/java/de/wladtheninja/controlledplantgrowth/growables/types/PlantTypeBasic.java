@@ -1,8 +1,8 @@
 package de.wladtheninja.controlledplantgrowth.growables.types;
 
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptBasic;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptGrowthConstraints;
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptLocation;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.basic.IPlantConceptLocation;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.constraints.IPlantGrowthConstraint;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantConstraintViolationException;
 import org.bukkit.Material;
@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class PlantTypeBasic implements IPlantConcept, IPlantConceptGrowthConstraints, IPlantConceptLocation {
+public abstract class PlantTypeBasic implements IPlantConceptBasic, IPlantConceptGrowthConstraints, IPlantConceptLocation {
     private final ArrayList<IPlantGrowthConstraint> constraints;
     private final List<Material> acceptedMaterials;
 
@@ -72,7 +72,7 @@ public abstract class PlantTypeBasic implements IPlantConcept, IPlantConceptGrow
     }
 
     @Override
-    public void handleConstraintCheckOrElseThrowError(IPlantConcept ipc,
+    public void handleConstraintCheckOrElseThrowError(IPlantConceptBasic ipc,
                                                       Block b)
             throws PlantConstraintViolationException {
         List<IPlantGrowthConstraint> violations = checkGrowthConstraintViolations(b);

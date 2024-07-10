@@ -1,4 +1,4 @@
-package de.wladtheninja.controlledplantgrowth.data.dto;
+package de.wladtheninja.controlledplantgrowth.data.dto.embedded;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

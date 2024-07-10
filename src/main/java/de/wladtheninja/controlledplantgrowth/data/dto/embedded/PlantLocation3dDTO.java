@@ -1,4 +1,4 @@
-package de.wladtheninja.controlledplantgrowth.data.dto;
+package de.wladtheninja.controlledplantgrowth.data.dto.embedded;
 
 import com.google.common.base.Objects;
 import jakarta.persistence.Embeddable;
@@ -13,7 +13,7 @@ import java.util.UUID;
 @Embeddable
 @Getter
 @Setter
-public class PlantBaseBlockIdDTO implements Serializable {
+public class PlantLocation3dDTO implements Serializable {
     private UUID worldUID;
     private int x;
     private int y;
@@ -31,11 +31,11 @@ public class PlantBaseBlockIdDTO implements Serializable {
 
     @Transient
     public boolean equals(Object o) {
-        if (!(o instanceof PlantBaseBlockIdDTO)) {
+        if (!(o instanceof PlantLocation3dDTO)) {
             return false;
         }
 
-        final PlantBaseBlockIdDTO ppb = (PlantBaseBlockIdDTO) o;
+        final PlantLocation3dDTO ppb = (PlantLocation3dDTO) o;
 
         return x == ppb.x && y == ppb.y && ppb.z == z && ppb.worldUID.compareTo(worldUID) == 0;
     }

@@ -1,11 +1,13 @@
 package de.wladtheninja.controlledplantgrowth.growables.concepts;
 
+import de.wladtheninja.controlledplantgrowth.growables.concepts.basic.IPlantConceptGrowthInformation;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.basic.IPlantConceptLocation;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 import java.util.List;
 
-public interface IPlantConcept {
+public interface IPlantConceptBasic extends IPlantConceptLocation, IPlantConceptGrowthInformation {
 
     List<Material> getAcceptedPlantMaterials();
 
@@ -15,7 +17,7 @@ public interface IPlantConcept {
 
     void addAcceptedPlantMaterial(Material... mat);
 
-    default boolean hasAcceptedMaterial(Material mat) {
+    default boolean containsAcceptedMaterial(Material mat) {
         return getAcceptedPlantMaterials().stream().anyMatch(mat::equals);
     }
 

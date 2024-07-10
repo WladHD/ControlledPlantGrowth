@@ -1,6 +1,6 @@
 package de.wladtheninja.controlledplantgrowth.growables.concepts.constraints;
 
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptBasic;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.block.Block;
@@ -15,7 +15,7 @@ public class LightLevelPlantGrowthConstraint implements IPlantGrowthConstraint {
 
 
     @Override
-    public boolean isGrowthConditionFulfilled(IPlantConcept pos, Block b) {
+    public boolean isGrowthConditionFulfilled(IPlantConceptBasic pos, Block b) {
         return b.getLightLevel() >= minLightLevel;
     }
 

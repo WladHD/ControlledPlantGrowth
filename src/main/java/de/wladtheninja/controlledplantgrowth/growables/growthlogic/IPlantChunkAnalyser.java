@@ -4,8 +4,8 @@ import org.bukkit.Chunk;
 
 public interface IPlantChunkAnalyser {
 
-    void checkForPlantsInChunk(Chunk c);
+    void onChunkLoaded(Chunk c);
 
-    void chunkUnloaded(Chunk c);
+    void onChunkUnloaded(Chunk c);
 
 }

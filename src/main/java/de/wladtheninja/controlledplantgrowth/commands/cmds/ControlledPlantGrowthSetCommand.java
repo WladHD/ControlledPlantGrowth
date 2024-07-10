@@ -4,7 +4,7 @@ import de.wladtheninja.controlledplantgrowth.commands.ControlledPlantGrowthComma
 import de.wladtheninja.controlledplantgrowth.commands.IPlantCommandExecutor;
 import de.wladtheninja.controlledplantgrowth.commands.PlantCommandData;
 import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
-import de.wladtheninja.controlledplantgrowth.data.dto.SettingsPlantGrowthDTO;
+import de.wladtheninja.controlledplantgrowth.data.dto.embedded.SettingsPlantGrowthDTO;
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
 import lombok.Getter;
 import lombok.NonNull;

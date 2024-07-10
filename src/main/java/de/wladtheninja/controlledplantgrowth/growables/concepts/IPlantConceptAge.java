@@ -1,5 +1,6 @@
 package de.wladtheninja.controlledplantgrowth.growables.concepts;
 
+import de.wladtheninja.controlledplantgrowth.growables.concepts.basic.IPlantConceptGrowthInformation;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantNoAgeableInterfaceException;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;

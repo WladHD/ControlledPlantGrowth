@@ -1,10 +1,11 @@
 package de.wladtheninja.controlledplantgrowth.growables.types;
 
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantAttachedFruit;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptAttachedFruit;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.constraints.IPlantGrowthConstraint;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantConstraintViolationException;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantRootBlockMissingException;
 import lombok.Getter;
+import lombok.NonNull;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,7 +19,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgeingOneBlock
-        implements IPlantAttachedFruit {
+        implements IPlantConceptAttachedFruit {
 
     private final Material materialFruit;
     private final Material materialStem;
@@ -188,7 +189,7 @@ public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgei
     }
 
     @Override
-    public Block getPlantRootBlock(Block b) throws PlantRootBlockMissingException {
+    public @NonNull Block getPlantRootBlock(Block b) throws PlantRootBlockMissingException {
         // redundant, but explicit
         if (b.getType() == materialAttachedStem || b.getType() == materialStem) {
             return b;

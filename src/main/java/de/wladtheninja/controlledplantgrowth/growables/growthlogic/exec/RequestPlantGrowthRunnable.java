@@ -33,7 +33,9 @@ public class RequestPlantGrowthRunnable implements Runnable {
             return;
         }
 
-        plants.forEach(ControlledPlantGrowthManager.getInstance().getInternEventListener()::requestGrowthForPlant);
+        plants.forEach(pl -> ControlledPlantGrowthManager.getInstance()
+                .getInternEventListener()
+                .onPossiblePlantStructureModifyEvent(pl.getPlantType(), pl.getLocation()));
 
         if (updateQueueWhenCompleted) {
             ControlledPlantGrowthManager.getInstance().getClockwork().startPlantUpdateQueue();

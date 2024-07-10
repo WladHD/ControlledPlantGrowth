@@ -3,7 +3,7 @@ package de.wladtheninja.controlledplantgrowth.data.dao;
 import de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth;
 import de.wladtheninja.controlledplantgrowth.data.dto.ConfigDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
-import de.wladtheninja.controlledplantgrowth.data.dto.SettingsPlantGrowthDTO;
+import de.wladtheninja.controlledplantgrowth.data.dto.embedded.SettingsPlantGrowthDTO;
 import de.wladtheninja.controlledplantgrowth.data.utils.DatabaseHibernateUtil;
 import de.wladtheninja.controlledplantgrowth.setup.SetupConfig;
 import lombok.Getter;
@@ -23,9 +23,10 @@ import java.util.logging.Level;
 import static lombok.AccessLevel.PRIVATE;
 
 
-@NoArgsConstructor(access = PRIVATE)
-public class SettingsDAO {
+public class SettingsDAO implements ISettingsDAO {
 
+    // TODO
+    @Deprecated
     @Getter(lazy = true)
     private static final SettingsDAO instance = new SettingsDAO();
     @Getter

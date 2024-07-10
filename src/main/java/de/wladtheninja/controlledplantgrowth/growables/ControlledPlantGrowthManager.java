@@ -1,6 +1,6 @@
 package de.wladtheninja.controlledplantgrowth.growables;
 
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptBasic;
 import de.wladtheninja.controlledplantgrowth.growables.growthlogic.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,16 +29,16 @@ public class ControlledPlantGrowthManager {
     private final IPlantChunkAnalyser chunkAnalyser = new PlantChunkAnalyser();
 
     @Getter
-    private final HashMap<Material, IPlantConcept> hashMapRetrieve = new HashMap<>();
+    private final HashMap<Material, IPlantConceptBasic> hashMapRetrieve = new HashMap<>();
 
     @Getter
     private final List<Material> materialsForSettings = new ArrayList<>();
 
-    public void registerPlantConceptInstance(IPlantConcept... i) {
+    public void registerPlantConceptInstance(IPlantConceptBasic... i) {
         Arrays.stream(i).forEach(this::registerPlantConceptInstance);
     }
 
-    public void registerPlantConceptInstance(IPlantConcept i) {
+    public void registerPlantConceptInstance(IPlantConceptBasic i) {
         if (i == null) {
             return;
         }
@@ -47,7 +47,7 @@ public class ControlledPlantGrowthManager {
         materialsForSettings.addAll(i.getAcceptedSettingPlantMaterials());
     }
 
-    public IPlantConcept retrieveSuitedPlantConcept(Material m) {
+    public IPlantConceptBasic retrieveSuitedPlantConcept(Material m) {
         return hashMapRetrieve.get(m);
     }
 

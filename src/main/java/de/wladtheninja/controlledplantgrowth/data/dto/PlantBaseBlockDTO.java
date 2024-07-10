@@ -1,10 +1,8 @@
 package de.wladtheninja.controlledplantgrowth.data.dto;
 
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Transient;
+import de.wladtheninja.controlledplantgrowth.data.dto.embedded.PlantLocation3dDTO;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptBasic;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -19,10 +17,10 @@ import org.bukkit.block.Block;
 public class PlantBaseBlockDTO {
 
     @EmbeddedId
-    private PlantBaseBlockIdDTO plantBaseBlockIdDTO;
+    private PlantLocation3dDTO plantBaseBlockIdDTO;
 
-    @Embedded
-    private PlantBaseBlockChunkDTO plantBaseBlockChunkDTO;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private PlantLocationChunkDTO plantLocationChunkDTO;
 
 
     private int currentPlantStage;
@@ -32,7 +30,7 @@ public class PlantBaseBlockDTO {
 
     private transient Location location;
 
-    public PlantBaseBlockDTO(IPlantConcept ipc, Block b) {
+    public PlantBaseBlockDTO(IPlantConceptBasic ipc, Block b) {
         this();
 
         plantBaseBlockIdDTO.setX(b.getLocation().getBlockX());
@@ -43,14 +41,14 @@ public class PlantBaseBlockDTO {
         setPlantType(ipc.getDatabasePlantType(b));
 
         // TODO remove ... seems like it was not needed
-        plantBaseBlockChunkDTO.setXChunk(b.getLocation().getChunk().getX());
-        plantBaseBlockChunkDTO.setZChunk(b.getLocation().getChunk().getZ());
-
+        plantLocationChunkDTO.setX(b.getLocation().getChunk().getX());
+        plantLocationChunkDTO.setZ(b.getLocation().getChunk().getZ());
+        plantLocationChunkDTO.setLoaded(b.getChunk().isLoaded());
     }
 
     public PlantBaseBlockDTO() {
-        plantBaseBlockIdDTO = new PlantBaseBlockIdDTO();
-        plantBaseBlockChunkDTO = new PlantBaseBlockChunkDTO();
+        plantBaseBlockIdDTO = new PlantLocation3dDTO();
+        plantLocationChunkDTO = new PlantLocationChunkDTO();
         setCurrentPlantStage(-1);
         setTimeNextGrowthStage(-1);
         setPlantType(Material.AIR);

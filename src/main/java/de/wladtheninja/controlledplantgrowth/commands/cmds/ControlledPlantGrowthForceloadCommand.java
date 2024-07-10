@@ -49,7 +49,7 @@ public class ControlledPlantGrowthForceloadCommand implements IPlantCommandExecu
                 .forEach(w -> Arrays.stream(w.getLoadedChunks())
                         .forEach(chunk -> ControlledPlantGrowthManager.getInstance()
                                 .getChunkAnalyser()
-                                .checkForPlantsInChunk(chunk)));
+                                .onChunkLoaded(chunk)));
 
         sender.sendMessage("All loaded chunks successfully queued for scanning. No further action is required.");
         return true;

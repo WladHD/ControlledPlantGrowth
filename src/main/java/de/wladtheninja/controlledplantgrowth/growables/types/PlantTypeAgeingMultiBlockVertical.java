@@ -1,10 +1,11 @@
 package de.wladtheninja.controlledplantgrowth.growables.types;
 
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptAge;
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptLocation;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.basic.IPlantConceptLocation;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptMultiBlockGrowthVertical;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.constraints.IPlantGrowthConstraint;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantConstraintViolationException;
+import lombok.NonNull;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -91,7 +92,7 @@ public abstract class PlantTypeAgeingMultiBlockVertical extends PlantTypeBasic i
     }
 
     @Override
-    public Block getPlantRootBlock(Block b) {
+    public @NonNull Block getPlantRootBlock(Block b) {
 
         while (b.getType() == b.getRelative(BlockFace.DOWN).getType()) {
             b = b.getRelative(BlockFace.DOWN);

@@ -1,55 +1,19 @@
 package de.wladtheninja.controlledplantgrowth.growables.growthlogic;
 
-import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptBasic;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 
 public interface IPlantInternEventListener {
 
-    // onArtificialGrowthRegisteredPlant
-    void onArtificialGrowthRegisteredPlantEvent(IPlantConcept ipc,
-                                                PlantBaseBlockDTO pbb);
+    void onPlantStructureUpdateEvent(IPlantConceptBasic ipc, Location location);
 
-    void queueRecheckOfBlock(IPlantConcept ipc, Block b);
+    void onChunkLoadEvent(Chunk c);
 
-    default void onArtificialGrowthHarvestInlineEvent(IPlantConcept ipc,
-                                                      Block potentialPlantRoot,
-                                                      boolean breakEvent) {
-        if (ipc == null || potentialPlantRoot == null) {
-            return;
-        }
+    void onChunkUnloadEvent(Chunk c);
 
-        if (breakEvent) {
-            onArtificialHarvestEvent(ipc, potentialPlantRoot);
-        }
-        else {
-            onArtificialGrowthEvent(ipc, potentialPlantRoot);
-        }
-    }
+    void onPossiblePlantStructureModifyEvent(Material possiblePlantMaterial, Location possibleRoot);
 
-    void onForcePlantsReloadByDatabaseTypeEvent(Material material);
-
-    void onArtificialGrowthEvent(IPlantConcept ipc,
-                                 Block placedBlock);
-
-    void onArtificialGrowthEvent(IPlantConcept ipc,
-                                 Block placedBlock,
-                                 boolean ifExistsIgnore);
-
-    void onArtificialGrowthUnregisteredPlantEvent(IPlantConcept ipc,
-                                                  PlantBaseBlockDTO pbb);
-
-    void onArtificialHarvestRegisteredPlantEvent(IPlantConcept ipc,
-                                                 PlantBaseBlockDTO pbb,
-                                                 Block brokenBlock);
-
-    void onArtificialHarvestUnregisteredPlantEvent(IPlantConcept ipc,
-                                                   PlantBaseBlockDTO pbb,
-                                                   Block brokenBlock);
-
-    void onArtificialHarvestEvent(IPlantConcept ipc,
-                                  Block brokenBlock);
-
-    void requestGrowthForPlant(PlantBaseBlockDTO pbb);
+    void onForcePlantsReloadByDatabaseTypeEvent(Material mat);
 }

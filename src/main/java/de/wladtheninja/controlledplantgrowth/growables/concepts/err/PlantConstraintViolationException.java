@@ -1,6 +1,6 @@
 package de.wladtheninja.controlledplantgrowth.growables.concepts.err;
 
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptBasic;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.constraints.IPlantGrowthConstraint;
 import lombok.AllArgsConstructor;
 import org.bukkit.Bukkit;
@@ -15,7 +15,7 @@ public class PlantConstraintViolationException extends Exception {
 
     private final List<IPlantGrowthConstraint> violations;
     private final Block plant;
-    private final IPlantConcept plantConcept;
+    private final IPlantConceptBasic plantConcept;
 
     @Override
     public String getMessage() {

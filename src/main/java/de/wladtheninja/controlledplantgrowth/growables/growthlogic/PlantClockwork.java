@@ -1,10 +1,12 @@
 package de.wladtheninja.controlledplantgrowth.growables.growthlogic;
 
 import de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth;
-import de.wladtheninja.controlledplantgrowth.data.dao.PlantBaseBlockDAO;
+import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
 import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
 import de.wladtheninja.controlledplantgrowth.growables.growthlogic.exec.RequestPlantGrowthRunnable;
+import de.wladtheninja.controlledplantgrowth.utils.DebounceUtil;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 
 import java.util.List;
@@ -18,8 +20,13 @@ public class PlantClockwork implements IPlantClockwork {
 
     ScheduledFuture<?> scheduledFuture;
 
+    @Getter
+    private final DebounceUtil debounceUtil = new DebounceUtil();
+
     public boolean checkOverduePlantUpdates(long currentTime) {
-        List<PlantBaseBlockDTO> oldPlant = PlantBaseBlockDAO.getInstance().getPastUpdates(currentTime);
+        List<PlantBaseBlockDTO> oldPlant = PlantDataManager.getInstance()
+                .getPlantDataBase()
+                .getBeforeTimestamp(currentTime);
 
         if (oldPlant == null || oldPlant.isEmpty()) {
             return false;
@@ -30,20 +37,21 @@ public class PlantClockwork implements IPlantClockwork {
     }
 
     public boolean checkFuturePlantUpdates(long currentTime) {
-        List<PlantBaseBlockDTO> plants = PlantBaseBlockDAO.getInstance()
-                .getNextFutureUpdate(currentTime,
-                                     SettingsDAO.getInstance()
-                                             .getCurrentSettings()
-                                             .getMaximumTimeWindowInMillisecondsForPlantsToBeClustered());
+        List<PlantBaseBlockDTO> plants = PlantDataManager.getInstance()
+                .getPlantDataBase()
+                .getAfterTimestamp(currentTime,
+                        SettingsDAO.getInstance()
+                                .getCurrentSettings()
+                                .getMaximumTimeWindowInMillisecondsForPlantsToBeClustered(),
+                        SettingsDAO.getInstance().getCurrentSettings().getMaximumAmountOfPlantsInATimeWindowCluster());
 
         if (plants == null || plants.isEmpty()) {
             return false;
         }
 
         scheduledFuture = scheduledExecutorService.schedule(() -> requestPlantGrowth(plants, true),
-                                                            Math.max(plants.getFirst().getTimeNextGrowthStage() -
-                                                                             System.currentTimeMillis(), 0),
-                                                            TimeUnit.MILLISECONDS);
+                Math.max(plants.getFirst().getTimeNextGrowthStage() - System.currentTimeMillis(), 0),
+                TimeUnit.MILLISECONDS);
         return true;
     }
 
@@ -54,6 +62,11 @@ public class PlantClockwork implements IPlantClockwork {
 
     @Override
     public void startPlantUpdateQueue() {
+        this.startPlantUpdateQueueDebounced();
+        //ebounceUtil.debounce(Objects.hash(0), this::startPlantUpdateQueueDebounced, 150, TimeUnit.MILLISECONDS);
+    }
+
+    public void startPlantUpdateQueueDebounced() {
         if (scheduledFuture != null) {
             scheduledFuture.cancel(false);
             scheduledFuture = null;
@@ -85,7 +98,7 @@ public class PlantClockwork implements IPlantClockwork {
                                    boolean updateQueueWhenCompleted) {
         Bukkit.getScheduler()
                 .runTask(ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class),
-                         RequestPlantGrowthRunnable.reuseInstanceWith(plants, updateQueueWhenCompleted));
+                        RequestPlantGrowthRunnable.reuseInstanceWith(plants, updateQueueWhenCompleted));
     }
 
 

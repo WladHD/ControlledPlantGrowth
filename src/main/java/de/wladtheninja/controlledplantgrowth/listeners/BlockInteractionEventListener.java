@@ -2,7 +2,7 @@ package de.wladtheninja.controlledplantgrowth.listeners;
 
 import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptBasic;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -23,7 +23,7 @@ import java.util.logging.Level;
 public class BlockInteractionEventListener implements Listener {
 
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onServerLoadEvent(ServerLoadEvent event) {
         Bukkit.getLogger().log(Level.FINER, "Starting to look out for plants to grow.");
 
@@ -32,24 +32,20 @@ public class BlockInteractionEventListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onChunkLoad(ChunkLoadEvent event) {
-        if (!SettingsDAO.getInstance()
-                .getCurrentSettings()
-                .isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants()) {
-            return;
+        if (SettingsDAO.getInstance().getCurrentSettings().isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants()) {
+            ControlledPlantGrowthManager.getInstance().getChunkAnalyser().onChunkLoaded(event.getChunk());
         }
 
-        ControlledPlantGrowthManager.getInstance().getChunkAnalyser().checkForPlantsInChunk(event.getChunk());
+        ControlledPlantGrowthManager.getInstance().getInternEventListener().onChunkLoadEvent(event.getChunk());
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onChunkUnload(ChunkUnloadEvent event) {
-        if (!SettingsDAO.getInstance()
-                .getCurrentSettings()
-                .isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants()) {
-            return;
+        if (SettingsDAO.getInstance().getCurrentSettings().isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants()) {
+            ControlledPlantGrowthManager.getInstance().getChunkAnalyser().onChunkUnloaded(event.getChunk());
         }
 
-        ControlledPlantGrowthManager.getInstance().getChunkAnalyser().chunkUnloaded(event.getChunk());
+        ControlledPlantGrowthManager.getInstance().getInternEventListener().onChunkUnloadEvent(event.getChunk());
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -58,55 +54,28 @@ public class BlockInteractionEventListener implements Listener {
             return;
         }
 
-        boolean breakEvent = event.getTo() == Material.AIR;
-
-
-        IPlantConcept ipc = ControlledPlantGrowthManager.getInstance()
-                .retrieveSuitedPlantConcept(breakEvent ?
+        ControlledPlantGrowthManager.getInstance()
+                .getInternEventListener()
+                .onPossiblePlantStructureModifyEvent(event.getTo() == Material.AIR ?
                         event.getBlock().getType() :
-                        event.getTo());
-
-        if (ipc == null) {
-            return;
-        }
-
-        ControlledPlantGrowthManager.getInstance().getInternEventListener().queueRecheckOfBlock(ipc, event.getBlock());
-
-        /*boolean breakEvent = event.getTo() == Material.AIR;
-
-
-        IPlantConcept ipc = ControlledPlantGrowthManager.getInstance()
-                .retrieveSuitedPlantConcept(breakEvent ?
-                                                    event.getBlock().getType() :
-                                                    event.getTo());
-
-        Bukkit.getScheduler().runTaskLater(ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class), () -> {
-            ControlledPlantGrowthManager.getInstance()
-                    .getInternEventListener()
-                    .onArtificialGrowthHarvestInlineEvent(ipc, event.getBlock(), breakEvent);
-        }, 1); */
+                        event.getTo(), event.getBlock().getLocation());
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerHarvestBlockEvent(PlayerHarvestBlockEvent event) {
-        IPlantConcept ipc = ControlledPlantGrowthManager.getInstance()
-                .retrieveSuitedPlantConcept(event.getHarvestedBlock().getType());
-
-        if (ipc == null) {
-            return;
-        }
-
         ControlledPlantGrowthManager.getInstance()
                 .getInternEventListener()
-                .onArtificialGrowthHarvestInlineEvent(ipc, event.getHarvestedBlock(), true);
+                .onPossiblePlantStructureModifyEvent(event.getHarvestedBlock().getType(),
+                        event.getHarvestedBlock().getLocation());
     }
 
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBlockGrowEvent(BlockGrowEvent event) {
-        IPlantConcept ipc =
-                ControlledPlantGrowthManager.getInstance().retrieveSuitedPlantConcept(event.getBlock().getType());
+        IPlantConceptBasic ipc = ControlledPlantGrowthManager.getInstance()
+                .retrieveSuitedPlantConcept(event.getBlock().getType());
 
+        // redundant kinda ... nvm
         if (ipc == null) {
             return;
         }
@@ -117,34 +86,20 @@ public class BlockInteractionEventListener implements Listener {
 
         ControlledPlantGrowthManager.getInstance()
                 .getInternEventListener()
-                .onArtificialGrowthHarvestInlineEvent(ipc, event.getBlock(), false);
+                .onPossiblePlantStructureModifyEvent(event.getBlock().getType(), event.getBlock().getLocation());
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onBlockBreakEvent(BlockBreakEvent event) {
-        IPlantConcept ipc =
-                ControlledPlantGrowthManager.getInstance().retrieveSuitedPlantConcept(event.getBlock().getType());
-
-        if (ipc == null) {
-            return;
-        }
-
         ControlledPlantGrowthManager.getInstance()
                 .getInternEventListener()
-                .onArtificialGrowthHarvestInlineEvent(ipc, event.getBlock(), true);
+                .onPossiblePlantStructureModifyEvent(event.getBlock().getType(), event.getBlock().getLocation());
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onBlockPlaceEvent(BlockPlaceEvent event) {
-        IPlantConcept ipc =
-                ControlledPlantGrowthManager.getInstance().retrieveSuitedPlantConcept(event.getBlockPlaced().getType());
-
-        if (ipc == null) {
-            return;
-        }
-
         ControlledPlantGrowthManager.getInstance()
                 .getInternEventListener()
-                .onArtificialGrowthHarvestInlineEvent(ipc, event.getBlock(), false);
+                .onPossiblePlantStructureModifyEvent(event.getBlock().getType(), event.getBlock().getLocation());
     }
 }

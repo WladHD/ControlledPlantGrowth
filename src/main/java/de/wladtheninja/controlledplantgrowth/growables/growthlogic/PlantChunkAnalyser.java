@@ -1,7 +1,7 @@
 package de.wladtheninja.controlledplantgrowth.growables.growthlogic;
 
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptBasic;
 import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.block.data.BlockData;
@@ -35,7 +35,7 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
     }
 
     @Override
-    public void checkForPlantsInChunk(Chunk cs) {
+    public void onChunkLoaded(Chunk cs) {
         if (cs == null) {
             return;
         }
@@ -48,7 +48,7 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
     }
 
     @Override
-    public void chunkUnloaded(Chunk c) {
+    public void onChunkUnloaded(Chunk c) {
         arrayDeque.removeIf(chunkSnapshot -> chunkSnapshot.getX() == c.getX() && chunkSnapshot.getZ() == c.getZ() &&
                 c.getWorld().getName().equals(chunkSnapshot.getWorldName()));
     }
@@ -108,7 +108,7 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
 
                         for (int y = minHeight; y < maxHeight; y++) {
 
-                            IPlantConcept ipc = ControlledPlantGrowthManager.getInstance()
+                            IPlantConceptBasic ipc = ControlledPlantGrowthManager.getInstance()
                                     .retrieveSuitedPlantConcept(cs.getBlockType(x, y, z));
 
                             if (ipc == null) {
@@ -117,12 +117,8 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
 
                             ControlledPlantGrowthManager.getInstance()
                                     .getInternEventListener()
-                                    .onArtificialGrowthEvent(ipc,
-                                                             new Location(world,
-                                                                          x + xChunk * 16,
-                                                                          y,
-                                                                          z + zChunk * 16).getBlock(),
-                                                             true);
+                                    .onPossiblePlantStructureModifyEvent(cs.getBlockType(x, y, z),
+                                            new Location(world, x + xChunk * 16, y, z + zChunk * 16));
                         }
                     }
                 }

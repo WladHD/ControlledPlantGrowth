@@ -1,342 +1,206 @@
 package de.wladtheninja.controlledplantgrowth.growables.growthlogic;
 
-import de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth;
-import de.wladtheninja.controlledplantgrowth.data.dao.PlantBaseBlockDAO;
+import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
-import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockIdDTO;
+import de.wladtheninja.controlledplantgrowth.data.dto.PlantLocationChunkDTO;
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
-import de.wladtheninja.controlledplantgrowth.growables.concepts.*;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptAge;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptBasic;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantNoAgeableInterfaceException;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantRootBlockMissingException;
+import de.wladtheninja.controlledplantgrowth.growables.growthlogic.utils.PlantDataUtils;
+import de.wladtheninja.controlledplantgrowth.utils.DebounceUtil;
+import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class PlantInternEventListener implements IPlantInternEventListener {
 
-    HashMap<PlantBaseBlockIdDTO, BukkitTask> delayedTasks = new HashMap<>();
+    @Getter
+    private final DebounceUtil debounceUtil = new DebounceUtil();
 
     @Override
+    public void onPlantStructureUpdateEvent(IPlantConceptBasic ipc, Location definitePlantRootLocation) {
+        if (!definitePlantRootLocation.getChunk().isLoaded()) {
+            onChunkUnloadEvent(definitePlantRootLocation.getChunk());
+            return;
+        }
 
-    public void onArtificialGrowthRegisteredPlantEvent(IPlantConcept ipc,
-                                                       PlantBaseBlockDTO pbb) {
+        PlantBaseBlockDTO plantDto = PlantDataManager.getInstance()
+                .getPlantDataBase()
+                .getByLocation(definitePlantRootLocation);
 
-        onPlantPlayerRescanEventAsync(pbb);
-    }
+        final boolean isGone = !ipc.containsAcceptedMaterial(definitePlantRootLocation.getBlock().getType());
+        final boolean isSaved = plantDto != null;
 
-    @Override
-    public void queueRecheckOfBlock(IPlantConcept ipc, Block b) {
+        if (isGone && !isSaved) {
+            return;
+        }
 
-        Bukkit.getScheduler().runTaskLater(ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class), () -> {
-            evaluateAgeOfPlantAndUpdateInDatabaseIfMatureDeleteAndContinueQueue(ipc,
-                    new PlantBaseBlockDTO(ipc, b));
-        }, 1);
-    }
+        if (isGone) {
+            PlantDataManager.getInstance().getPlantDataBase().delete(definitePlantRootLocation);
+            return;
+        }
 
-    @Override
-    public void onForcePlantsReloadByDatabaseTypeEvent(Material material) {
-        List<PlantBaseBlockDTO> list = PlantBaseBlockDAO.getInstance().getPlantBaseBlocksByDatabaseType(material);
+        final boolean isMature = ipc.isMature(definitePlantRootLocation.getBlock());
+
+        if (isMature && isSaved) {
+            PlantDataManager.getInstance().getPlantDataBase().delete(definitePlantRootLocation);
+        }
+
+        if (isMature) {
+            return;
+        }
+
+        if (plantDto == null) {
+            plantDto = new PlantBaseBlockDTO(ipc, definitePlantRootLocation.getBlock());
+        }
+
+        Map.Entry<Integer, Long> newAgeAndTimestamp = null;
+
+        try {
+            newAgeAndTimestamp = PlantDataUtils.calculateAgeAndNextUpdate(System.currentTimeMillis(), ipc, plantDto);
+        }
+        catch (PlantNoAgeableInterfaceException e) {
+            Bukkit.getLogger().log(Level.FINER, e.getMessage(), e);
+        }
+
+        if (newAgeAndTimestamp == null) {
+            if (isSaved) {
+                PlantDataManager.getInstance().getPlantDataBase().delete(definitePlantRootLocation);
+            }
+            return;
+        }
 
 
-        list.forEach(s -> {
-            IPlantConcept ipc = ControlledPlantGrowthManager.getInstance().retrieveSuitedPlantConcept(material);
-            evaluateAgeOfPlantAndUpdateInDatabaseIfMatureDeleteAndContinueQueue(ipc, s);
-        });
+        if (newAgeAndTimestamp.getKey() == -1) {
+            if (isSaved) {
+                PlantDataManager.getInstance().getPlantDataBase().delete(definitePlantRootLocation);
+            }
+
+            ipc.setToFullyMature(definitePlantRootLocation.getBlock());
+            return;
+        }
+
+        plantDto.setCurrentPlantStage(Objects.requireNonNull(newAgeAndTimestamp).getKey());
+        plantDto.setTimeNextGrowthStage(Objects.requireNonNull(newAgeAndTimestamp).getValue());
 
         Bukkit.getLogger()
-                .log(Level.INFO,
-                     MessageFormat.format("Plant {0} was successfully reloaded. {1} plants were affected.",
-                                          material,
-                                          list.size()));
-    }
+                .log(Level.FINER,
+                        MessageFormat.format("Next update {3} in {0}ms, current growth {1}",
+                                plantDto.getTimeNextGrowthStage() - System.currentTimeMillis(),
+                                plantDto.getCurrentPlantStage(), plantDto.getLocation().getBlock().getType()));
 
-    @Override
-    public void onArtificialGrowthEvent(IPlantConcept ipc,
-                                        Block plantRoot) {
-        onArtificialGrowthEvent(ipc, plantRoot, false);
-    }
 
-    @Override
-    public void onArtificialGrowthEvent(IPlantConcept ipc,
-                                        Block plantRoot,
-                                        boolean ifExistsIgnore) {
-        if (!plantRoot.getChunk().isLoaded()) {
-            return;
-        }
-
-        if (ipc instanceof IPlantAttachedFruit) {
-            IPlantAttachedFruit iPlantAttachedFruit = (IPlantAttachedFruit) ipc;
-            if (iPlantAttachedFruit.getFruitMaterial() == plantRoot.getType() &&
-                    iPlantAttachedFruit.getPlantRootBlockByFruitBlock(plantRoot) == null) {
-                return;
-            }
-        }
-
-        plantRoot = getPlantRootElseReturnBlock(ipc, plantRoot);
-
-        if (plantRoot == null) {
-            return;
-        }
-
-        PlantBaseBlockDTO registeredPlant = PlantBaseBlockDAO.getInstance().getPlantBaseBlockByBlock(plantRoot);
-
-        if (ifExistsIgnore && registeredPlant != null) {
-            return;
-        }
-
-        if (registeredPlant != null) {
-            Bukkit.getLogger()
-                    .log(Level.FINER,
-                         MessageFormat.format("Natural growth occurred for registered structure. Update.",
-                                              plantRoot.getType()));
-
-            ControlledPlantGrowthManager.getInstance()
-                    .getInternEventListener()
-                    .onArtificialGrowthRegisteredPlantEvent(ipc, registeredPlant);
-        }
-        else {
-            if (plantRoot.getType() == Material.AIR) {
-                return;
-            }
-
-            if (ipc instanceof IPlantConceptGrowthInformation &&
-                    ((IPlantConceptGrowthInformation) ipc).isMature(plantRoot)) {
-                return;
-            }
-
-            ControlledPlantGrowthManager.getInstance()
-                    .getInternEventListener()
-                    .onArtificialGrowthUnregisteredPlantEvent(ipc,
-                            new PlantBaseBlockDTO(ipc, plantRoot));
-        }
-    }
-
-    @Override
-    public void onArtificialGrowthUnregisteredPlantEvent(IPlantConcept ignored,
-                                                         PlantBaseBlockDTO pbb) {
-
-        onPlantPlayerRescanEventAsync(pbb);
-    }
-
-    public void onPlantPlayerRescanEventAsync(PlantBaseBlockDTO pbb) {
-        if (delayedTasks.containsKey(pbb.getPlantBaseBlockIdDTO())) {
-            delayedTasks.get(pbb.getPlantBaseBlockIdDTO()).cancel();
-        }
-
-        delayedTasks.put(pbb.getPlantBaseBlockIdDTO(),
-                         Bukkit.getScheduler()
-                                 .runTaskLater(ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class), () -> {
-                                     final IPlantConcept rescan = checkIfBlockHasPlantConceptOtherwiseDelete(pbb);
-
-                                     if (rescan == null) {
-                                         delayedTasks.remove(pbb.getPlantBaseBlockIdDTO());
-                                         return;
-                                     }
-
-                                     evaluateAgeOfPlantAndUpdateInDatabaseIfMatureDeleteAndContinueQueue(rescan, pbb);
-                                     delayedTasks.remove(pbb.getPlantBaseBlockIdDTO());
-                                 }, 1));
-    }
-
-    public void evaluateAgeOfPlantAndUpdateInDatabaseIfMatureDeleteAndContinueQueue(IPlantConcept ipc,
-                                                                                    PlantBaseBlockDTO pbb) {
-        if (pbb.getLocation().getBlock().getType() == Material.AIR) {
-            deletePlantBaseBlock(pbb);
+        if (!(ipc instanceof IPlantConceptAge)) {
+            PlantDataManager.getInstance().getPlantDataBase().merge(plantDto);
+            ControlledPlantGrowthManager.getInstance().getClockwork().startPlantUpdateQueue();
             return;
         }
 
         try {
-            PlantDataUtils.fillPlantBaseBlockDTOWithCurrentAgeAndNextUpdateTimestamp(ipc, pbb);
+            ((IPlantConceptAge) ipc).setCurrentAge(definitePlantRootLocation.getBlock(),
+                    plantDto.getCurrentPlantStage());
+
+            PlantDataManager.getInstance().getPlantDataBase().merge(plantDto);
+            ControlledPlantGrowthManager.getInstance().getClockwork().startPlantUpdateQueue();
         }
         catch (PlantNoAgeableInterfaceException e) {
-            deletePlantBaseBlock(pbb);
+            Bukkit.getLogger().log(Level.FINER, e.getMessage(), e);
+            if (isSaved) {
+                PlantDataManager.getInstance().getPlantDataBase().delete(definitePlantRootLocation);
+            }
+        }
+
+    }
+
+    @Override
+    public void onChunkLoadEvent(Chunk c) {
+        onChunkEvent(c, true);
+    }
+
+    public void onChunkEvent(Chunk c, boolean load) {
+        PlantLocationChunkDTO chunkDTO = PlantDataManager.getInstance().getPlantChunkDataBase().getByChunk(c);
+
+        if (chunkDTO == null) {
             return;
         }
 
-        if (ifMatureDeleteAndReturnTrue(ipc, pbb)) {
+        chunkDTO.setLoaded(load);
+        PlantDataManager.getInstance().getPlantChunkDataBase().merge(chunkDTO);
+
+        List<PlantBaseBlockDTO> plantsInChunk = PlantDataManager.getInstance()
+                .getPlantChunkDataBase()
+                .getAllPlantBasesByChunk(c.getWorld(), c.getX(), c.getZ());
+
+        if (plantsInChunk == null || plantsInChunk.isEmpty()) {
+            PlantDataManager.getInstance().getPlantChunkDataBase().delete(c.getWorld(), c.getX(), c.getZ());
             return;
         }
 
-        PlantBaseBlockDAO.getInstance().updatePlantBaseBlock(pbb);
         ControlledPlantGrowthManager.getInstance().getClockwork().startPlantUpdateQueue();
     }
 
     @Override
-    public void onArtificialHarvestRegisteredPlantEvent(IPlantConcept ipc,
-                                                        PlantBaseBlockDTO pbb,
-                                                        Block brokenBlock) {
-
-        if (!(ipc instanceof IPlantConceptLocation)) {
-            throw new RuntimeException("Plant did not provide location information");
-        }
-
-        IPlantConceptLocation loc = (IPlantConceptLocation) ipc;
-
-        if (ipc instanceof IPlantAttachedFruit) {
-            onPlantPlayerRescanEventAsync(pbb);
-            return;
-        }
-
-        Block plantRootBlock = getPlantRootElseReturnBlock(ipc, brokenBlock);
-
-        if (plantRootBlock == null) {
-            return;
-        }
-
-        if (brokenBlock.equals(plantRootBlock)) {
-            boolean wasDeleted = PlantBaseBlockDAO.getInstance().deletePlantBaseBlock(brokenBlock);
-            Bukkit.getLogger()
-                    .log(Level.FINER,
-                            MessageFormat.format("{0} at {1} {2} deleted.",
-                                    brokenBlock.getType(),
-                                    brokenBlock.getLocation().toVector(),
-                                    wasDeleted ?
-                                            "was successfully" :
-                                            "has failed to be"));
-
-            return;
-        }
-
-
-        if (!(ipc instanceof IPlantConceptMultiBlockGrowthVertical)) {
-            Bukkit.getLogger()
-                    .log(Level.FINER,
-                            MessageFormat.format("{0} at {1} was part of a plant structure. The plugin does not " +
-                                            "support a modification of that structure yet and is ignoring " +
-                                            "it.",
-                                    brokenBlock.getType(),
-                                    brokenBlock.getLocation().toVector()));
-            return;
-        }
-
-        onPlantPlayerRescanEventAsync(pbb);
+    public void onChunkUnloadEvent(Chunk c) {
+        onChunkEvent(c, false);
     }
 
     @Override
-    public void onArtificialHarvestUnregisteredPlantEvent(IPlantConcept ipc,
-                                                          PlantBaseBlockDTO pbb,
-                                                          Block brokenBlock) {
-        if (!(ipc instanceof IPlantConceptLocation)) {
-            throw new RuntimeException("Plant did not provide location information");
-        }
-
-        if (!(ipc instanceof IPlantConceptMultiBlockGrowthVertical)) {
+    public void onPossiblePlantStructureModifyEvent(Material possiblePlantMaterial, Location possibleRoot) {
+        if (!possibleRoot.getChunk().isLoaded()) {
+            onChunkUnloadEvent(possibleRoot.getChunk());
             return;
         }
 
-        // onUnexpectedUnregisteredPlantPlayerPlaceEvent already has a delayed task
-        onArtificialGrowthUnregisteredPlantEvent(ipc, pbb);
-    }
-
-    public Block getPlantRootElseReturnBlock(IPlantConcept ipc, Block b) {
-        if (ipc instanceof IPlantConceptLocation) {
-            IPlantConceptLocation loc = (IPlantConceptLocation) ipc;
-            try {
-                b = loc.getPlantRootBlock(b);
-            }
-            catch (PlantRootBlockMissingException e) {
-                Bukkit.getLogger().log(Level.FINER, e.getMessage(), e);
-                return null;
-            }
-        }
-
-        return b;
-    }
-
-    @Override
-    public void onArtificialHarvestEvent(IPlantConcept ipc,
-                                         Block plantRoot) {
-
-
-        plantRoot = getPlantRootElseReturnBlock(ipc, plantRoot);
-
-        if (plantRoot == null) {
-            return;
-        }
-
-        PlantBaseBlockDTO registeredPlant = PlantBaseBlockDAO.getInstance().getPlantBaseBlockByBlock(plantRoot);
-
-        if (registeredPlant == null) {
-            ControlledPlantGrowthManager.getInstance()
-                    .getInternEventListener()
-                    .onArtificialHarvestUnregisteredPlantEvent(ipc,
-                            new PlantBaseBlockDTO(ipc, plantRoot),
-                            plantRoot);
-
-        }
-        else {
-            ControlledPlantGrowthManager.getInstance()
-                    .getInternEventListener()
-                    .onArtificialHarvestRegisteredPlantEvent(ipc, registeredPlant, plantRoot);
-        }
-
-    }
-
-    public IPlantConcept checkIfBlockHasPlantConceptOtherwiseDelete(PlantBaseBlockDTO plant) {
-        IPlantConcept ipc = ControlledPlantGrowthManager.getInstance()
-                .retrieveSuitedPlantConcept(plant.getLocation().getBlock().getType());
+        IPlantConceptBasic ipc = ControlledPlantGrowthManager.getInstance()
+                .retrieveSuitedPlantConcept(possiblePlantMaterial);
 
         if (ipc == null) {
-            PlantBaseBlockDAO.getInstance().deletePlantBaseBlock(plant.getLocation().getBlock());
-            return null;
-        }
-
-        return ipc;
-    }
-
-    @Override
-    public void requestGrowthForPlant(PlantBaseBlockDTO plant) {
-        if (plant == null) {
-            return;
-        }
-
-        IPlantConcept ipc = checkIfBlockHasPlantConceptOtherwiseDelete(plant);
-
-        if (ipc == null) {
-            return;
-        }
-
-        // TODO if server was stopped for f. e. 5h ... should the plant be fully grown? maybe introduce setting for that
-
-        IPlantConceptGrowthInformation conceptGrowthInformation = (IPlantConceptGrowthInformation) ipc;
-
-        conceptGrowthInformation.increaseGrowthStep(plant.getLocation().getBlock());
-
-        if (ifMatureDeleteAndReturnTrue(ipc, plant)) {
             return;
         }
 
         try {
-            PlantDataUtils.fillPlantBaseBlockDTOWithCurrentAgeAndNextUpdateTimestamp(ipc, plant);
+            final Block definiteRootBlock = ipc.getPlantRootBlock(possibleRoot.getBlock());
+
+            debounceUtil.debounce(definiteRootBlock.getLocation(),
+                    () -> onPlantStructureUpdateEvent(ipc, definiteRootBlock.getLocation()),
+                    150,
+                    TimeUnit.MILLISECONDS);
         }
-        catch (PlantNoAgeableInterfaceException e) {
-            deletePlantBaseBlock(plant);
+        catch (PlantRootBlockMissingException e) {
+            Bukkit.getLogger().log(Level.FINER, e.getMessage(), e);
+            PlantDataManager.getInstance().getPlantDataBase().delete(possibleRoot);
             return;
         }
 
-        PlantBaseBlockDAO.getInstance().updatePlantBaseBlock(plant);
+
     }
 
-    public boolean ifMatureDeleteAndReturnTrue(IPlantConcept ipc,
-                                               PlantBaseBlockDTO plant) {
-        IPlantConceptGrowthInformation conceptGrowthInformation = (IPlantConceptGrowthInformation) ipc;
+    @Override
+    public void onForcePlantsReloadByDatabaseTypeEvent(Material mat) {
+        IPlantConceptBasic ipc = ControlledPlantGrowthManager.getInstance().retrieveSuitedPlantConcept(mat);
 
-        if (!conceptGrowthInformation.isMature(plant.getLocation().getBlock())) {
-            return false;
+        if (ipc == null) {
+            return;
         }
 
-        // TODO instead of deleting the block maybe updating age level?
-        deletePlantBaseBlock(plant);
-        return true;
+        PlantDataManager.getInstance().getPlantDataBase().getByMaterial(mat).forEach(pl -> {
+            pl.setCurrentPlantStage(-1);
+            pl.setTimeNextGrowthStage(-1);
+            PlantDataManager.getInstance().getPlantDataBase().merge(pl);
+            onPlantStructureUpdateEvent(ipc, pl.getLocation());
+        });
     }
 
-    public void deletePlantBaseBlock(PlantBaseBlockDTO plant) {
-        PlantBaseBlockDAO.getInstance().deletePlantBaseBlock(plant.getLocation().getBlock());
-    }
 }

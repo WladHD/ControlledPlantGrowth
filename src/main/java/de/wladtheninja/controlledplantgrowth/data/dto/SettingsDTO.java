@@ -1,5 +1,6 @@
 package de.wladtheninja.controlledplantgrowth.data.dto;
 
+import de.wladtheninja.controlledplantgrowth.data.dto.embedded.SettingsPlantGrowthDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
