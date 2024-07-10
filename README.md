@@ -25,15 +25,12 @@ ideas of new functionality or just feedback.
 
 ## Features
 
-- Manages plants placed by the player as well as entities such as Villagers. Registers all plants on chunk load,
-  perfect for plug in and play (can be turned off).
+- Manages plants placed by the player as well as entities such as Villagers. Registers all plants on chunk load, perfect for plug in and play (can be turned off).
 - Select how much time maximally has to pass in order for the plant type to fully mature.
 - Plants that have multiple steps of growth (f. e. wheat) will grow continuously for immersive gameplay.
-- Random ticks / "natural growth" is by default disabled and is only managed by my plugin. (can be turned off)
-- A player does not have to be in the chunk for the plants to grow.
+- Random ticks / "natural growth" is by default enabled to allow a more random growth (can be turned off).
+- A player does not have to be in the chunk for the plants to grow
 - The plugin does not keep the chunk loaded like a chunk loader, making it more efficient.
-- Talking about efficiency: if a lot of crops are to be managed, it is possible to group multiple growth processes.
-  That results in the update of one or more plants at the same time (instead of being a couple of ticks apart).
 
 ### Supported Plants
 
