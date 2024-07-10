@@ -4,6 +4,7 @@ import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptAge
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptLocation;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.constraints.IPlantGrowthConstraint;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantConstraintViolationException;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantRootBlockMissingException;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
@@ -76,12 +77,12 @@ public abstract class PlantTypeAgeingOneBlock extends PlantTypeBasic implements 
     }
 
     @Override
-    public Block getPlantRootBlock(Block b) {
+    public Block getPlantRootBlock(Block b) throws PlantRootBlockMissingException {
         return b;
     }
 
     @Override
-    public Material getPlantRootMaterial(Block b) {
+    public Material getPlantRootMaterial(Block b) throws PlantRootBlockMissingException {
         return getPlantRootBlock(b).getType();
     }
 }

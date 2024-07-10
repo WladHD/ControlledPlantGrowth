@@ -28,7 +28,7 @@ public interface IPlantInternEventListener {
         }
     }
 
-    void onForcePlantsReloadByTypeEvent(Material material);
+    void onForcePlantsReloadByDatabaseTypeEvent(Material material);
 
     void onArtificialGrowthEvent(IPlantConcept ipc,
                                  Block placedBlock);

@@ -6,6 +6,8 @@ import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockIdDTO;
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.*;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantNoAgeableInterfaceException;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantRootBlockMissingException;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -33,13 +35,13 @@ public class PlantInternEventListener implements IPlantInternEventListener {
 
         Bukkit.getScheduler().runTaskLater(ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class), () -> {
             evaluateAgeOfPlantAndUpdateInDatabaseIfMatureDeleteAndContinueQueue(ipc,
-                    new PlantBaseBlockDTO(b.getLocation(), b.getType()));
+                    new PlantBaseBlockDTO(ipc, b));
         }, 1);
     }
 
     @Override
-    public void onForcePlantsReloadByTypeEvent(Material material) {
-        List<PlantBaseBlockDTO> list = PlantBaseBlockDAO.getInstance().getPlantBaseBlocksByType(material);
+    public void onForcePlantsReloadByDatabaseTypeEvent(Material material) {
+        List<PlantBaseBlockDTO> list = PlantBaseBlockDAO.getInstance().getPlantBaseBlocksByDatabaseType(material);
 
 
         list.forEach(s -> {
@@ -76,9 +78,10 @@ public class PlantInternEventListener implements IPlantInternEventListener {
             }
         }
 
-        if (ipc instanceof IPlantConceptLocation) {
-            IPlantConceptLocation loc = (IPlantConceptLocation) ipc;
-            plantRoot = loc.getPlantRootBlock(plantRoot);
+        plantRoot = getPlantRootElseReturnBlock(ipc, plantRoot);
+
+        if (plantRoot == null) {
+            return;
         }
 
         PlantBaseBlockDTO registeredPlant = PlantBaseBlockDAO.getInstance().getPlantBaseBlockByBlock(plantRoot);
@@ -110,8 +113,7 @@ public class PlantInternEventListener implements IPlantInternEventListener {
             ControlledPlantGrowthManager.getInstance()
                     .getInternEventListener()
                     .onArtificialGrowthUnregisteredPlantEvent(ipc,
-                            new PlantBaseBlockDTO(plantRoot.getLocation(),
-                                    plantRoot.getType()));
+                            new PlantBaseBlockDTO(ipc, plantRoot));
         }
     }
 
@@ -145,11 +147,17 @@ public class PlantInternEventListener implements IPlantInternEventListener {
     public void evaluateAgeOfPlantAndUpdateInDatabaseIfMatureDeleteAndContinueQueue(IPlantConcept ipc,
                                                                                     PlantBaseBlockDTO pbb) {
         if (pbb.getLocation().getBlock().getType() == Material.AIR) {
-            PlantBaseBlockDAO.getInstance().deletePlantBaseBlock(pbb.getLocation().getBlock());
+            deletePlantBaseBlock(pbb);
             return;
         }
 
-        PlantDataUtils.fillPlantBaseBlockDTOWithCurrentAgeAndNextUpdateTimestamp(ipc, pbb);
+        try {
+            PlantDataUtils.fillPlantBaseBlockDTOWithCurrentAgeAndNextUpdateTimestamp(ipc, pbb);
+        }
+        catch (PlantNoAgeableInterfaceException e) {
+            deletePlantBaseBlock(pbb);
+            return;
+        }
 
         if (ifMatureDeleteAndReturnTrue(ipc, pbb)) {
             return;
@@ -175,8 +183,13 @@ public class PlantInternEventListener implements IPlantInternEventListener {
             return;
         }
 
+        Block plantRootBlock = getPlantRootElseReturnBlock(ipc, brokenBlock);
 
-        if (brokenBlock.equals(loc.getPlantRootBlock(brokenBlock))) {
+        if (plantRootBlock == null) {
+            return;
+        }
+
+        if (brokenBlock.equals(plantRootBlock)) {
             boolean wasDeleted = PlantBaseBlockDAO.getInstance().deletePlantBaseBlock(brokenBlock);
             Bukkit.getLogger()
                     .log(Level.FINER,
@@ -190,14 +203,15 @@ public class PlantInternEventListener implements IPlantInternEventListener {
             return;
         }
 
+
         if (!(ipc instanceof IPlantConceptMultiBlockGrowthVertical)) {
             Bukkit.getLogger()
                     .log(Level.FINER,
-                         MessageFormat.format("{0} at {1} was part of a plant structure. The plugin does not " +
-                                                      "support a modification of that structure yet and is ignoring " +
-                                                      "it.",
-                                              brokenBlock.getType(),
-                                              brokenBlock.getLocation().toVector()));
+                            MessageFormat.format("{0} at {1} was part of a plant structure. The plugin does not " +
+                                            "support a modification of that structure yet and is ignoring " +
+                                            "it.",
+                                    brokenBlock.getType(),
+                                    brokenBlock.getLocation().toVector()));
             return;
         }
 
@@ -220,13 +234,30 @@ public class PlantInternEventListener implements IPlantInternEventListener {
         onArtificialGrowthUnregisteredPlantEvent(ipc, pbb);
     }
 
+    public Block getPlantRootElseReturnBlock(IPlantConcept ipc, Block b) {
+        if (ipc instanceof IPlantConceptLocation) {
+            IPlantConceptLocation loc = (IPlantConceptLocation) ipc;
+            try {
+                b = loc.getPlantRootBlock(b);
+            }
+            catch (PlantRootBlockMissingException e) {
+                Bukkit.getLogger().log(Level.FINER, e.getMessage(), e);
+                return null;
+            }
+        }
+
+        return b;
+    }
+
     @Override
     public void onArtificialHarvestEvent(IPlantConcept ipc,
                                          Block plantRoot) {
 
-        if (ipc instanceof IPlantConceptLocation) {
-            IPlantConceptLocation loc = (IPlantConceptLocation) ipc;
-            plantRoot = loc.getPlantRootBlock(plantRoot);
+
+        plantRoot = getPlantRootElseReturnBlock(ipc, plantRoot);
+
+        if (plantRoot == null) {
+            return;
         }
 
         PlantBaseBlockDTO registeredPlant = PlantBaseBlockDAO.getInstance().getPlantBaseBlockByBlock(plantRoot);
@@ -235,9 +266,8 @@ public class PlantInternEventListener implements IPlantInternEventListener {
             ControlledPlantGrowthManager.getInstance()
                     .getInternEventListener()
                     .onArtificialHarvestUnregisteredPlantEvent(ipc,
-                                                               new PlantBaseBlockDTO(plantRoot.getLocation(),
-                                                                                     plantRoot.getType()),
-                                                               plantRoot);
+                            new PlantBaseBlockDTO(ipc, plantRoot),
+                            plantRoot);
 
         }
         else {
@@ -282,7 +312,14 @@ public class PlantInternEventListener implements IPlantInternEventListener {
             return;
         }
 
-        PlantDataUtils.fillPlantBaseBlockDTOWithCurrentAgeAndNextUpdateTimestamp(ipc, plant);
+        try {
+            PlantDataUtils.fillPlantBaseBlockDTOWithCurrentAgeAndNextUpdateTimestamp(ipc, plant);
+        }
+        catch (PlantNoAgeableInterfaceException e) {
+            deletePlantBaseBlock(plant);
+            return;
+        }
+
         PlantBaseBlockDAO.getInstance().updatePlantBaseBlock(plant);
     }
 
@@ -295,7 +332,11 @@ public class PlantInternEventListener implements IPlantInternEventListener {
         }
 
         // TODO instead of deleting the block maybe updating age level?
-        PlantBaseBlockDAO.getInstance().deletePlantBaseBlock(plant.getLocation().getBlock());
+        deletePlantBaseBlock(plant);
         return true;
+    }
+
+    public void deletePlantBaseBlock(PlantBaseBlockDTO plant) {
+        PlantBaseBlockDAO.getInstance().deletePlantBaseBlock(plant.getLocation().getBlock());
     }
 }

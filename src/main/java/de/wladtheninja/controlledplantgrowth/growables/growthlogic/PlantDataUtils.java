@@ -6,6 +6,7 @@ import de.wladtheninja.controlledplantgrowth.data.dto.SettingsPlantGrowthDTO;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptAge;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptGrowthInformation;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantNoAgeableInterfaceException;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 
@@ -19,7 +20,7 @@ public class PlantDataUtils {
     private static final boolean _CALCULATE_LINEAR = true; // TODO relocate to settings
 
     public static int determineCurrentPlantAge(IPlantConcept ipc,
-                                               Block b) {
+                                               Block b) throws PlantNoAgeableInterfaceException {
         IPlantConceptGrowthInformation conceptGrowthInformation = ipc instanceof IPlantConceptGrowthInformation ?
                 (IPlantConceptGrowthInformation) ipc :
                 null;
@@ -83,7 +84,8 @@ public class PlantDataUtils {
     }
 
     public static void fillPlantBaseBlockDTOWithCurrentAgeAndNextUpdateTimestamp(IPlantConcept ipc,
-                                                                                 PlantBaseBlockDTO pbb) {
+                                                                                 PlantBaseBlockDTO pbb)
+            throws PlantNoAgeableInterfaceException {
         pbb.setCurrentPlantStage(determineCurrentPlantAge(ipc, pbb.getLocation().getBlock()));
 
         if (pbb.getCurrentPlantStage() == -1) {

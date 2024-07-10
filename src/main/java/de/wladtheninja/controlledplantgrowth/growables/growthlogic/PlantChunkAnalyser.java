@@ -80,6 +80,11 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
         scheduledExecutorService.execute(() -> {
             try {
                 final long begin = System.currentTimeMillis();
+
+                if (arrayDeque.isEmpty()) {
+                    return;
+                }
+
                 final ChunkSnapshot cs = arrayDeque.pop();
 
                 List<BlockData> foundMats =

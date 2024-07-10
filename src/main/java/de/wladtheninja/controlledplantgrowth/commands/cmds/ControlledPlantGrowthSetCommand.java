@@ -115,7 +115,7 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
                                                     parsedTimeUnit));
             ControlledPlantGrowthManager.getInstance()
                     .getInternEventListener()
-                    .onForcePlantsReloadByTypeEvent(parsedMat);
+                    .onForcePlantsReloadByDatabaseTypeEvent(parsedMat);
             return true;
         }
 
@@ -127,7 +127,7 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
 
         SettingsDAO.getInstance().getCurrentSettings().getPlantGrowthList().add(settingsPlantGrowthDTO);
         SettingsDAO.getInstance().saveSettings();
-        ControlledPlantGrowthManager.getInstance().getInternEventListener().onForcePlantsReloadByTypeEvent(parsedMat);
+        ControlledPlantGrowthManager.getInstance().getInternEventListener().onForcePlantsReloadByDatabaseTypeEvent(parsedMat);
 
         sender.sendMessage(MessageFormat.format("Growth time for {0} was successfully updated to {1} {2}.",
                                                 parsedMat,

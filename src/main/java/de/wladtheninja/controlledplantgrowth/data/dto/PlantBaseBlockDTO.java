@@ -1,5 +1,6 @@
 package de.wladtheninja.controlledplantgrowth.data.dto;
 
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -10,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 
 @Entity(name = "PlantBaseBlockDTO")
 @Getter
@@ -30,23 +32,19 @@ public class PlantBaseBlockDTO {
 
     private transient Location location;
 
-    public PlantBaseBlockDTO(Location loc,
-                             Material m) {
+    public PlantBaseBlockDTO(IPlantConcept ipc, Block b) {
         this();
-        if (loc.getWorld() == null) {
-            throw new RuntimeException("World is null...");
-        }
 
-        plantBaseBlockIdDTO.setX(loc.getBlockX());
-        plantBaseBlockIdDTO.setY(loc.getBlockY());
-        plantBaseBlockIdDTO.setZ(loc.getBlockZ());
-        plantBaseBlockIdDTO.setWorldUID(loc.getWorld().getUID());
+        plantBaseBlockIdDTO.setX(b.getLocation().getBlockX());
+        plantBaseBlockIdDTO.setY(b.getLocation().getBlockY());
+        plantBaseBlockIdDTO.setZ(b.getLocation().getBlockZ());
+        plantBaseBlockIdDTO.setWorldUID(b.getWorld().getUID());
 
-        setPlantType(m);
+        setPlantType(ipc.getDatabasePlantType(b));
 
         // TODO remove ... seems like it was not needed
-        plantBaseBlockChunkDTO.setXChunk(loc.getChunk().getX());
-        plantBaseBlockChunkDTO.setZChunk(loc.getChunk().getZ());
+        plantBaseBlockChunkDTO.setXChunk(b.getLocation().getChunk().getX());
+        plantBaseBlockChunkDTO.setZChunk(b.getLocation().getChunk().getZ());
 
     }
 

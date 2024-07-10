@@ -15,4 +15,4 @@ commands:
     description: Command to configure the ControlledPlantGrowth plugin
     usage: /cpg help
     aliases: [cpg]
-    permission: controlledplantgrowth.configure
+    permission: controlledplantgrowth.help

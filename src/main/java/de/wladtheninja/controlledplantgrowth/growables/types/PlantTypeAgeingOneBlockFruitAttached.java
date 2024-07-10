@@ -3,6 +3,7 @@ package de.wladtheninja.controlledplantgrowth.growables.types;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantAttachedFruit;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.constraints.IPlantGrowthConstraint;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantConstraintViolationException;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantRootBlockMissingException;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,7 +17,8 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgeingOneBlock implements IPlantAttachedFruit {
+public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgeingOneBlock
+        implements IPlantAttachedFruit {
 
     private final Material materialFruit;
     private final Material materialStem;
@@ -48,6 +50,11 @@ public class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgeingOneBloc
     @Override
     public List<Material> getAcceptedSettingPlantMaterials() {
         return Collections.singletonList(materialStem);
+    }
+
+    @Override
+    public Material getDatabasePlantType(Block b) {
+        return materialStem;
     }
 
     @Override
@@ -181,14 +188,14 @@ public class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgeingOneBloc
     }
 
     @Override
-    public Block getPlantRootBlock(Block b) {
+    public Block getPlantRootBlock(Block b) throws PlantRootBlockMissingException {
         // redundant, but explicit
         if (b.getType() == materialAttachedStem || b.getType() == materialStem) {
             return b;
         }
 
         if (b.getType() != materialFruit) {
-            throw new RuntimeException("Handed block is neither stem, attached stem or fruit.");
+            throw new PlantRootBlockMissingException(b);
         }
 
         Block attachedPlantRoot = getPlantRootBlockByFruitBlock(b);
@@ -199,9 +206,8 @@ public class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgeingOneBloc
                             MessageFormat.format("A lonely fruit {0} was found at {1}",
                                     b.getType(),
                                     b.getLocation().toVector()));
-            throw new RuntimeException(MessageFormat.format("A lonely fruit {0} was found at {1}",
-                    b.getType(),
-                    b.getLocation().toVector()));
+
+            throw new PlantRootBlockMissingException(b);
         }
 
         return attachedPlantRoot;

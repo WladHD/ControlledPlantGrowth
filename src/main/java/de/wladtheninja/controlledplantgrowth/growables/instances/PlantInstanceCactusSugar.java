@@ -16,4 +16,5 @@ public class PlantInstanceCactusSugar extends PlantTypeAgeingMultiBlockVertical 
     public int getMaximumAge(Block b) {
         return 2;
     }
+
 }

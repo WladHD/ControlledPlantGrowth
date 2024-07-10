@@ -2,6 +2,7 @@ package de.wladtheninja.controlledplantgrowth.data.dao;
 
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
 import de.wladtheninja.controlledplantgrowth.data.utils.DatabaseHibernateUtil;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConcept;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bukkit.Bukkit;
@@ -49,7 +50,7 @@ public class PlantBaseBlockDAO {
         return retrievedBlocks;
     }
 
-    public List<PlantBaseBlockDTO> getPlantBaseBlocksByType(Material m) {
+    public List<PlantBaseBlockDTO> getPlantBaseBlocksByDatabaseType(Material databaseMaterial) {
         List<PlantBaseBlockDTO> retrievedBlocks = null;
 
         try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
@@ -57,7 +58,7 @@ public class PlantBaseBlockDAO {
 
             String hql = "FROM PlantBaseBlockDTO WHERE plantType = :plant";
             Query<PlantBaseBlockDTO> query = session.createQuery(hql, PlantBaseBlockDTO.class);
-            query.setParameter("plant", m);
+            query.setParameter("plant", databaseMaterial);
 
             retrievedBlocks = query.getResultList();
 
