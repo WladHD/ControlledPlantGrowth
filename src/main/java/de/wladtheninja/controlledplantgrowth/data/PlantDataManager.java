@@ -4,7 +4,10 @@ import de.wladtheninja.controlledplantgrowth.data.dao.IPlantBaseBlockDAO;
 import de.wladtheninja.controlledplantgrowth.data.dao.ISettingsDAO;
 import de.wladtheninja.controlledplantgrowth.data.dao.PlantBaseBlockDAO;
 import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
+import de.wladtheninja.controlledplantgrowth.data.dto.ConfigDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
+import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
+import de.wladtheninja.controlledplantgrowth.data.dto.embedded.SettingsPlantGrowthDTO;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,5 +22,5 @@ public class PlantDataManager {
     private final IPlantBaseBlockDAO<PlantBaseBlockDTO> plantDataBase = new PlantBaseBlockDAO();
 
     @Getter
-    private final ISettingsDAO settingsDataBase = new SettingsDAO();
+    private final ISettingsDAO<SettingsDTO, SettingsPlantGrowthDTO, ConfigDTO> settingsDataBase = new SettingsDAO();
 }

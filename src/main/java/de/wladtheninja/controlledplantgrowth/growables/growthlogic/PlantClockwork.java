@@ -62,10 +62,10 @@ public class PlantClockwork implements IPlantClockwork {
         List<PlantBaseBlockDTO> plants = PlantDataManager.getInstance()
                 .getPlantDataBase()
                 .getAfterTimestamp(currentTime,
-                        SettingsDAO.getInstance()
+                        PlantDataManager.getInstance().getSettingsDataBase()
                                 .getCurrentSettings()
                                 .getMaximumTimeWindowInMillisecondsForPlantsToBeClustered(),
-                        SettingsDAO.getInstance().getCurrentSettings().getMaximumAmountOfPlantsInATimeWindowCluster());
+                        PlantDataManager.getInstance().getSettingsDataBase().getCurrentSettings().getMaximumAmountOfPlantsInATimeWindowCluster());
 
 
         final List<PlantBaseBlockDTO> finalPlants = filterLoadedChunks(plants);

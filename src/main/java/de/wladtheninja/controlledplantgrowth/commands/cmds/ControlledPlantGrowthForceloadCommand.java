@@ -2,6 +2,7 @@ package de.wladtheninja.controlledplantgrowth.commands.cmds;
 
 import de.wladtheninja.controlledplantgrowth.commands.IPlantCommandExecutor;
 import de.wladtheninja.controlledplantgrowth.commands.PlantCommandData;
+import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
 import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
 import lombok.NonNull;
@@ -29,7 +30,7 @@ public class ControlledPlantGrowthForceloadCommand implements IPlantCommandExecu
                              @NonNull String label,
                              String @NonNull [] args) {
 
-        if (SettingsDAO.getInstance().getCurrentSettings().isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants() &&
+        if (PlantDataManager.getInstance().getSettingsDataBase().getCurrentSettings().isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants() &&
                 (args.length != 2 || !args[1].equalsIgnoreCase("confirm"))) {
             sender.sendMessage("Plugin already checks all chunks on load due to the setting " +
                     "useAggressiveChunkAnalysisAndLookForUnregisteredPlants " + "in config is true.");

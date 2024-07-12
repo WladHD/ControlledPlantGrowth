@@ -2,6 +2,7 @@ package de.wladtheninja.controlledplantgrowth.commands.cmds;
 
 import de.wladtheninja.controlledplantgrowth.commands.IPlantCommandExecutor;
 import de.wladtheninja.controlledplantgrowth.commands.PlantCommandData;
+import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
 import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
 import lombok.NonNull;
 import org.bukkit.command.Command;
@@ -23,7 +24,7 @@ public class ControlledPlantGrowthInfoCommand implements IPlantCommandExecutor {
                              @NonNull String label,
                              String @NonNull [] args) {
 
-        SettingsDAO.getInstance()
+        PlantDataManager.getInstance().getSettingsDataBase()
                 .getCurrentSettings()
                 .getPlantGrowthList()
                 .forEach(pgl -> sender.sendMessage(MessageFormat.format("{0} - {1}s",

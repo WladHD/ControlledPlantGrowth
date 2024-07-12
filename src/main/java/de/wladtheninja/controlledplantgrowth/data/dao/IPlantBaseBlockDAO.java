@@ -26,6 +26,4 @@ public interface IPlantBaseBlockDAO<T> {
 
     List<T> getBeforeTimestamp(long timeStamp);
 
-    void handleException(Exception ex);
-
 }

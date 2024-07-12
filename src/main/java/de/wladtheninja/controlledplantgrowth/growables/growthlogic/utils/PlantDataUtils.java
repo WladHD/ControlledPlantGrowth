@@ -1,5 +1,6 @@
 package de.wladtheninja.controlledplantgrowth.growables.growthlogic.utils;
 
+import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
 import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.embedded.SettingsPlantGrowthDTO;
@@ -48,7 +49,7 @@ public class PlantDataUtils {
                 currentTimeStamp;
         int tempSimulatedAge = realCurrentAge;
 
-        SettingsPlantGrowthDTO settings = SettingsDAO.getInstance()
+        SettingsPlantGrowthDTO settings = PlantDataManager.getInstance().getSettingsDataBase()
                 .getPlantSettings(ipc.getDatabasePlantType(plant.getLocation().getBlock()));
 
         if (!settings.isUseTimeForPlantMature() &&

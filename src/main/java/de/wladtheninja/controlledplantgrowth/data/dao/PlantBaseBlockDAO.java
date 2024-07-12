@@ -1,5 +1,7 @@
 package de.wladtheninja.controlledplantgrowth.data.dao;
 
+import de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth;
+import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
 import de.wladtheninja.controlledplantgrowth.data.utils.DatabaseHibernateUtil;
 import org.bukkit.Bukkit;
@@ -33,7 +35,7 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
             transaction.commit();
         }
         catch (Exception ex) {
-            handleException(ex);
+            ControlledPlantGrowth.handleException(ex);
             return null;
         }
 
@@ -56,7 +58,7 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
             transaction.commit();
         }
         catch (Exception ex) {
-            handleException(ex);
+            ControlledPlantGrowth.handleException(ex);
             return null;
         }
 
@@ -76,7 +78,7 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
             transaction.commit();
         }
         catch (Exception ex) {
-            handleException(ex);
+            ControlledPlantGrowth.handleException(ex);
             return null;
         }
 
@@ -107,7 +109,7 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
             transaction.commit();
         }
         catch (Exception exception) {
-            handleException(exception);
+            ControlledPlantGrowth.handleException(exception);
         }
 
         return deletedCount != 0;
@@ -138,7 +140,7 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
             transaction.commit();
         }
         catch (Exception ex) {
-            handleException(ex);
+            ControlledPlantGrowth.handleException(ex);
             return null;
         }
 
@@ -172,7 +174,7 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
             transaction.commit();
         }
         catch (Exception ex) {
-            handleException(ex);
+            ControlledPlantGrowth.handleException(ex);
             return null;
         }
 
@@ -198,7 +200,7 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
             transaction.commit();
         }
         catch (Exception ex) {
-            handleException(ex);
+            ControlledPlantGrowth.handleException(ex);
             return null;
         }
 
@@ -220,14 +222,14 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
             query.setParameter("timeBoundaryLow", timeStamp);
             query.setParameter("growStage", -1);
             query.setMaxResults(Math.max(1,
-                    SettingsDAO.getInstance().getCurrentSettings().getMaximumAmountOfPlantsInATimeWindowCluster()));
+                    PlantDataManager.getInstance().getSettingsDataBase().getCurrentSettings().getMaximumAmountOfPlantsInATimeWindowCluster()));
             pbb = query.getResultList();
 
 
             transaction.commit();
         }
         catch (Exception ex) {
-            handleException(ex);
+            ControlledPlantGrowth.handleException(ex);
             return null;
         }
 
@@ -263,17 +265,11 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
             transaction.commit();
         }
         catch (Exception ex) {
-            handleException(ex);
+            ControlledPlantGrowth.handleException(ex);
             return null;
         }
 
         return pbb;
     }
-
-    @Override
-    public void handleException(Exception ex) {
-        Bukkit.getLogger().log(Level.INFO, ex.getMessage(), ex);
-    }
-
 
 }

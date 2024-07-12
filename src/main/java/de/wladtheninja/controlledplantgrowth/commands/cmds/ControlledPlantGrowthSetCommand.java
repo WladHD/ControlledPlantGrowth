@@ -3,7 +3,8 @@ package de.wladtheninja.controlledplantgrowth.commands.cmds;
 import de.wladtheninja.controlledplantgrowth.commands.ControlledPlantGrowthCommandManager;
 import de.wladtheninja.controlledplantgrowth.commands.IPlantCommandExecutor;
 import de.wladtheninja.controlledplantgrowth.commands.PlantCommandData;
-import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
+import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
+import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.embedded.SettingsPlantGrowthDTO;
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
 import lombok.Getter;
@@ -20,22 +21,23 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Getter
 @PlantCommandData(name = "set",
-        onlyPlayerCMD = false,
-        permission = "controlledplantgrowth.set",
-        usage = "set <material> <time in seconds> [time unit]",
-        description = "Sets the time of a specified plant to mature, saves the new config and applies the changes to " +
-                "plants.")
+                  permission = "controlledplantgrowth.set",
+                  usage = "set <material> <time in seconds> [time unit]",
+                  description =
+                          "Sets the time of a specified plant to mature, saves the new config and applies the changes to " +
+                                  "plants.")
 public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
 
-    @Getter
     private final List<TimeUnit> acceptedTimeUnits = Arrays.asList(TimeUnit.SECONDS, TimeUnit.MINUTES, TimeUnit.HOURS);
 
     public static boolean isInteger(String s) {
         try {
             Integer.parseInt(s);
             return true;
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return false;
         }
     }
@@ -68,21 +70,23 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
 
         try {
             parsedMat = Material.valueOf(material);
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             sender.sendMessage(MessageFormat.format("{0} is not a valid material. Check for typos.", material));
             return true;
         }
 
         if (!acceptedMats.contains(parsedMat)) {
-            sender.sendMessage(MessageFormat.format("{0} is not a supported material. Supported materials are: ",
-                                                    material,
-                                                    Arrays.toString(acceptedMats.toArray())));
+            sender.sendMessage(MessageFormat.format("{0} is not a supported material. Supported materials are: {1}",
+                    material,
+                    Arrays.toString(acceptedMats.toArray())));
             return true;
         }
 
         try {
             parsedTime = Integer.parseInt(timeInSeconds);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             sender.sendMessage(MessageFormat.format("{0} is not a number.", parsedTime));
             return true;
         }
@@ -90,16 +94,17 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
         if (timeType != null) {
             try {
                 parsedTimeUnit = TimeUnit.valueOf(timeType);
-            } catch (IllegalArgumentException e) {
+            }
+            catch (IllegalArgumentException e) {
                 sender.sendMessage(MessageFormat.format("{0} is not a valid time unit. Supported time units are:",
-                                                        Arrays.toString(acceptedTimeUnits.toArray())));
+                        Arrays.toString(acceptedTimeUnits.toArray())));
                 return true;
             }
         }
 
-        Optional<SettingsPlantGrowthDTO> sdf = SettingsDAO.getInstance()
-                .getCurrentSettings()
-                .getPlantGrowthList()
+        SettingsDTO currentSettings = PlantDataManager.getInstance().getSettingsDataBase().getCurrentSettings();
+
+        Optional<SettingsPlantGrowthDTO> sdf = currentSettings.getPlantGrowthList()
                 .stream()
                 .filter(pgl -> pgl.getMaterial() == parsedMat)
                 .findFirst();
@@ -107,12 +112,12 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
         if (sdf.isPresent()) {
             sdf.get().setUseTimeForPlantMature(true);
             sdf.get().setTimeForPlantMature((int) TimeUnit.SECONDS.convert(parsedTime, parsedTimeUnit));
-            SettingsDAO.getInstance().saveSettings();
+            PlantDataManager.getInstance().getSettingsDataBase().saveSettings(currentSettings);
 
             sender.sendMessage(MessageFormat.format("Growth time for {0} was successfully updated to {1} {2}.",
-                                                    parsedMat,
-                                                    parsedTime,
-                                                    parsedTimeUnit));
+                    parsedMat,
+                    parsedTime,
+                    parsedTimeUnit));
             ControlledPlantGrowthManager.getInstance()
                     .getInternEventListener()
                     .onForcePlantsReloadByDatabaseTypeEvent(parsedMat);
@@ -124,14 +129,20 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
         settingsPlantGrowthDTO.setMaterial(parsedMat);
         settingsPlantGrowthDTO.setUseTimeForPlantMature(true);
 
-        SettingsDAO.getInstance().getCurrentSettings().getPlantGrowthList().add(settingsPlantGrowthDTO);
-        SettingsDAO.getInstance().saveSettings();
-        ControlledPlantGrowthManager.getInstance().getInternEventListener().onForcePlantsReloadByDatabaseTypeEvent(parsedMat);
+        PlantDataManager.getInstance()
+                .getSettingsDataBase()
+                .getCurrentSettings()
+                .getPlantGrowthList()
+                .add(settingsPlantGrowthDTO);
+        PlantDataManager.getInstance().getSettingsDataBase().saveSettings(currentSettings);
+        ControlledPlantGrowthManager.getInstance()
+                .getInternEventListener()
+                .onForcePlantsReloadByDatabaseTypeEvent(parsedMat);
 
         sender.sendMessage(MessageFormat.format("Growth time for {0} was successfully updated to {1} {2}.",
-                                                parsedMat,
-                                                parsedTime,
-                                                parsedTimeUnit));
+                parsedMat,
+                parsedTime,
+                parsedTimeUnit));
         return true;
     }
 

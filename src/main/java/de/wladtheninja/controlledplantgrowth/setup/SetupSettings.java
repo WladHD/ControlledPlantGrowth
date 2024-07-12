@@ -2,7 +2,7 @@ package de.wladtheninja.controlledplantgrowth.setup;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
+import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
 import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.embedded.SettingsPlantGrowthDTO;
 import lombok.RequiredArgsConstructor;
@@ -21,35 +21,41 @@ public class SetupSettings implements Runnable {
         Bukkit.getLogger().log(Level.INFO, "Trying to load settings from database");
 
         // should really be only 0 or 1...
-        List<SettingsDTO> activeSettings = SettingsDAO.getInstance().getAllActiveSettings();
+        List<SettingsDTO> activeSettings = PlantDataManager.getInstance().getSettingsDataBase().getAllActiveSettings();
 
         Bukkit.getLogger()
                 .log(Level.FINER, MessageFormat.format("Found {0} active settings in database", activeSettings.size()));
 
-        if (activeSettings.size() == 0) {
-            SettingsDAO.getInstance().saveSettings(getDefaultSettings());
-            activeSettings = SettingsDAO.getInstance().getAllActiveSettings();
+        if (activeSettings.isEmpty()) {
+            PlantDataManager.getInstance().getSettingsDataBase().saveSettings(getDefaultSettings());
+            activeSettings = PlantDataManager.getInstance().getSettingsDataBase().getAllActiveSettings();
             Bukkit.getLogger().log(Level.FINER, "Restoring default settings");
         }
 
-        SettingsDAO.getInstance().setCurrentSettings(activeSettings.getFirst());
+        PlantDataManager.getInstance().getSettingsDataBase().setCurrentSettings(activeSettings.getFirst());
 
-        if (SettingsDAO.getInstance().getCurrentSettings() == null) {
+        if (PlantDataManager.getInstance().getSettingsDataBase().getCurrentSettings() == null) {
             throw new RuntimeException("Could not find settings");
         }
 
         Bukkit.getLogger()
                 .log(Level.FINER,
                         MessageFormat.format("Active settings with id {0} loaded successfully. Full config below: ",
-                                SettingsDAO.getInstance().getCurrentSettings().getId()));
+                                PlantDataManager.getInstance().getSettingsDataBase().getCurrentSettings().getId()));
 
         Bukkit.getLogger()
                 .log(Level.FINER,
                         MessageFormat.format("Settings contain {0} records for plants",
-                                SettingsDAO.getInstance().getCurrentSettings().getPlantGrowthList().size()));
+                                PlantDataManager.getInstance()
+                                        .getSettingsDataBase()
+                                        .getCurrentSettings()
+                                        .getPlantGrowthList()
+                                        .size()));
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Bukkit.getLogger().log(Level.FINER, gson.toJson(SettingsDAO.getInstance().getCurrentSettings()));
+        Bukkit.getLogger()
+                .log(Level.FINER,
+                        gson.toJson(PlantDataManager.getInstance().getSettingsDataBase().getCurrentSettings()));
     }
 
     public static SettingsDTO getDefaultSettings() {
@@ -102,22 +108,28 @@ public class SetupSettings implements Runnable {
 
     @Override
     public void run() {
-        if (SettingsDAO.getInstance().getCurrentConfig().isLoadConfigFromDatabase()) {
+        if (PlantDataManager.getInstance().getSettingsDataBase().getCurrentConfig().isLoadConfigFromDatabase()) {
             loadSettingsFromDatabase();
             return;
         }
 
-        SettingsDAO.getInstance().deleteSettings();
+        PlantDataManager.getInstance().getSettingsDataBase().deleteAllActiveSettings();
 
-        SettingsDAO.getInstance()
-                .setCurrentSettings(SettingsDAO.getInstance().getCurrentConfig().getPlantGrowthSettings());
+        PlantDataManager.getInstance()
+                .getSettingsDataBase()
+                .setCurrentSettings(PlantDataManager.getInstance()
+                        .getSettingsDataBase()
+                        .getCurrentConfig()
+                        .getPlantGrowthSettings());
 
         Bukkit.getLogger()
                 .log(Level.FINER,
                         MessageFormat.format("Settings imported from config.yml",
-                                SettingsDAO.getInstance().getCurrentSettings().getId()));
+                                PlantDataManager.getInstance().getSettingsDataBase().getCurrentSettings().getId()));
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Bukkit.getLogger().log(Level.FINER, gson.toJson(SettingsDAO.getInstance().getCurrentSettings()));
+        Bukkit.getLogger()
+                .log(Level.FINER,
+                        gson.toJson(PlantDataManager.getInstance().getSettingsDataBase().getCurrentSettings()));
     }
 }

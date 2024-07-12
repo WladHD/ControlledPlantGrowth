@@ -7,7 +7,6 @@ import de.wladtheninja.controlledplantgrowth.data.dto.embedded.SettingsPlantGrow
 import de.wladtheninja.controlledplantgrowth.data.utils.DatabaseHibernateUtil;
 import de.wladtheninja.controlledplantgrowth.setup.SetupConfig;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -20,20 +19,13 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.logging.Level;
 
-import static lombok.AccessLevel.PRIVATE;
 
+@Setter
+@Getter
+public class SettingsDAO implements ISettingsDAO<SettingsDTO, SettingsPlantGrowthDTO, ConfigDTO> {
 
-public class SettingsDAO implements ISettingsDAO {
-
-    // TODO
-    @Deprecated
-    @Getter(lazy = true)
-    private static final SettingsDAO instance = new SettingsDAO();
-    @Getter
-    @Setter
     private SettingsDTO currentSettings;
-    @Getter
-    @Setter
+
     private ConfigDTO currentConfig;
 
     public List<SettingsDTO> getAllActiveSettings() {
@@ -84,21 +76,18 @@ public class SettingsDAO implements ISettingsDAO {
                         "Settings may be corrupted. Could not locate the default settings."));
     }
 
-    public int deleteSettings() {
-        int result = 0;
-
+    public void deleteAllActiveSettings() {
         try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             String hql = "DELETE FROM SettingsDTO WHERE active = true";
-            result = session.createMutationQuery(hql).executeUpdate();
+            session.createMutationQuery(hql).executeUpdate();
 
             transaction.commit();
         } catch (Exception exception) {
-            exception.printStackTrace();
+
         }
 
-        return result;
     }
 
     public void saveSettings() {

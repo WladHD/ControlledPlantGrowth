@@ -3,6 +3,7 @@ package de.wladtheninja.controlledplantgrowth.setup;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth;
+import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
 import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
 import de.wladtheninja.controlledplantgrowth.data.dto.ConfigDTO;
 import org.bukkit.Bukkit;
@@ -19,7 +20,7 @@ public class SetupConfig implements Runnable {
             throws IOException {
         YAMLMapper yamlMapper = new YAMLMapper().configure(YAMLGenerator.Feature.WRITE_DOC_START_MARKER, false);
         ConfigDTO loadedConfig = yamlMapper.readValue(configFile, ConfigDTO.class);
-        SettingsDAO.getInstance().setCurrentConfig(loadedConfig);
+        PlantDataManager.getInstance().getSettingsDataBase().setCurrentConfig(loadedConfig);
     }
 
     public static void createDefaultConfig(File pluginDirectory)

@@ -1,7 +1,7 @@
 package de.wladtheninja.controlledplantgrowth.data.utils;
 
 import de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth;
-import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
+import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
 import de.wladtheninja.controlledplantgrowth.data.dto.ConfigDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
@@ -40,7 +40,7 @@ public class DatabaseHibernateUtil {
             configuration.addAnnotatedClass(SettingsDTO.class);
             configuration.addAnnotatedClass(PlantBaseBlockDTO.class);
 
-            ConfigDTO pluginConfig = SettingsDAO.getInstance().getCurrentConfig();
+            ConfigDTO pluginConfig = PlantDataManager.getInstance().getSettingsDataBase().getCurrentConfig();
 
             pluginConfig.getDatabaseHibernateSettings().forEach(configuration::setProperty);
 
@@ -53,7 +53,8 @@ public class DatabaseHibernateUtil {
                     new StandardServiceRegistryBuilder(brs).applySettings(configuration.getProperties()).build();
 
             sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             Bukkit.getLogger().log(Level.SEVERE, t.getMessage(), t);
         }
     }

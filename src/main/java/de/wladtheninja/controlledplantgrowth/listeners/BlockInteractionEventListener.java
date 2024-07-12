@@ -1,5 +1,6 @@
 package de.wladtheninja.controlledplantgrowth.listeners;
 
+import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
 import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptBasic;
@@ -32,7 +33,7 @@ public class BlockInteractionEventListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onChunkLoad(ChunkLoadEvent event) {
-        if (SettingsDAO.getInstance().getCurrentSettings().isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants()) {
+        if (PlantDataManager.getInstance().getSettingsDataBase().getCurrentSettings().isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants()) {
             ControlledPlantGrowthManager.getInstance().getChunkAnalyser().onChunkLoaded(event.getChunk());
         }
 
@@ -41,7 +42,7 @@ public class BlockInteractionEventListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onChunkUnload(ChunkUnloadEvent event) {
-        if (SettingsDAO.getInstance().getCurrentSettings().isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants()) {
+        if (PlantDataManager.getInstance().getSettingsDataBase().getCurrentSettings().isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants()) {
             ControlledPlantGrowthManager.getInstance().getChunkAnalyser().onChunkUnloaded(event.getChunk());
         }
 
@@ -80,7 +81,7 @@ public class BlockInteractionEventListener implements Listener {
             return;
         }
 
-        if (SettingsDAO.getInstance().getCurrentSettings().isDisableNaturalGrowth()) {
+        if (PlantDataManager.getInstance().getSettingsDataBase().getCurrentSettings().isDisableNaturalGrowth()) {
             event.setCancelled(true);
         }
 
