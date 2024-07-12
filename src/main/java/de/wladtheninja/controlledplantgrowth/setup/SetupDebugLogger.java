@@ -14,8 +14,6 @@ public class SetupDebugLogger implements Runnable {
         Bukkit.getLogger().addHandler(systemOut);
         Bukkit.getLogger().setLevel(Level.ALL);
 
-        Bukkit.getLogger().setUseParentHandlers(false);
-
         Bukkit.getLogger()
                 .log(Level.FINER,
                         MessageFormat.format("Logging level set to {0} (DEBUG OPTION ENABLED)", systemOut.getLevel()));

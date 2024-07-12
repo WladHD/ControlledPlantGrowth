@@ -9,7 +9,6 @@ import java.util.Collections;
 
 public class PlantInstanceMelon extends PlantTypeAgeingOneBlockFruitAttached {
 
-
     public PlantInstanceMelon() {
         // see https://minecraft.fandom.com/wiki/Melon_Seeds for accepted grow blocks
         super(Material.MELON,

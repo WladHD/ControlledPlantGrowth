@@ -1,6 +1,9 @@
 package de.wladtheninja.controlledplantgrowth.data.dto.embedded;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.PostLoad;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -48,6 +51,16 @@ public class SettingsPlantGrowthDTO {
     public SettingsPlantGrowthDTO setArray(int[] numbers, TimeUnit sourceTime) {
         getTimeForNextPlantGrowthInSteps().clear();
         Arrays.stream(numbers)
+                .map(number -> (int) TimeUnit.SECONDS.convert(number, sourceTime))
+                .forEach(getTimeForNextPlantGrowthInSteps()::add);
+
+        return this;
+    }
+
+    @Transient
+    public SettingsPlantGrowthDTO setArray(List<Integer> numbers, TimeUnit sourceTime) {
+        getTimeForNextPlantGrowthInSteps().clear();
+        numbers.stream()
                 .map(number -> (int) TimeUnit.SECONDS.convert(number, sourceTime))
                 .forEach(getTimeForNextPlantGrowthInSteps()::add);
 

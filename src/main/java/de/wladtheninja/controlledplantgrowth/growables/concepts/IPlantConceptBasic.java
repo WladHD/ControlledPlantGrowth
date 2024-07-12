@@ -25,4 +25,6 @@ public interface IPlantConceptBasic extends IPlantConceptLocation, IPlantConcept
         return b.getType();
     }
 
+    int getSettingsMaximalAge(Material material);
+
 }

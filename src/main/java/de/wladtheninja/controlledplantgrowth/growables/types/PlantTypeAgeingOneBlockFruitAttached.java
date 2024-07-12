@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 
 import java.text.MessageFormat;
@@ -29,6 +30,16 @@ public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgei
     @Getter
     private final List<Material> acceptedSoilBlocksForFruit;
 
+    @Override
+    public int getSettingsMaximalAge(Material material) {
+        BlockData bd = getStemMaterial().createBlockData();
+
+        if (!(bd instanceof Ageable)) {
+            return 1;
+        }
+
+        return ((Ageable) bd).getMaximumAge() + 1;
+    }
 
     public PlantTypeAgeingOneBlockFruitAttached(Material materialFruit,
                                                 Material materialStem,
@@ -82,17 +93,20 @@ public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgei
 
     @Override
     public void setCurrentAge(Block b, int age) {
-        Bukkit.getLogger().log(Level.FINER, MessageFormat.format("Growing {0}, reaching age: {1} ot of {2}",
-                b.getType(),
-                age,
-                getMaximumAge(b)));
+        Bukkit.getLogger()
+                .log(Level.FINER,
+                        MessageFormat.format("Growing {0}, reaching age: {1} ot of {2}",
+                                b.getType(),
+                                age,
+                                getMaximumAge(b)));
         if (isBlockException(b)) {
             return;
         }
 
         try {
             handleConstraintCheckOrElseThrowError(this, b);
-        } catch (PlantConstraintViolationException e) {
+        }
+        catch (PlantConstraintViolationException e) {
             e.printInformation();
             return;
         }

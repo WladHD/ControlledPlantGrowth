@@ -3,6 +3,8 @@ package de.wladtheninja.controlledplantgrowth.growables.instances;
 import de.wladtheninja.controlledplantgrowth.growables.types.PlantTypeAgeingMultiBlockVertical;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.BlockData;
 
 import java.util.Arrays;
 
@@ -15,6 +17,11 @@ public class PlantInstanceCactusSugar extends PlantTypeAgeingMultiBlockVertical 
     @Override
     public int getMaximumAge(Block b) {
         return 2;
+    }
+
+    @Override
+    public int getSettingsMaximalAge(Material material) {
+        return 3;
     }
 
 }

@@ -7,6 +7,7 @@ import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
 import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.embedded.SettingsPlantGrowthDTO;
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptBasic;
 import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.Material;
@@ -14,11 +15,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Getter
@@ -59,7 +62,7 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
                 .retrieveAllSupportedMaterialsForSettings();
 
         String material = args[1].toUpperCase();
-        String timeInSeconds = args[2];
+        String timeOrTimeArray = args[2];
         String timeType = args.length == 4 ?
                 args[3].toUpperCase() :
                 null;
@@ -67,6 +70,7 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
         Material parsedMat;
         int parsedTime = -1;
         TimeUnit parsedTimeUnit = TimeUnit.MINUTES;
+        List<Integer> parsedNonLinearTime = null;
 
         try {
             parsedMat = Material.valueOf(material);
@@ -83,12 +87,19 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
             return true;
         }
 
+        boolean useParsedTime = false;
+
         try {
-            parsedTime = Integer.parseInt(timeInSeconds);
+            parsedTime = Integer.parseInt(timeOrTimeArray);
+            useParsedTime = true;
         }
         catch (Exception ex) {
-            sender.sendMessage(MessageFormat.format("{0} is not a number.", parsedTime));
-            return true;
+            parsedNonLinearTime = parseIntArray(timeOrTimeArray);
+
+            if (parsedNonLinearTime == null) {
+                sender.sendMessage(MessageFormat.format("{0} is not a number nor a correct array.", parsedTime));
+                return true;
+            }
         }
 
         if (timeType != null) {
@@ -109,15 +120,39 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
                 .filter(pgl -> pgl.getMaterial() == parsedMat)
                 .findFirst();
 
+        IPlantConceptBasic ipc = ControlledPlantGrowthManager.getInstance().retrieveSuitedPlantConcept(parsedMat);
+
+        int maxAgeIpc = ipc.getSettingsMaximalAge(parsedMat);
+
+        if (!useParsedTime && parsedNonLinearTime.size() != ipc.getSettingsMaximalAge(parsedMat)) {
+            sender.sendMessage(MessageFormat.format(
+                    "{0} has {1} age levels and needs {1} (provided: {3}) array " + "entries:" + " f. e" + ". " + "{2}",
+                    parsedMat,
+                    maxAgeIpc,
+                    Arrays.toString(IntStream.rangeClosed(1, maxAgeIpc).toArray()).replace(" ", ""),
+                    parsedNonLinearTime.size()));
+            return true;
+        }
+
         if (sdf.isPresent()) {
-            sdf.get().setUseTimeForPlantMature(true);
-            sdf.get().setTimeForPlantMature((int) TimeUnit.SECONDS.convert(parsedTime, parsedTimeUnit));
+            sdf.get().setUseTimeForPlantMature(useParsedTime);
+
+            if (useParsedTime) {
+                sdf.get().setTimeForPlantMature((int) TimeUnit.SECONDS.convert(parsedTime, parsedTimeUnit));
+            }
+            else {
+                sdf.get().setArray(parsedNonLinearTime, parsedTimeUnit);
+            }
+
             PlantDataManager.getInstance().getSettingsDataBase().saveSettings(currentSettings);
 
             sender.sendMessage(MessageFormat.format("Growth time for {0} was successfully updated to {1} {2}.",
                     parsedMat,
-                    parsedTime,
+                    useParsedTime ?
+                            parsedTime :
+                            Arrays.toString(parsedNonLinearTime.toArray()).replace(" ", ""),
                     parsedTimeUnit));
+
             ControlledPlantGrowthManager.getInstance()
                     .getInternEventListener()
                     .onForcePlantsReloadByDatabaseTypeEvent(parsedMat);
@@ -125,9 +160,16 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
         }
 
         SettingsPlantGrowthDTO settingsPlantGrowthDTO = new SettingsPlantGrowthDTO();
-        settingsPlantGrowthDTO.setTimeForPlantMature((int) TimeUnit.SECONDS.convert(parsedTime, parsedTimeUnit));
         settingsPlantGrowthDTO.setMaterial(parsedMat);
-        settingsPlantGrowthDTO.setUseTimeForPlantMature(true);
+
+        settingsPlantGrowthDTO.setUseTimeForPlantMature(useParsedTime);
+
+        if (useParsedTime) {
+            settingsPlantGrowthDTO.setTimeForPlantMature((int) TimeUnit.SECONDS.convert(parsedTime, parsedTimeUnit));
+        }
+        else {
+            settingsPlantGrowthDTO.setArray(parsedNonLinearTime, parsedTimeUnit);
+        }
 
         PlantDataManager.getInstance()
                 .getSettingsDataBase()
@@ -141,7 +183,9 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
 
         sender.sendMessage(MessageFormat.format("Growth time for {0} was successfully updated to {1} {2}.",
                 parsedMat,
-                parsedTime,
+                useParsedTime ?
+                        parsedTime :
+                        Arrays.toString(parsedNonLinearTime.toArray()).replace(" ", ""),
                 parsedTimeUnit));
         return true;
     }
@@ -158,6 +202,10 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
                 .map(Enum::toString)
                 .collect(Collectors.toList());
 
+        if (args.length == 1) {
+            return null;
+        }
+
         // /cmd set mat time
         if (args.length == 2 && acceptedMats.stream().noneMatch(s -> s.equalsIgnoreCase(args[1]))) {
             return acceptedMats;
@@ -165,13 +213,33 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
 
         // arg length 2 correct
 
-        if (args.length == 3 && !isInteger(args[2])) {
-            return Stream.of(60, 120, 300, 1800).map(String::valueOf).collect(Collectors.toList());
+        Material parsedMat = Material.valueOf(args[1].toUpperCase());
+        IPlantConceptBasic ipc = ControlledPlantGrowthManager.getInstance().retrieveSuitedPlantConcept(parsedMat);
+
+        if (args.length == 3 && !isInteger(args[2]) && (parseIntArray(args[2]) == null ||
+                parseIntArray(args[2]).size() != ipc.getSettingsMaximalAge(parsedMat))) {
+            return Stream.of(123,
+                    Arrays.toString(IntStream.rangeClosed(1, ipc.getSettingsMaximalAge(parsedMat)).toArray())
+                            .replace(" ", "")).map(String::valueOf).collect(Collectors.toList());
         }
 
 
         if (args.length == 4 && acceptedTimeUnits.stream().noneMatch(s -> s.toString().equalsIgnoreCase(args[3]))) {
             return acceptedTimeUnits.stream().map(Enum::toString).collect(Collectors.toList());
+        }
+
+        return new ArrayList<>();
+    }
+
+    public List<Integer> parseIntArray(String input) {
+        try {
+
+            input = input.substring(1, input.length() - 1);
+            String[] stringNumbers = input.split(",");
+
+            return Arrays.stream(stringNumbers).map(sn -> Integer.parseInt(sn.trim())).collect(Collectors.toList());
+        }
+        catch (Exception ignored) {
         }
 
         return null;
