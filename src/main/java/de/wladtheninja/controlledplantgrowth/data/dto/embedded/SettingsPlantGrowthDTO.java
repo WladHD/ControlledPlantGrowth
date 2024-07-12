@@ -1,23 +1,40 @@
 package de.wladtheninja.controlledplantgrowth.data.dto.embedded;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.PostLoad;
-import jakarta.persistence.Transient;
-import lombok.*;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import java.util.stream.IntStream;
 
 @Data
 @Embeddable
 @Getter
 @Setter
 @AllArgsConstructor()
-@NoArgsConstructor()
 public class SettingsPlantGrowthDTO {
+
+    public SettingsPlantGrowthDTO() {
+        timeForNextPlantGrowthInSteps = new ArrayList<>();
+    }
+
+    public SettingsPlantGrowthDTO(Material mat, boolean useTime, int timeMatureInMinutes) {
+        this(mat, useTime, timeMatureInMinutes, TimeUnit.MINUTES);
+    }
+
+    public SettingsPlantGrowthDTO(Material mat, boolean useTime, int timeMature, TimeUnit timeSource) {
+        this();
+        material = mat;
+        useTimeForPlantMature = useTime;
+        timeForPlantMature = (int) TimeUnit.SECONDS.convert(timeMature, timeSource);
+    }
 
     private Material material;
     private boolean useTimeForPlantMature;
@@ -25,8 +42,17 @@ public class SettingsPlantGrowthDTO {
     @Column(nullable = true)
     private Integer timeForPlantMature;
 
-    @Column(nullable = false)
-    private int @NonNull [] timeForNextPlantGrowthInSteps;
+    public List<Integer> timeForNextPlantGrowthInSteps;
+
+    @Transient
+    public SettingsPlantGrowthDTO setArray(int[] numbers, TimeUnit sourceTime) {
+        getTimeForNextPlantGrowthInSteps().clear();
+        Arrays.stream(numbers)
+                .map(number -> (int) TimeUnit.SECONDS.convert(number, sourceTime))
+                .forEach(getTimeForNextPlantGrowthInSteps()::add);
+
+        return this;
+    }
 
     @PostLoad
     @Transient
@@ -37,7 +63,7 @@ public class SettingsPlantGrowthDTO {
             return;
         }
 
-        timeForPlantMature = IntStream.of(timeForNextPlantGrowthInSteps).sum();
+        timeForPlantMature = getTimeForNextPlantGrowthInSteps().stream().reduce(0, Integer::sum);
     }
 }
 

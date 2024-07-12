@@ -122,7 +122,6 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
         SettingsPlantGrowthDTO settingsPlantGrowthDTO = new SettingsPlantGrowthDTO();
         settingsPlantGrowthDTO.setTimeForPlantMature((int) TimeUnit.SECONDS.convert(parsedTime, parsedTimeUnit));
         settingsPlantGrowthDTO.setMaterial(parsedMat);
-        settingsPlantGrowthDTO.setTimeForNextPlantGrowthInSteps(new int[0]);
         settingsPlantGrowthDTO.setUseTimeForPlantMature(true);
 
         SettingsDAO.getInstance().getCurrentSettings().getPlantGrowthList().add(settingsPlantGrowthDTO);

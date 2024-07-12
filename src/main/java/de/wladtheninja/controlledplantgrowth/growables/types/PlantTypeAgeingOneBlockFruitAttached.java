@@ -61,7 +61,7 @@ public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgei
     @Override
     public int getCurrentAge(Block b) {
         if (isBlockException(b)) {
-            return getMaxPlantAge();
+            return getMaximumAge(b);
         }
 
         return super.getCurrentAge(b);
@@ -82,7 +82,10 @@ public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgei
 
     @Override
     public void setCurrentAge(Block b, int age) {
-        Bukkit.getLogger().log(Level.FINER, MessageFormat.format("Growing {0}, reaching age: {1}", b.getType(), age));
+        Bukkit.getLogger().log(Level.FINER, MessageFormat.format("Growing {0}, reaching age: {1} ot of {2}",
+                b.getType(),
+                age,
+                getMaximumAge(b)));
         if (isBlockException(b)) {
             return;
         }

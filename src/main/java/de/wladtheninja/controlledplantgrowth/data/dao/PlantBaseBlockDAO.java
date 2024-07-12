@@ -1,6 +1,5 @@
 package de.wladtheninja.controlledplantgrowth.data.dao;
 
-import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
 import de.wladtheninja.controlledplantgrowth.data.utils.DatabaseHibernateUtil;
 import org.bukkit.Bukkit;
@@ -43,13 +42,15 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
 
     @Override
     public PlantBaseBlockDTO merge(PlantBaseBlockDTO obj) {
+        Bukkit.getLogger()
+                .log(Level.FINER,
+                        MessageFormat.format("[DB] Saving {0} at {1} (DB Type {2})",
+                                obj.getLocation().getBlock().getType(),
+                                obj.getLocation().toVector(),
+                                obj.getPlantType()));
         try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
-            obj.setPlantLocationChunkDTO(PlantDataManager.getInstance()
-                    .getPlantChunkDataBase()
-                    .merge(obj.getPlantLocationChunkDTO()));
-            session.flush();
             obj = session.merge(obj);
 
             transaction.commit();
@@ -70,13 +71,7 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
             Transaction transaction = session.beginTransaction();
 
 
-            objects.forEach(obj -> {
-                obj.setPlantLocationChunkDTO(PlantDataManager.getInstance()
-                        .getPlantChunkDataBase()
-                        .merge(obj.getPlantLocationChunkDTO()));
-                session.flush();
-                list.add(session.merge(obj));
-            });
+            objects.forEach(obj -> list.add(session.merge(obj)));
 
             transaction.commit();
         }
@@ -90,6 +85,9 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
 
     @Override
     public boolean delete(Location l) {
+        Bukkit.getLogger()
+                .log(Level.FINER,
+                        MessageFormat.format("[DB] Deleting {0} at {1}", l.getBlock().getType(), l.toVector()));
         int deletedCount = 0;
 
         try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
@@ -107,11 +105,9 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
                     .executeUpdate();
 
             transaction.commit();
-
-            Bukkit.getLogger().log(Level.FINER, MessageFormat.format("Deleted record for block at {0}", l.toVector()));
         }
         catch (Exception exception) {
-            exception.printStackTrace();
+            handleException(exception);
         }
 
         return deletedCount != 0;
@@ -119,7 +115,7 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
 
     @Override
     public PlantBaseBlockDTO getByLocation(Location location) {
-        List<PlantBaseBlockDTO> retrievedBlocks = null;
+        List<PlantBaseBlockDTO> retrievedBlocks;
 
         try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -185,13 +181,13 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
 
     @Override
     public List<PlantBaseBlockDTO> getByChunk(Chunk c) {
-        List<PlantBaseBlockDTO> retrievedBlocks = null;
+        List<PlantBaseBlockDTO> retrievedBlocks;
 
         try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
-            String hql = "FROM PlantBaseBlockDTO WHERE plantLocationChunkDTO.x = :xChunk " +
-                    "AND plantLocationChunkDTO.z = :zChunk AND plantLocationChunkDTO.worldUID = :worldUID";
+            String hql = "FROM PlantBaseBlockDTO WHERE chunkX = :xChunk " +
+                    "AND chunkZ = :zChunk AND plantBaseBlockIdDTO.worldUID = :worldUID";
             Query<PlantBaseBlockDTO> query = session.createQuery(hql, PlantBaseBlockDTO.class);
             query.setParameter("xChunk", c.getX());
             query.setParameter("zChunk", c.getZ());
@@ -218,12 +214,11 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
         try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
-            String hql = "FROM PlantBaseBlockDTO WHERE timeNextGrowthStage != -1 " +
-                    "AND timeNextGrowthStage > :timeBoundaryLow AND plantLocationChunkDTO.loaded =:load ORDER BY " +
-                    "timeNextGrowthStage ASC";
+            String hql = "FROM PlantBaseBlockDTO WHERE timeNextGrowthStage != :growStage AND timeNextGrowthStage > " +
+                    ":timeBoundaryLow ORDER BY " + "timeNextGrowthStage ASC";
             Query<PlantBaseBlockDTO> query = session.createQuery(hql, PlantBaseBlockDTO.class);
             query.setParameter("timeBoundaryLow", timeStamp);
-            query.setParameter("load", true);
+            query.setParameter("growStage", -1);
             query.setMaxResults(Math.max(1,
                     SettingsDAO.getInstance().getCurrentSettings().getMaximumAmountOfPlantsInATimeWindowCluster()));
             pbb = query.getResultList();
@@ -257,11 +252,11 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
         try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
-            String hql = "FROM PlantBaseBlockDTO WHERE timeNextGrowthStage != -1 AND timeNextGrowthStage <= " +
-                    ":timeEpoch" + " AND plantLocationChunkDTO.loaded =:load ORDER BY timeNextGrowthStage ASC";
+            String hql = "FROM PlantBaseBlockDTO WHERE timeNextGrowthStage != :growStage AND timeNextGrowthStage <= " +
+                    ":timeEpoch ORDER BY timeNextGrowthStage ASC";
             Query<PlantBaseBlockDTO> query = session.createQuery(hql, PlantBaseBlockDTO.class);
             query.setParameter("timeEpoch", timeStamp); // IGNORE TIME EPOCH FOR NOW; HANDLE OLD PLANTS TOO
-            query.setParameter("load", true);
+            query.setParameter("growStage", -1);
 
             pbb = query.getResultList();
 

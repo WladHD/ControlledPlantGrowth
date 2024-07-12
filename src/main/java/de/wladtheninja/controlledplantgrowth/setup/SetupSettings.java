@@ -40,13 +40,13 @@ public class SetupSettings implements Runnable {
 
         Bukkit.getLogger()
                 .log(Level.FINER,
-                     MessageFormat.format("Active settings with id {0} loaded successfully. Full config below: ",
-                                          SettingsDAO.getInstance().getCurrentSettings().getId()));
+                        MessageFormat.format("Active settings with id {0} loaded successfully. Full config below: ",
+                                SettingsDAO.getInstance().getCurrentSettings().getId()));
 
         Bukkit.getLogger()
                 .log(Level.FINER,
-                     MessageFormat.format("Settings contain {0} records for plants",
-                                          SettingsDAO.getInstance().getCurrentSettings().getPlantGrowthList().size()));
+                        MessageFormat.format("Settings contain {0} records for plants",
+                                SettingsDAO.getInstance().getCurrentSettings().getPlantGrowthList().size()));
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Bukkit.getLogger().log(Level.FINER, gson.toJson(SettingsDAO.getInstance().getCurrentSettings()));
@@ -64,30 +64,31 @@ public class SetupSettings implements Runnable {
         ArrayList<SettingsPlantGrowthDTO> settingsPlantGrowths = new ArrayList<>();
 
         // grow wheat in 10 seconds
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.WHEAT, false, 1, new int[]{
-                min2sec(3), min2sec(3), min2sec(3), min2sec(4), min2sec(2), min2sec(2), min2sec(1)
-        }));
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.BEETROOTS, true, min2sec(18), new int[0]));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.WHEAT, false, 1).setArray(new int[]{
+                3, 3, 3, 4, 2, 2, 1
+        }, TimeUnit.SECONDS));
 
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.POTATOES, true, min2sec(18), new int[0]));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.BEETROOTS, true, min2sec(18)));
 
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.CARROTS, true, min2sec(18), new int[0]));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.POTATOES, true, 18));
 
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.NETHER_WART, true, min2sec(30), new int[0]));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.CARROTS, true, 18));
 
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.SWEET_BERRY_BUSH, true, min2sec(18), new int[0]));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.NETHER_WART, true, 30));
 
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.MELON_STEM, false, 1, new int[]{
-                min2sec(2), min2sec(2), min2sec(2), min2sec(4), min2sec(2), min2sec(2), min2sec(1), min2sec(3)
-        }));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.SWEET_BERRY_BUSH, true, 18));
 
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.PUMPKIN_STEM, false, 1, new int[]{
-                min2sec(2), min2sec(3), min2sec(1), min2sec(4), min2sec(2), min2sec(2), min2sec(1), min2sec(3)
-        }));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.MELON_STEM, false, 1).setArray(new int[]{
+                2, 2, 2, 4, 2, 2, 1, 3
+        }, TimeUnit.MINUTES));
+
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.PUMPKIN_STEM, false, 1).setArray(new int[]{
+                2, 3, 1, 4, 2, 2, 1, 3
+        }, TimeUnit.MINUTES));
 
 
         // AIR == default setting parsed when none is found
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.AIR, true, min2sec(20), new int[0]));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.AIR, true, 20));
 
         defaultSettings.setPlantGrowthList(settingsPlantGrowths);
 
@@ -113,8 +114,8 @@ public class SetupSettings implements Runnable {
 
         Bukkit.getLogger()
                 .log(Level.FINER,
-                     MessageFormat.format("Settings imported from config.yml",
-                                          SettingsDAO.getInstance().getCurrentSettings().getId()));
+                        MessageFormat.format("Settings imported from config.yml",
+                                SettingsDAO.getInstance().getCurrentSettings().getId()));
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Bukkit.getLogger().log(Level.FINER, gson.toJson(SettingsDAO.getInstance().getCurrentSettings()));

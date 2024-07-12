@@ -4,7 +4,6 @@ import de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth;
 import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
 import de.wladtheninja.controlledplantgrowth.data.dto.ConfigDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
-import de.wladtheninja.controlledplantgrowth.data.dto.PlantLocationChunkDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -39,7 +38,6 @@ public class DatabaseHibernateUtil {
         try {
             Configuration configuration = new Configuration();
             configuration.addAnnotatedClass(SettingsDTO.class);
-            configuration.addAnnotatedClass(PlantLocationChunkDTO.class);
             configuration.addAnnotatedClass(PlantBaseBlockDTO.class);
 
             ConfigDTO pluginConfig = SettingsDAO.getInstance().getCurrentConfig();

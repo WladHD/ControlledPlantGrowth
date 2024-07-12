@@ -30,7 +30,7 @@ public class ControlledPlantGrowthInfoCommand implements IPlantCommandExecutor {
                                                                         pgl.getMaterial(),
                                                                         pgl.isUseTimeForPlantMature() ?
                                                                                 pgl.getTimeForPlantMature() :
-                                                                                Arrays.toString(pgl.getTimeForNextPlantGrowthInSteps()))));
+                                                                                Arrays.toString(pgl.getTimeForNextPlantGrowthInSteps().toArray()))));
 
         return true;
     }

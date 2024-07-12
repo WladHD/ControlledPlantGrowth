@@ -7,10 +7,10 @@ import org.bukkit.block.Block;
 
 import java.text.MessageFormat;
 
+@Getter
 @AllArgsConstructor
 public class LightLevelPlantGrowthConstraint implements IPlantGrowthConstraint {
 
-    @Getter
     private final byte minLightLevel;
 
 
@@ -21,7 +21,7 @@ public class LightLevelPlantGrowthConstraint implements IPlantGrowthConstraint {
 
     @Override
     public String getGeneralViolationMessage() {
-        return MessageFormat.format("Current light level is to low for the plant to grow. Light level needed is {0}",
+        return MessageFormat.format("Current light level is to low for the plant to grow. Minimal light level: {0}",
                 minLightLevel);
     }
 }

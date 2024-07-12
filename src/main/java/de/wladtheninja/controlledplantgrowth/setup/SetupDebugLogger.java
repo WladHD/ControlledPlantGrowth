@@ -8,25 +8,22 @@ import java.util.logging.*;
 public class SetupDebugLogger implements Runnable {
     @Override
     public void run() {
+        Handler systemOut = new ConsoleHandler();
+        systemOut.setLevel(Level.ALL);
+        systemOut.setFormatter(new CustomFormatter());
+        Bukkit.getLogger().addHandler(systemOut);
         Bukkit.getLogger().setLevel(Level.ALL);
-        Bukkit.getLogger().setFilter(record -> {
-            record.setLevel(Level.ALL);
-            return true;
-        });
 
-        Handler consoleHandler = new ConsoleHandler();
-        consoleHandler.setLevel(Level.ALL);
-        consoleHandler.setFormatter(new CustomFormatter());
+        Bukkit.getLogger().setUseParentHandlers(false);
 
-        Bukkit.getLogger().addHandler(consoleHandler);
-
-
-        Bukkit.getLogger().log(Level.FINER, "Logging level set to FINER");
+        Bukkit.getLogger()
+                .log(Level.FINER,
+                        MessageFormat.format("Logging level set to {0} (DEBUG OPTION ENABLED)", systemOut.getLevel()));
     }
 
     private static class CustomFormatter extends SimpleFormatter {
         public String format(LogRecord record) {
-            return MessageFormat.format("[ControlledPlantGrowth DEBUG] {0}\n", record.getMessage());
+            return MessageFormat.format("[ControlledPlantGrowth {1}] {0}\n", record.getMessage(), record.getLevel());
         }
     }
 }

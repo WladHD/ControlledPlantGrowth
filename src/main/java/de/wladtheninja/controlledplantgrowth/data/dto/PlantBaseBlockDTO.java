@@ -19,9 +19,8 @@ public class PlantBaseBlockDTO {
     @EmbeddedId
     private PlantLocation3dDTO plantBaseBlockIdDTO;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private PlantLocationChunkDTO plantLocationChunkDTO;
-
+    private int chunkX;
+    private int chunkZ;
 
     private int currentPlantStage;
     private long timeNextGrowthStage;
@@ -41,14 +40,12 @@ public class PlantBaseBlockDTO {
         setPlantType(ipc.getDatabasePlantType(b));
 
         // TODO remove ... seems like it was not needed
-        plantLocationChunkDTO.setX(b.getLocation().getChunk().getX());
-        plantLocationChunkDTO.setZ(b.getLocation().getChunk().getZ());
-        plantLocationChunkDTO.setLoaded(b.getChunk().isLoaded());
+        setChunkX(b.getChunk().getX());
+        setChunkZ(b.getChunk().getZ());
     }
 
     public PlantBaseBlockDTO() {
         plantBaseBlockIdDTO = new PlantLocation3dDTO();
-        plantLocationChunkDTO = new PlantLocationChunkDTO();
         setCurrentPlantStage(-1);
         setTimeNextGrowthStage(-1);
         setPlantType(Material.AIR);
