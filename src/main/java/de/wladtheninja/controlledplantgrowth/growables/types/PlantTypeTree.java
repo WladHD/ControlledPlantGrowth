@@ -42,7 +42,8 @@ public abstract class PlantTypeTree extends PlantTypeBasic implements IPlantConc
             BlockFace.SOUTH_WEST,
             BlockFace.WEST,
             BlockFace.NORTH_WEST,
-            };
+            BlockFace.NORTH
+    };
 
     @Override
     public List<Block> getGiant2x2Structure(Block b) {
