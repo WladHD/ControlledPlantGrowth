@@ -30,17 +30,6 @@ public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgei
     @Getter
     private final List<Material> acceptedSoilBlocksForFruit;
 
-    @Override
-    public int getSettingsMaximalAge(Material material) {
-        BlockData bd = getStemMaterial().createBlockData();
-
-        if (!(bd instanceof Ageable)) {
-            return 1;
-        }
-
-        return ((Ageable) bd).getMaximumAge() + 1;
-    }
-
     public PlantTypeAgeingOneBlockFruitAttached(Material materialFruit,
                                                 Material materialStem,
                                                 Material materialAttachedStem,
@@ -57,6 +46,17 @@ public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgei
         if (acceptedSoilBlocksForFruit != null) {
             this.acceptedSoilBlocksForFruit.addAll(acceptedSoilBlocksForFruit);
         }
+    }
+
+    @Override
+    public int getSettingsMaximalAge(Material material) {
+        BlockData bd = getStemMaterial().createBlockData();
+
+        if (!(bd instanceof Ageable)) {
+            return 1;
+        }
+
+        return ((Ageable) bd).getMaximumAge() + 1;
     }
 
     @Override

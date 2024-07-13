@@ -3,7 +3,6 @@ package de.wladtheninja.controlledplantgrowth.commands.cmds;
 import de.wladtheninja.controlledplantgrowth.commands.IPlantCommandExecutor;
 import de.wladtheninja.controlledplantgrowth.commands.PlantCommandData;
 import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
-import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
 import lombok.NonNull;
 import net.md_5.bungee.api.ChatColor;
@@ -14,6 +13,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,7 +30,10 @@ public class ControlledPlantGrowthForceloadCommand implements IPlantCommandExecu
                              @NonNull String label,
                              String @NonNull [] args) {
 
-        if (PlantDataManager.getInstance().getSettingsDataBase().getCurrentSettings().isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants() &&
+        if (PlantDataManager.getInstance()
+                .getSettingsDataBase()
+                .getCurrentSettingsFromCache()
+                .isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants() &&
                 (args.length != 2 || !args[1].equalsIgnoreCase("confirm"))) {
             sender.sendMessage("Plugin already checks all chunks on load due to the setting " +
                     "useAggressiveChunkAnalysisAndLookForUnregisteredPlants " + "in config is true.");
@@ -66,6 +69,6 @@ public class ControlledPlantGrowthForceloadCommand implements IPlantCommandExecu
                                       @NonNull Command command,
                                       @NonNull String label,
                                       String @NonNull [] args) {
-        return null;
+        return new ArrayList<>();
     }
 }

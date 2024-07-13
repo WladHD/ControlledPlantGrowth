@@ -1,7 +1,11 @@
 package de.wladtheninja.controlledplantgrowth.data.dto;
 
 import de.wladtheninja.controlledplantgrowth.data.dto.embedded.SettingsPlantGrowthDTO;
-import jakarta.persistence.*;
+import de.wladtheninja.controlledplantgrowth.data.utils.SettingsDTOVersion;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,10 +18,9 @@ import java.util.List;
 public class SettingsDTO implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String settingsPageName;
 
-    private boolean active;
+    private SettingsDTOVersion settingsVersion = SettingsDTOVersion.getCurrentVersion();
 
     private boolean disableNaturalGrowth;
 

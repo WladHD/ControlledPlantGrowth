@@ -2,9 +2,8 @@ package de.wladtheninja.controlledplantgrowth.data.utils;
 
 import de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth;
 import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
-import de.wladtheninja.controlledplantgrowth.data.dto.ConfigDTO;
-import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
+import de.wladtheninja.controlledplantgrowth.data.dto.external.ConfigDTO;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,10 +20,10 @@ import java.util.logging.Level;
 import static java.util.logging.Logger.getLogger;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class DatabaseHibernateUtil {
+public class DatabaseHibernateSettingsUtil {
 
     @Getter(lazy = true)
-    private static final DatabaseHibernateUtil instance = new DatabaseHibernateUtil();
+    private static final DatabaseHibernateSettingsUtil instance = new DatabaseHibernateSettingsUtil();
     private SessionFactory sessionFactory;
 
     public void setup() {
@@ -38,11 +37,10 @@ public class DatabaseHibernateUtil {
         try {
             Configuration configuration = new Configuration();
             configuration.addAnnotatedClass(SettingsDTO.class);
-            configuration.addAnnotatedClass(PlantBaseBlockDTO.class);
 
-            ConfigDTO pluginConfig = PlantDataManager.getInstance().getSettingsDataBase().getCurrentConfig();
+            ConfigDTO pluginConfig = PlantDataManager.getInstance().getConfigDataBase().getCurrentConfigFromCache();
 
-            pluginConfig.getDatabaseHibernateSettings().forEach(configuration::setProperty);
+            pluginConfig.getHibernateConfigPlantSettings().forEach(configuration::setProperty);
 
             BootstrapServiceRegistry brs =
                     new BootstrapServiceRegistryBuilder().applyClassLoader(ControlledPlantGrowth.class.getClassLoader())

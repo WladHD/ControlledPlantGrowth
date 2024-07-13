@@ -22,7 +22,8 @@ public class PlantConstraintViolationException extends Exception {
         StringBuilder sb = new StringBuilder();
 
         sb.append(MessageFormat.format(
-                "{0} plant growth constraint{1} violated. {2} at {3} can't grow" + ".\nList of violated constraints: ",
+                "{0} plant growth constraint{1} violated. {2} at {3} can not grow" + ".\nList of violated " +
+                        "constraints: ",
                 violations.size(),
                 violations.size() == 1 ?
                         " was" :

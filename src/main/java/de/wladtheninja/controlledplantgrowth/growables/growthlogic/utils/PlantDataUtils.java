@@ -1,7 +1,6 @@
 package de.wladtheninja.controlledplantgrowth.growables.growthlogic.utils;
 
 import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
-import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.embedded.SettingsPlantGrowthDTO;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptAge;

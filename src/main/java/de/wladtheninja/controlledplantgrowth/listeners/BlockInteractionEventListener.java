@@ -1,7 +1,6 @@
 package de.wladtheninja.controlledplantgrowth.listeners;
 
 import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
-import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptBasic;
 import org.bukkit.Bukkit;
@@ -33,7 +32,10 @@ public class BlockInteractionEventListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onChunkLoad(ChunkLoadEvent event) {
-        if (PlantDataManager.getInstance().getSettingsDataBase().getCurrentSettings().isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants()) {
+        if (PlantDataManager.getInstance()
+                .getSettingsDataBase()
+                .getCurrentSettingsFromCache()
+                .isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants()) {
             ControlledPlantGrowthManager.getInstance().getChunkAnalyser().onChunkLoaded(event.getChunk());
         }
 
@@ -42,7 +44,10 @@ public class BlockInteractionEventListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onChunkUnload(ChunkUnloadEvent event) {
-        if (PlantDataManager.getInstance().getSettingsDataBase().getCurrentSettings().isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants()) {
+        if (PlantDataManager.getInstance()
+                .getSettingsDataBase()
+                .getCurrentSettingsFromCache()
+                .isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants()) {
             ControlledPlantGrowthManager.getInstance().getChunkAnalyser().onChunkUnloaded(event.getChunk());
         }
 
@@ -81,7 +86,10 @@ public class BlockInteractionEventListener implements Listener {
             return;
         }
 
-        if (PlantDataManager.getInstance().getSettingsDataBase().getCurrentSettings().isDisableNaturalGrowth()) {
+        if (PlantDataManager.getInstance()
+                .getSettingsDataBase()
+                .getCurrentSettingsFromCache()
+                .isDisableNaturalGrowth()) {
             event.setCancelled(true);
         }
 

@@ -13,7 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class PlantTypeBasic implements IPlantConceptBasic, IPlantConceptGrowthConstraints, IPlantConceptLocation {
+public abstract class PlantTypeBasic
+        implements IPlantConceptBasic, IPlantConceptGrowthConstraints, IPlantConceptLocation {
     private final ArrayList<IPlantGrowthConstraint> constraints;
     private final List<Material> acceptedMaterials;
 

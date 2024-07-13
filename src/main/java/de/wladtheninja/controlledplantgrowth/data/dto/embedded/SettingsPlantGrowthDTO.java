@@ -1,6 +1,5 @@
 package de.wladtheninja.controlledplantgrowth.data.dto.embedded;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.Transient;
@@ -24,6 +23,11 @@ import java.util.logging.Level;
 @AllArgsConstructor()
 public class SettingsPlantGrowthDTO {
 
+    private Material material;
+    private boolean useTimeForPlantMature;
+    private Integer timeForPlantMature;
+    private List<Integer> timeForNextPlantGrowthInSteps;
+
     public SettingsPlantGrowthDTO() {
         timeForNextPlantGrowthInSteps = new ArrayList<>();
     }
@@ -38,14 +42,6 @@ public class SettingsPlantGrowthDTO {
         useTimeForPlantMature = useTime;
         timeForPlantMature = (int) TimeUnit.SECONDS.convert(timeMature, timeSource);
     }
-
-    private Material material;
-    private boolean useTimeForPlantMature;
-
-    @Column(nullable = true)
-    private Integer timeForPlantMature;
-
-    public List<Integer> timeForNextPlantGrowthInSteps;
 
     @Transient
     public SettingsPlantGrowthDTO setArray(int[] numbers, TimeUnit sourceTime) {

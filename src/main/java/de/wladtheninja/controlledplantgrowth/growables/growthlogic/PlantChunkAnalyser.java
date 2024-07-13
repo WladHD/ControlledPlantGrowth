@@ -33,26 +33,6 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
 
     private boolean running;
 
-    @AllArgsConstructor
-    @Getter
-    public static class ChunkCordsStore {
-        public ChunkCordsStore(Chunk c) {
-            this(c.getX(), c.getZ(), c.getWorld().getUID());
-        }
-
-        private final int x;
-        private final int z;
-        private final UUID world;
-
-        public boolean isEqualTo(Chunk c) {
-            return x == c.getX() && z == c.getZ() && world.equals(c.getWorld().getUID());
-        }
-
-        public String toString() {
-            return MessageFormat.format("{0},{1}", x, z);
-        }
-    }
-
     public PlantChunkAnalyser() {
         analyzedChunks = new ArrayList<>();
         arrayDeque = new ArrayDeque<>();
@@ -220,5 +200,24 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
                 asyncSearch();
             }
         });
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class ChunkCordsStore {
+        private final int x;
+        private final int z;
+        private final UUID world;
+        public ChunkCordsStore(Chunk c) {
+            this(c.getX(), c.getZ(), c.getWorld().getUID());
+        }
+
+        public boolean isEqualTo(Chunk c) {
+            return x == c.getX() && z == c.getZ() && world.equals(c.getWorld().getUID());
+        }
+
+        public String toString() {
+            return MessageFormat.format("{0},{1}", x, z);
+        }
     }
 }

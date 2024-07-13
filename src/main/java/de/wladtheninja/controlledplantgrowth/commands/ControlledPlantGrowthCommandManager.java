@@ -52,8 +52,8 @@ public class ControlledPlantGrowthCommandManager implements CommandExecutor, Tab
 
         if (!parsedCmd.isPresent()) {
             sender.sendMessage(MessageFormat.format("Command /{0} {1} was not found. Printing help menu:",
-                                                    label,
-                                                    args[0]));
+                    label,
+                    args[0]));
             onCommand(sender, command, label, new String[]{"help"});
             return false;
         }
@@ -63,7 +63,7 @@ public class ControlledPlantGrowthCommandManager implements CommandExecutor, Tab
         if (!executor.getCommandData().permission().isEmpty() &&
                 !sender.hasPermission(executor.getCommandData().permission())) {
             sender.sendMessage(MessageFormat.format("This command requires the permission ''{0}''.",
-                                                    executor.getCommandData().permission()));
+                    executor.getCommandData().permission()));
             return false;
         }
 

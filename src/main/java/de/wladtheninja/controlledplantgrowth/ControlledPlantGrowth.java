@@ -1,12 +1,13 @@
 package de.wladtheninja.controlledplantgrowth;
 
 import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
-import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
-import de.wladtheninja.controlledplantgrowth.data.utils.DatabaseHibernateUtil;
+import de.wladtheninja.controlledplantgrowth.data.utils.DatabaseHibernateLocalPlantCacheUtil;
+import de.wladtheninja.controlledplantgrowth.data.utils.DatabaseHibernateSettingsUtil;
 import de.wladtheninja.controlledplantgrowth.setup.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.logging.Level;
 
@@ -14,8 +15,13 @@ public final class ControlledPlantGrowth extends JavaPlugin {
 
     private final Runnable[] setups;
 
+    // https://api.spigotmc.org/legacy/update.php?resource=117871/~
+    public final static int SPIGOT_RESOURCE_ID = 117871;
+    public final static long GITHUB_REPOSITORY_ID = 824412371;
+
     public ControlledPlantGrowth() {
         setups = new Runnable[]{
+                new SetupCheckUpdate(),
                 new SetupDatabase(),
                 new SetupSettings(),
                 new SetupPlantConcepts(),
@@ -24,25 +30,38 @@ public final class ControlledPlantGrowth extends JavaPlugin {
         };
     }
 
+    public static void handleException(Exception ex, Level level) {
+        if (ex != null) {
+            Bukkit.getLogger().log(level, ex.getMessage(), ex);
+        }
+
+        if (level == Level.SEVERE) {
+            Bukkit.getLogger()
+                    .log(Level.SEVERE,
+                            MessageFormat.format("Disabling {0} ...",
+                                    ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class)));
+            Bukkit.getPluginManager().disablePlugin(ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class));
+        }
+    }
+
+    public static void handleException(Exception ex) {
+        handleException(ex, Level.INFO);
+    }
+
     @Override
     public void onEnable() {
         new SetupConfig().run();
 
-        if (PlantDataManager.getInstance().getSettingsDataBase().getCurrentConfig().isEnableDebugLog()) {
+        if (PlantDataManager.getInstance().getConfigDataBase().getCurrentConfigFromCache().isEnableDebugLog()) {
             new SetupDebugLogger().run();
         }
 
         Arrays.stream(setups).forEach(Runnable::run);
     }
 
-
-    public static void handleException(Exception ex) {
-        Bukkit.getLogger().log(Level.INFO, ex.getMessage(), ex);
-    }
-
-
     @Override
     public void onDisable() {
-        DatabaseHibernateUtil.getInstance().shutdown();
+        DatabaseHibernateLocalPlantCacheUtil.getInstance().shutdown();
+        DatabaseHibernateSettingsUtil.getInstance().shutdown();
     }
 }

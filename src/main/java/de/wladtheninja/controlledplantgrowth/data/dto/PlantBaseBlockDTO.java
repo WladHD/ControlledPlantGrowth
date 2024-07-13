@@ -2,7 +2,9 @@ package de.wladtheninja.controlledplantgrowth.data.dto;
 
 import de.wladtheninja.controlledplantgrowth.data.dto.embedded.PlantLocation3dDTO;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptBasic;
-import jakarta.persistence.*;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -62,9 +64,9 @@ public class PlantBaseBlockDTO {
         if (location == null) {
             // TODO efficient to keep object persisted during runtime? maybe just return the object idk
             setLocation(new Location(world,
-                                     plantBaseBlockIdDTO.getX(),
-                                     plantBaseBlockIdDTO.getY(),
-                                     plantBaseBlockIdDTO.getZ()));
+                    plantBaseBlockIdDTO.getX(),
+                    plantBaseBlockIdDTO.getY(),
+                    plantBaseBlockIdDTO.getZ()));
         }
 
         return location;

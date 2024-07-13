@@ -1,8 +1,8 @@
 package de.wladtheninja.controlledplantgrowth.growables.types;
 
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptAge;
-import de.wladtheninja.controlledplantgrowth.growables.concepts.basic.IPlantConceptLocation;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptMultiBlockGrowthVertical;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.basic.IPlantConceptLocation;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.constraints.IPlantGrowthConstraint;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantConstraintViolationException;
 import lombok.NonNull;
@@ -49,7 +49,8 @@ public abstract class PlantTypeAgeingMultiBlockVertical extends PlantTypeBasic i
 
         try {
             handleConstraintCheckOrElseThrowError(this, b);
-        } catch (PlantConstraintViolationException e) {
+        }
+        catch (PlantConstraintViolationException e) {
             e.printInformation();
             return;
         }

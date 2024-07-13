@@ -1,26 +1,23 @@
 package de.wladtheninja.controlledplantgrowth.data.dao;
 
+import de.wladtheninja.controlledplantgrowth.data.dao.utils.ILoadLocalYML;
 import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
 import org.bukkit.Material;
 
-import java.util.List;
+import java.io.File;
 
-public interface ISettingsDAO<T, S, Q> {
+public interface ISettingsDAO<T, S> extends ILoadLocalYML<T> {
 
-    T getCurrentSettings();
-
-    void setCurrentSettings(T settings);
-
-    List<T> getAllActiveSettings();
-
-    void deleteAllActiveSettings();
+    SettingsDTO getSettingPageByName(String name);
 
     S getPlantSettings(Material mat);
 
-    Q getCurrentConfig();
+    void loadCurrentSettingsAndCache();
 
-    void setCurrentConfig(Q config);
+    T getCurrentSettingsFromCache();
 
-    void saveSettings(SettingsDTO settingsDTO);
+    void saveCachedCurrentSettings();
+
+    File getSettingsPath();
 
 }

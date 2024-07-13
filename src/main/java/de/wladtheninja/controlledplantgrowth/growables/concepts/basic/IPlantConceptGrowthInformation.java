@@ -1,6 +1,5 @@
 package de.wladtheninja.controlledplantgrowth.growables.concepts.basic;
 
-import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptBasic;
 import org.bukkit.block.Block;
 
 public interface IPlantConceptGrowthInformation {

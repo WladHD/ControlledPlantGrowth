@@ -3,7 +3,7 @@ package de.wladtheninja.controlledplantgrowth.data.dao;
 import de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth;
 import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
-import de.wladtheninja.controlledplantgrowth.data.utils.DatabaseHibernateUtil;
+import de.wladtheninja.controlledplantgrowth.data.utils.DatabaseHibernateLocalPlantCacheUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -25,7 +25,7 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
     public List<PlantBaseBlockDTO> getAll() {
         List<PlantBaseBlockDTO> retrievedBlocks;
 
-        try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
+        try (Session session = DatabaseHibernateLocalPlantCacheUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             String hql = "FROM PlantBaseBlockDTO";
@@ -50,7 +50,7 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
                                 obj.getLocation().getBlock().getType(),
                                 obj.getLocation().toVector(),
                                 obj.getPlantType()));
-        try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
+        try (Session session = DatabaseHibernateLocalPlantCacheUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             obj = session.merge(obj);
@@ -69,7 +69,7 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
     public List<PlantBaseBlockDTO> merge(List<PlantBaseBlockDTO> objects) {
         List<PlantBaseBlockDTO> list = new ArrayList<>();
 
-        try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
+        try (Session session = DatabaseHibernateLocalPlantCacheUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
 
@@ -92,7 +92,7 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
                         MessageFormat.format("[DB] Deleting {0} at {1}", l.getBlock().getType(), l.toVector()));
         int deletedCount = 0;
 
-        try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
+        try (Session session = DatabaseHibernateLocalPlantCacheUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             String hql =
@@ -119,7 +119,7 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
     public PlantBaseBlockDTO getByLocation(Location location) {
         List<PlantBaseBlockDTO> retrievedBlocks;
 
-        try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
+        try (Session session = DatabaseHibernateLocalPlantCacheUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             String hql = "FROM PlantBaseBlockDTO WHERE plantBaseBlockIdDTO.x = :x AND plantBaseBlockIdDTO.y = :y AND " +
@@ -162,7 +162,7 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
     public List<PlantBaseBlockDTO> getByMaterial(Material material) {
         List<PlantBaseBlockDTO> retrievedBlocks;
 
-        try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
+        try (Session session = DatabaseHibernateLocalPlantCacheUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             String hql = "FROM PlantBaseBlockDTO WHERE plantType = :plant";
@@ -185,7 +185,7 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
     public List<PlantBaseBlockDTO> getByChunk(Chunk c) {
         List<PlantBaseBlockDTO> retrievedBlocks;
 
-        try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
+        try (Session session = DatabaseHibernateLocalPlantCacheUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             String hql = "FROM PlantBaseBlockDTO WHERE chunkX = :xChunk " +
@@ -213,7 +213,7 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
 
         groupMilliseconds = Math.max(1, groupMilliseconds);
 
-        try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
+        try (Session session = DatabaseHibernateLocalPlantCacheUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             String hql = "FROM PlantBaseBlockDTO WHERE timeNextGrowthStage != :growStage AND timeNextGrowthStage > " +
@@ -222,7 +222,10 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
             query.setParameter("timeBoundaryLow", timeStamp);
             query.setParameter("growStage", -1);
             query.setMaxResults(Math.max(1,
-                    PlantDataManager.getInstance().getSettingsDataBase().getCurrentSettings().getMaximumAmountOfPlantsInATimeWindowCluster()));
+                    PlantDataManager.getInstance()
+                            .getSettingsDataBase()
+                            .getCurrentSettingsFromCache()
+                            .getMaximumAmountOfPlantsInATimeWindowCluster()));
             pbb = query.getResultList();
 
 
@@ -251,7 +254,7 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
     public List<PlantBaseBlockDTO> getBeforeTimestamp(long timeStamp) {
         List<PlantBaseBlockDTO> pbb;
 
-        try (Session session = DatabaseHibernateUtil.getInstance().getSessionFactory().openSession()) {
+        try (Session session = DatabaseHibernateLocalPlantCacheUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             String hql = "FROM PlantBaseBlockDTO WHERE timeNextGrowthStage != :growStage AND timeNextGrowthStage <= " +

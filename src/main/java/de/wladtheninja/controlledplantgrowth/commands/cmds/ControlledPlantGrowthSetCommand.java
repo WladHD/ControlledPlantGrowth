@@ -113,7 +113,9 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
             }
         }
 
-        SettingsDTO currentSettings = PlantDataManager.getInstance().getSettingsDataBase().getCurrentSettings();
+        SettingsDTO currentSettings = PlantDataManager.getInstance()
+                .getSettingsDataBase()
+                .getCurrentSettingsFromCache();
 
         Optional<SettingsPlantGrowthDTO> sdf = currentSettings.getPlantGrowthList()
                 .stream()
@@ -144,7 +146,7 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
                 sdf.get().setArray(parsedNonLinearTime, parsedTimeUnit);
             }
 
-            PlantDataManager.getInstance().getSettingsDataBase().saveSettings(currentSettings);
+            PlantDataManager.getInstance().getSettingsDataBase().saveCachedCurrentSettings();
 
             sender.sendMessage(MessageFormat.format("Growth time for {0} was successfully updated to {1} {2}.",
                     parsedMat,
@@ -173,10 +175,10 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
 
         PlantDataManager.getInstance()
                 .getSettingsDataBase()
-                .getCurrentSettings()
+                .getCurrentSettingsFromCache()
                 .getPlantGrowthList()
                 .add(settingsPlantGrowthDTO);
-        PlantDataManager.getInstance().getSettingsDataBase().saveSettings(currentSettings);
+        PlantDataManager.getInstance().getSettingsDataBase().saveCachedCurrentSettings();
         ControlledPlantGrowthManager.getInstance()
                 .getInternEventListener()
                 .onForcePlantsReloadByDatabaseTypeEvent(parsedMat);
@@ -203,7 +205,7 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
                 .collect(Collectors.toList());
 
         if (args.length == 1) {
-            return null;
+            return new ArrayList<>();
         }
 
         // /cmd set mat time
@@ -242,7 +244,7 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
         catch (Exception ignored) {
         }
 
-        return null;
+        return new ArrayList<>();
     }
 
 

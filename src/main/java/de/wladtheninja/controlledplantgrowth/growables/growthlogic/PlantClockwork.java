@@ -2,7 +2,6 @@ package de.wladtheninja.controlledplantgrowth.growables.growthlogic;
 
 import de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth;
 import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
-import de.wladtheninja.controlledplantgrowth.data.dao.SettingsDAO;
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
 import de.wladtheninja.controlledplantgrowth.growables.growthlogic.exec.RequestPlantGrowthRunnable;
 import de.wladtheninja.controlledplantgrowth.utils.DebounceUtil;
@@ -19,12 +18,10 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class PlantClockwork implements IPlantClockwork {
-    ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-
-    ScheduledFuture<?> scheduledFuture;
-
     @Getter
     private final DebounceUtil debounceUtil = new DebounceUtil();
+    ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+    ScheduledFuture<?> scheduledFuture;
 
     public List<PlantBaseBlockDTO> filterLoadedChunks(List<PlantBaseBlockDTO> plants) {
         if (plants == null) {
@@ -62,10 +59,14 @@ public class PlantClockwork implements IPlantClockwork {
         List<PlantBaseBlockDTO> plants = PlantDataManager.getInstance()
                 .getPlantDataBase()
                 .getAfterTimestamp(currentTime,
-                        PlantDataManager.getInstance().getSettingsDataBase()
-                                .getCurrentSettings()
+                        PlantDataManager.getInstance()
+                                .getSettingsDataBase()
+                                .getCurrentSettingsFromCache()
                                 .getMaximumTimeWindowInMillisecondsForPlantsToBeClustered(),
-                        PlantDataManager.getInstance().getSettingsDataBase().getCurrentSettings().getMaximumAmountOfPlantsInATimeWindowCluster());
+                        PlantDataManager.getInstance()
+                                .getSettingsDataBase()
+                                .getCurrentSettingsFromCache()
+                                .getMaximumAmountOfPlantsInATimeWindowCluster());
 
 
         final List<PlantBaseBlockDTO> finalPlants = filterLoadedChunks(plants);
