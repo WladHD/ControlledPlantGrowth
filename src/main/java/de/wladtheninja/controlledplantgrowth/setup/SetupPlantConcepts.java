@@ -1,10 +1,7 @@
 package de.wladtheninja.controlledplantgrowth.setup;
 
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
-import de.wladtheninja.controlledplantgrowth.growables.instances.PlantInstanceCactusSugar;
-import de.wladtheninja.controlledplantgrowth.growables.instances.PlantInstanceMelon;
-import de.wladtheninja.controlledplantgrowth.growables.instances.PlantInstancePumpkin;
-import de.wladtheninja.controlledplantgrowth.growables.instances.PlantInstanceWheatCo;
+import de.wladtheninja.controlledplantgrowth.growables.instances.*;
 
 public class SetupPlantConcepts implements Runnable {
     @Override
@@ -13,6 +10,7 @@ public class SetupPlantConcepts implements Runnable {
                 .registerPlantConceptInstance(new PlantInstanceWheatCo(),
                         new PlantInstanceCactusSugar(),
                         new PlantInstancePumpkin(),
-                        new PlantInstanceMelon());
+                        new PlantInstanceMelon(),
+                        new PlantInstanceBamboo());
     }
 }

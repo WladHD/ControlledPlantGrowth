@@ -80,8 +80,8 @@ public class SetupCheckUpdate implements Runnable {
                             .log(Level.FINER,
                                     MessageFormat.format("Current version on GitHub: {0} (installed {1}) ({2})",
                                             version,
-                                            downloadUrl,
-                                            installedVersionString));
+                                            installedVersionString,
+                                            downloadUrl));
 
                     ComparableVersion release = new ComparableVersion(version);
                     ComparableVersion installed = new ComparableVersion(installedVersionString);

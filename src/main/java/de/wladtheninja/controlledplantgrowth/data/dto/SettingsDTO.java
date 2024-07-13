@@ -24,8 +24,6 @@ public class SettingsDTO implements Serializable {
 
     private boolean disableNaturalGrowth;
 
-    private boolean showInfoWhenDefaultSettingIsUsed;
-
     private boolean useAggressiveChunkAnalysisAndLookForUnregisteredPlants;
 
     @ElementCollection(fetch = FetchType.EAGER)

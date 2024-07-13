@@ -15,7 +15,6 @@ public final class ControlledPlantGrowth extends JavaPlugin {
 
     private final Runnable[] setups;
 
-    // https://api.spigotmc.org/legacy/update.php?resource=117871/~
     public final static int SPIGOT_RESOURCE_ID = 117871;
     public final static long GITHUB_REPOSITORY_ID = 824412371;
 

@@ -9,6 +9,7 @@ import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptBas
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantNoAgeableInterfaceException;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantRootBlockMissingException;
 import de.wladtheninja.controlledplantgrowth.growables.growthlogic.utils.PlantDataUtils;
+import de.wladtheninja.controlledplantgrowth.growables.instances.PlantInstanceBamboo;
 import de.wladtheninja.controlledplantgrowth.utils.DebounceUtil;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -27,8 +28,7 @@ public class PlantInternEventListener implements IPlantInternEventListener {
 
     private final DebounceUtil debounceUtil = new DebounceUtil();
 
-    @Override
-    public void onPlantStructureUpdateEvent(IPlantConceptBasic ipc, Location definitePlantRootLocation) {
+    private void onPlantStructureUpdateEventDebounced(IPlantConceptBasic ipc, Location definitePlantRootLocation) {
         if (!Bukkit.isPrimaryThread()) {
             Bukkit.getLogger()
                     .log(Level.FINER, "Update request not from main thread... " + "forcing main thread execution.");
@@ -36,6 +36,10 @@ public class PlantInternEventListener implements IPlantInternEventListener {
                     .runTask(ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class),
                             () -> onPlantStructureUpdateEvent(ipc, definitePlantRootLocation));
             return;
+        }
+
+        if (ipc instanceof PlantInstanceBamboo) {
+            Bukkit.getLogger().finer("BAMBOO");
         }
 
         Bukkit.getLogger()
@@ -61,6 +65,7 @@ public class PlantInternEventListener implements IPlantInternEventListener {
         }
 
         if (isGone) {
+            ipc.onPlantRemoved(definitePlantRootLocation);
             PlantDataManager.getInstance().getPlantDataBase().delete(definitePlantRootLocation);
             return;
         }
@@ -68,6 +73,7 @@ public class PlantInternEventListener implements IPlantInternEventListener {
         final boolean isMature = ipc.isMature(definitePlantRootLocation.getBlock());
 
         if (isMature && isSaved) {
+            ipc.onPlantRemoved(definitePlantRootLocation);
             PlantDataManager.getInstance().getPlantDataBase().delete(definitePlantRootLocation);
         }
 
@@ -91,6 +97,7 @@ public class PlantInternEventListener implements IPlantInternEventListener {
 
         if (newAgeAndTimestamp == null) {
             if (isSaved) {
+                ipc.onPlantRemoved(definitePlantRootLocation);
                 PlantDataManager.getInstance().getPlantDataBase().delete(definitePlantRootLocation);
             }
             return;
@@ -98,6 +105,7 @@ public class PlantInternEventListener implements IPlantInternEventListener {
 
         if (newAgeAndTimestamp.getKey() == -1) {
             if (isSaved) {
+                ipc.onPlantRemoved(definitePlantRootLocation);
                 PlantDataManager.getInstance().getPlantDataBase().delete(definitePlantRootLocation);
             }
 
@@ -146,6 +154,7 @@ public class PlantInternEventListener implements IPlantInternEventListener {
                                         definitePlantRootLocation.getBlock().getType(),
                                         "newAgeAndTimestamp"));
                 if (isSaved) {
+                    ipc.onPlantRemoved(definitePlantRootLocation);
                     PlantDataManager.getInstance().getPlantDataBase().delete(definitePlantRootLocation);
                 }
                 return;
@@ -157,19 +166,15 @@ public class PlantInternEventListener implements IPlantInternEventListener {
         catch (PlantNoAgeableInterfaceException e) {
             Bukkit.getLogger().log(Level.FINER, e.getMessage(), e);
             if (isSaved) {
+                ipc.onPlantRemoved(definitePlantRootLocation);
                 PlantDataManager.getInstance().getPlantDataBase().delete(definitePlantRootLocation);
             }
         }
-
     }
 
     @Override
-    public void onChunkLoadEvent(Chunk c) {
-    }
-
-
-    @Override
-    public void onChunkUnloadEvent(Chunk c) {
+    public void onPlantStructureUpdateEvent(IPlantConceptBasic ipc, Location definitePlantRootLocation) {
+        onPlantStructureUpdateEventDebounced(ipc, definitePlantRootLocation);
     }
 
     @Override
@@ -186,7 +191,8 @@ public class PlantInternEventListener implements IPlantInternEventListener {
         }
 
         try {
-            final Location definiteRootBlock = ipc.getPlantRootBlock(possibleRoot.getBlock()).getLocation();
+            Location definiteRootBlock = ipc.getPlantRootBlock(possibleRoot.getBlock()).getLocation();
+
 
             Bukkit.getScheduler()
                     .runTaskLater(ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class),
@@ -195,6 +201,7 @@ public class PlantInternEventListener implements IPlantInternEventListener {
         }
         catch (PlantRootBlockMissingException e) {
             Bukkit.getLogger().log(Level.FINER, e.getMessage(), e);
+            ipc.onPlantRemoved(possibleRoot);
             PlantDataManager.getInstance().getPlantDataBase().delete(possibleRoot);
         }
     }
@@ -213,6 +220,12 @@ public class PlantInternEventListener implements IPlantInternEventListener {
             PlantDataManager.getInstance().getPlantDataBase().merge(pl);
             onPlantStructureUpdateEvent(ipc, pl.getLocation());
         });
+    }
+
+    public enum PlantModifyCause {
+        PLAYER,
+        NATURAL,
+        ENTITY
     }
 
 }

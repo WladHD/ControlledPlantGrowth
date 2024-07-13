@@ -24,12 +24,15 @@ import java.util.logging.Level;
 public class SettingsPlantGrowthDTO {
 
     private Material material;
+    private boolean ignoreInAutomaticChunkAnalysis;
     private boolean useTimeForPlantMature;
     private Integer timeForPlantMature;
     private List<Integer> timeForNextPlantGrowthInSteps;
 
     public SettingsPlantGrowthDTO() {
         timeForNextPlantGrowthInSteps = new ArrayList<>();
+        setIgnoreInAutomaticChunkAnalysis(false);
+        setTimeForPlantMature(1);
     }
 
     public SettingsPlantGrowthDTO(Material mat, boolean useTime, int timeMatureInMinutes) {
@@ -54,11 +57,17 @@ public class SettingsPlantGrowthDTO {
     }
 
     @Transient
-    public SettingsPlantGrowthDTO setArray(List<Integer> numbers, TimeUnit sourceTime) {
+    public void setArray(List<Integer> numbers, TimeUnit sourceTime) {
         getTimeForNextPlantGrowthInSteps().clear();
         numbers.stream()
                 .map(number -> (int) TimeUnit.SECONDS.convert(number, sourceTime))
                 .forEach(getTimeForNextPlantGrowthInSteps()::add);
+
+    }
+
+    @Transient
+    public SettingsPlantGrowthDTO setIgnoreAnalyze(boolean b) {
+        setIgnoreInAutomaticChunkAnalysis(b);
 
         return this;
     }

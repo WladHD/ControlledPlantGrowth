@@ -1,7 +1,9 @@
 package de.wladtheninja.controlledplantgrowth.growables.growthlogic;
 
+import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptBasic;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptMultiBlockGrowthVertical;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.*;
@@ -140,6 +142,10 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
                 final ChunkSnapshot cs = arrayDeque.pop();
 
                 List<BlockData> foundMats = cacheSupportedBlockData.stream()
+                        .filter(bd -> !PlantDataManager.getInstance()
+                                .getSettingsDataBase()
+                                .getPlantSettings(bd.getMaterial())
+                                .isIgnoreInAutomaticChunkAnalysis())
                         .filter(cs::contains)
                         .collect(Collectors.toList());
 
@@ -160,18 +166,41 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
                     for (int z = 0; z < 16; z++) {
 
                         for (int y = minHeight; y < maxHeight; y++) {
+                            final Material blockType = cs.getBlockType(x, y, z);
+
+                            if (PlantDataManager.getInstance()
+                                    .getSettingsDataBase()
+                                    .getPlantSettings(blockType)
+                                    .isIgnoreInAutomaticChunkAnalysis()) {
+                                continue;
+                            }
 
                             IPlantConceptBasic ipc = ControlledPlantGrowthManager.getInstance()
-                                    .retrieveSuitedPlantConcept(cs.getBlockType(x, y, z));
+                                    .retrieveSuitedPlantConcept(blockType);
 
                             if (ipc == null) {
                                 continue;
                             }
 
+
+                            Bukkit.getLogger()
+                                    .log(Level.FINER,
+                                            MessageFormat.format("[ChunkAnalyzer] {0} at x{1} y{2} z{3} will be " +
+                                                            "analyzed" +
+                                                            " .." +
+                                                            ". ",
+                                                    blockType, x, y, z));
+
                             ControlledPlantGrowthManager.getInstance()
                                     .getInternEventListener()
-                                    .onPossiblePlantStructureModifyEvent(cs.getBlockType(x, y, z),
+                                    .onPossiblePlantStructureModifyEvent(blockType,
                                             new Location(world, x + xChunk * 16, y, z + zChunk * 16));
+
+                            if (ipc instanceof IPlantConceptMultiBlockGrowthVertical) {
+                                for (int j = y + 1; j < maxHeight && cs.getBlockType(x, j, z) == blockType; j++) {
+                                    y++;
+                                }
+                            }
                         }
                     }
                 }
@@ -208,6 +237,7 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
         private final int x;
         private final int z;
         private final UUID world;
+
         public ChunkCordsStore(Chunk c) {
             this(c.getX(), c.getZ(), c.getWorld().getUID());
         }

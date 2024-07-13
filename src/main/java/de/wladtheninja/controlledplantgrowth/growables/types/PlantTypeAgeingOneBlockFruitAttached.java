@@ -7,6 +7,7 @@ import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantRootBlo
 import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -229,5 +230,19 @@ public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgei
         }
 
         return attachedPlantRoot;
+    }
+
+    @Override
+    public List<Location> getPlantComplexLocations(Block b) {
+        if (b.getType() == getStemMaterial()) {
+            return Collections.singletonList(b.getLocation());
+        }
+
+        if (b.getType() == getAttachedStemMaterial()) {
+            return Arrays.asList(b.getLocation(),
+                    b.getRelative(((Directional) b.getBlockData()).getFacing()).getLocation());
+        }
+
+        return null;
     }
 }

@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -67,37 +68,23 @@ public class SettingsDAO extends LoadLocalYML<SettingsDTO>
         return activeSettings.stream().findFirst().orElse(null);
     }
 
+    private final HashMap<Material, SettingsPlantGrowthDTO> cachedPlantGrowth = new HashMap<>();
+
     public SettingsPlantGrowthDTO getPlantSettings(Material m) {
-        final SettingsPlantGrowthDTO s = getCurrentSettingsFromCache().getPlantGrowthList()
-                .stream()
-                .filter(entry -> entry.getMaterial() == m)
-                .findFirst()
-                .orElse(null);
-
-
-        if (s != null) {
-            return s;
+        if (cachedPlantGrowth.containsKey(m)) {
+            return cachedPlantGrowth.get(m);
         }
 
-        if (getCurrentSettingsFromCache().isShowInfoWhenDefaultSettingIsUsed()) {
-            Bukkit.getLogger()
-                    .log(Level.INFO,
-                            MessageFormat.format(
-                                    "Plant {0} had no rules for growing defined. Using the default rules " +
-                                            "instead. If this behaviour is wanted, ignore this message or " +
-                                            "turn the setting showInfoWhenDefaultSettingIsUsed to false.", m));
-        }
+        getCurrentSettingsFromCache().getPlantGrowthList()
+                .forEach(set -> cachedPlantGrowth.put(set.getMaterial(), set));
 
-        return getCurrentSettingsFromCache().getPlantGrowthList()
-                .stream()
-                .filter(entry -> entry.getMaterial() == Material.AIR)
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException(
-                        "Settings may be corrupted. Could not locate the default settings."));
+        return cachedPlantGrowth.getOrDefault(m, cachedPlantGrowth.getOrDefault(Material.AIR, null));
     }
 
     @Override
     public void loadCurrentSettingsAndCache() {
+        cachedPlantGrowth.clear();
+
         if (isUsingDB()) {
             Bukkit.getLogger().log(Level.INFO, "Loading current settings from database ...");
             loadCurrentSettingsAndCacheFromDatabase();
@@ -196,7 +183,6 @@ public class SettingsDAO extends LoadLocalYML<SettingsDTO>
         defaultSettings.setMaximumTimeWindowInMillisecondsForPlantsToBeClustered(1);
         defaultSettings.setSettingsPageName("default");
         defaultSettings.setUseAggressiveChunkAnalysisAndLookForUnregisteredPlants(true);
-        defaultSettings.setShowInfoWhenDefaultSettingIsUsed(false);
 
         ArrayList<SettingsPlantGrowthDTO> settingsPlantGrowths = new ArrayList<>();
 
@@ -222,6 +208,8 @@ public class SettingsDAO extends LoadLocalYML<SettingsDTO>
         settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.PUMPKIN_STEM, false, 1).setArray(new int[]{
                 2, 3, 1, 4, 2, 2, 1, 3
         }, TimeUnit.MINUTES));
+
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.BAMBOO, true, 15).setIgnoreAnalyze(true));
 
 
         // AIR == default setting parsed when none is found

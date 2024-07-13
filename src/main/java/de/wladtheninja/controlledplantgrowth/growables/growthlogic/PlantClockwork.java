@@ -8,6 +8,7 @@ import de.wladtheninja.controlledplantgrowth.utils.DebounceUtil;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
@@ -94,14 +95,18 @@ public class PlantClockwork implements IPlantClockwork {
     @Override
     public void startPlantUpdateQueue() {
         this.startPlantUpdateQueueDebounced();
-        //ebounceUtil.debounce(Objects.hash(0), this::startPlantUpdateQueueDebounced, 150, TimeUnit.MILLISECONDS);
+        // debounceUtil.debounce(Objects.hash(0), this::startPlantUpdateQueueDebounced, 150, TimeUnit.MILLISECONDS);
     }
 
     public void startPlantUpdateQueueDebounced() {
         Bukkit.getLogger().log(Level.FINER, "UPDATE QUEUE!");
         if (scheduledFuture != null) {
-            Bukkit.getLogger().log(Level.FINER, "CANCELLED!");
-            scheduledFuture.cancel(false);
+            scheduledFuture.cancel(true);
+            Bukkit.getLogger()
+                    .log(Level.FINER,
+                            MessageFormat.format("CANCELLED! {0} done? {1}",
+                                    scheduledFuture.isCancelled(),
+                                    scheduledFuture.isDone()));
             scheduledFuture = null;
         }
 
@@ -133,7 +138,7 @@ public class PlantClockwork implements IPlantClockwork {
     public void requestPlantGrowth(List<PlantBaseBlockDTO> plants, boolean updateQueueWhenCompleted) {
         Bukkit.getScheduler()
                 .runTask(ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class),
-                        RequestPlantGrowthRunnable.reuseInstanceWith(plants, updateQueueWhenCompleted));
+                        new RequestPlantGrowthRunnable(plants, updateQueueWhenCompleted));
     }
 
 

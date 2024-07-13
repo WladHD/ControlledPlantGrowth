@@ -6,14 +6,16 @@ import de.wladtheninja.controlledplantgrowth.growables.concepts.basic.IPlantConc
 import de.wladtheninja.controlledplantgrowth.growables.concepts.constraints.IPlantGrowthConstraint;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantConstraintViolationException;
 import lombok.NonNull;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public abstract class PlantTypeAgeingMultiBlockVertical extends PlantTypeBasic implements IPlantConceptAge,
-        IPlantConceptLocation, IPlantConceptMultiBlockGrowthVertical {
+public abstract class PlantTypeAgeingMultiBlockVertical extends PlantTypeBasic
+        implements IPlantConceptAge, IPlantConceptLocation, IPlantConceptMultiBlockGrowthVertical {
 
 
     public PlantTypeAgeingMultiBlockVertical(List<Material> acceptedMaterials) {
@@ -26,13 +28,27 @@ public abstract class PlantTypeAgeingMultiBlockVertical extends PlantTypeBasic i
     }
 
     @Override
+    public List<Location> getPlantComplexLocations(Block b) {
+        List<Location> locs = new ArrayList<>();
+
+        for (Block current = b;
+             containsAcceptedMaterial(current.getType());
+             current = current.getRelative(BlockFace.UP)) {
+            locs.add(b.getLocation());
+        }
+
+        return locs;
+    }
+
+    @Override
     public int getCurrentAge(Block b) {
         int age = -1;
         final Block plantRootBlock = getPlantRootBlock(b);
         final Material plantMaterial = plantRootBlock.getType();
 
         for (Block current = plantRootBlock;
-             current.getType() == plantMaterial; current = current.getRelative(BlockFace.UP)) {
+             current.getType() == plantMaterial;
+             current = current.getRelative(BlockFace.UP)) {
             age++;
         }
 
@@ -44,8 +60,7 @@ public abstract class PlantTypeAgeingMultiBlockVertical extends PlantTypeBasic i
     }
 
     @Override
-    public void setCurrentAge(Block b,
-                              int setAge) {
+    public void setCurrentAge(Block b, int setAge) {
 
         try {
             handleConstraintCheckOrElseThrowError(this, b);

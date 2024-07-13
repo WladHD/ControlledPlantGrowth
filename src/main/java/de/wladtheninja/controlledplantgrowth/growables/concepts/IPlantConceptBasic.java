@@ -2,6 +2,7 @@ package de.wladtheninja.controlledplantgrowth.growables.concepts;
 
 import de.wladtheninja.controlledplantgrowth.growables.concepts.basic.IPlantConceptGrowthInformation;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.basic.IPlantConceptLocation;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
@@ -26,5 +27,10 @@ public interface IPlantConceptBasic extends IPlantConceptLocation, IPlantConcept
     }
 
     int getSettingsMaximalAge(Material material);
+
+    default void onPlantRemoved(Location removed) {
+    }
+
+    List<Location> getPlantComplexLocations(Block b);
 
 }

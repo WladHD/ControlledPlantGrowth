@@ -59,4 +59,27 @@ public class ControlledPlantGrowthManager {
         return new ArrayList<>(hashMapRetrieve.keySet());
     }
 
+    /* CHECKLIST (see https://minecraft.fandom.com/wiki/Crops)
+    Wheat Seeds             Y
+    Beetroot Seeds          Y
+    Carrot                  Y
+    Potato                  Y
+    Melon                   Y
+    Pumpkin                 Y
+    Torchflower Seeds       X?
+    Pitcher Pod             X?
+    Bamboo                  X
+    Cocoa Beans             X
+    Sugar Cane              Y
+    Sweet Berries           Y
+    Cactus                  Y
+    Mushrooms               X?
+    Kelp                    X
+    Sea Pickle              X?
+    Nether Wart             Y
+    Chorus Fruit            X?
+    Fungus                  X?
+    Glow Berries            X?
+    Saplings                X
+     */
 }

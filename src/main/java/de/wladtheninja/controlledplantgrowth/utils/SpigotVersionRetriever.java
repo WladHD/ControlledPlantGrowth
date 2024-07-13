@@ -14,7 +14,6 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Scanner;
 import java.util.function.Consumer;
-import java.util.logging.Level;
 
 @AllArgsConstructor
 // Inspiration taken from https://www.spigotmc.org/wiki/creating-an-update-checker-that-checks-for-updates
@@ -34,9 +33,6 @@ public class SpigotVersionRetriever {
                 while (sc.hasNextLine()) {
                     sb.append(sc.nextLine());
                 }
-
-                Bukkit.getLogger().log(Level.FINER, "Parsed Spiget JSON:");
-                Bukkit.getLogger().log(Level.FINER, sb.toString());
 
                 SpigetVersionDTO spigetVersionDTO = new Gson().fromJson(sb.toString(), SpigetVersionDTO.class);
 

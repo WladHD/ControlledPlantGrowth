@@ -38,8 +38,6 @@ public class BlockInteractionEventListener implements Listener {
                 .isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants()) {
             ControlledPlantGrowthManager.getInstance().getChunkAnalyser().onChunkLoaded(event.getChunk());
         }
-
-        ControlledPlantGrowthManager.getInstance().getInternEventListener().onChunkLoadEvent(event.getChunk());
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -50,8 +48,6 @@ public class BlockInteractionEventListener implements Listener {
                 .isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants()) {
             ControlledPlantGrowthManager.getInstance().getChunkAnalyser().onChunkUnloaded(event.getChunk());
         }
-
-        ControlledPlantGrowthManager.getInstance().getInternEventListener().onChunkUnloadEvent(event.getChunk());
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

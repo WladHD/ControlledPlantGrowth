@@ -19,7 +19,7 @@ public class PlantInstanceCactusSugar extends PlantTypeAgeingMultiBlockVertical 
 
     @Override
     public int getSettingsMaximalAge(Material material) {
-        return 3;
+        return 2;
     }
 
 }

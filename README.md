@@ -1,23 +1,23 @@
-# ControlledPlantGrowth for Spigot and Paper
+# Controlled Plant Growth for Spigot and Paper
 
 Do you remember the times when you planted all your seeds, went on a long mining spree and came back to the same
 progress at what you left? This plugin combats that.
 
-My goal is to develop a plugin that can force plants to be grown in a specific timespan.
-**It is not dependent on solely the player;
+My goal is to develop a lightweight plugin that can force plants to be grown in a specific timespan.
+**It does not only manage plants placed by the player;
 Plants placed by villagers and plants in general will be managed too.**
 
-Plants with multiple age levels will reflect those changes on each level as well.
-So you won't have a wheat field that instantly grows, which is not immersive.
-The change will influence all age levels, too.
+Plants with multiple age levels will reflect those changes as well.
+F. e. a wheat field will grow continuously to feel as immersive as possible.
 
-Here is a gif of how you can adjust the grow time and its effects.
-The default setting of 20 minutes was changed to 5 seconds.
+Here is a gif that shows how you can adjust the growth time and its resulting effects.
+In this example the default setting of 20 minutes was changed to 5 seconds.
 
 ![GIF of planting potatoes and showcasing the growth setting](https://github.com/WladHD/ControlledPlantGrowth/blob/assets/assets/ezgif-7-4abf2ad084.gif?raw=true)
 
-That being said, if someone stumbles upon this site and actually tries my plugin, feel free to open a new issue with
-ideas of new functionality or just feedback.
+Feel free to open a new issue with ideas of new functionality or just feedback.
+Especially regarding plants in development or on-hold refer to section
+[All Planned and Supported Plants](#All-Planned-and-Supported-Plants).
 
 ### Tested on Server Software
 
@@ -25,7 +25,8 @@ ideas of new functionality or just feedback.
 
 ## Features
 
-- Manages plants placed by the player as well as entities such as Villagers. Registers all plants on chunk load, perfect for plug in and play (can be turned off).
+- Manages plants placed by the player as well as entities such as Villagers. Registers all plants on chunk load, perfect
+  for plug in and play (can be turned off).
 - Select how much time maximally has to pass in order for the plant type to fully mature.
 - Plants that have multiple steps of growth (f. e. wheat) will grow continuously for immersive gameplay.
 - Random ticks / "natural growth" is by default enabled to allow a more random growth (can be turned off).
@@ -44,20 +45,47 @@ ideas of new functionality or just feedback.
 - Melons
 - Pumpkins
 
-### In Development
+#### All Planned and Supported Plants
 
-- Saplings
+- Y = Implemented
+- X = To be implemented
+- R = Will be implemented if requested
+
+| Pant              | Implemented? |
+|-------------------|--------------|
+| Wheat Seeds       | Y            |
+| Beetroot Seeds    | Y            |
+| Carrot            | Y            |
+| Potato            | Y            |
+| Melon             | Y            |
+| Pumpkin           | Y            |
+| Torchflower Seeds | R            |
+| Pitcher Pod       | R            |
+| Bamboo            | Y            |
+| Cocoa Beans       | X            |
+| Sugar Cane        | Y            |
+| Sweet Berries     | Y            |
+| Cactus            | Y            |
+| Mushrooms         | R            |
+| Kelp              | X            |
+| Sea Pickle        | R            |
+| Nether Wart       | Y            |
+| Chorus Fruit      | R            |
+| Fungus            | R            |
+| Glow Berries      | R            |
+| Saplings          | X            |
 
 ### Commands
 
-|             Command	             |             Permission 	             |                                                                                                                                                        Description	                                                                                                                                                         |
-|:--------------------------------:|:------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| /cpg set <material> [timeUnit] 	 |     controlledplantgrowth.set 	      |                                                                                                           Sets the time of a specified plant to mature, saves the new config and applies the changes to plants 	                                                                                                            |
-|           /cpg info 	            |  controlledplantgrowth.info       	  |                                                                                                        Lists current configuration of plants and their time to mature                                              	                                                                                                        |
-|         	/cpg forceload          | controlledplantgrowth.forceload    	 | Forces all loaded chunks to be <br/><br/><br/>scanned for plants. Good if you have the `useAggressiveChunkAnalysisAndLookForUnregisteredPlants` set to `false`. You can register your farmland once. If mentioned setting is true, command should not have an effect.                                                     	 |
-|            /cpg help             |      controlledplantgrowth.help      |                                                                                                                                    Print the abbreviated version of this description :)                                                                                                                                     |
+|                          Command	                          |             Permission 	             |                                                                                                                          Description	                                                                                                                          |
+|:----------------------------------------------------------:|:------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| /cpg set <material> <time / [1,2,3...maxAge]> [timeUnit] 	 |     controlledplantgrowth.set 	      |                                                                             Sets the time of a specified plant to mature, saves the new config and applies the changes to plants 	                                                                             |
+|                        /cpg info 	                         |  controlledplantgrowth.info       	  |                                                                         Lists current configuration of plants and their time to mature                                              	                                                                          |
+|                      	/cpg forceload                       | controlledplantgrowth.forceload    	 | Forces all loaded chunks to be scanned for plants. Use when `useAggressiveChunkAnalysisAndLookForUnregisteredPlants` is set to `false`. If mentioned setting is true, command should not have an effect.                                                     	 |
+|                         /cpg help                          |      controlledplantgrowth.help      |                                                                                                      Print the abbreviated version of this description :)                                                                                                      |
 
 ### Configuration File
+
 ```yaml
 # Set true if you want to save plantGrowthSettings using databaseHibernateSettings
 loadConfigFromDatabase: false
@@ -160,6 +188,12 @@ databaseHibernateSettings:
   hibernate.connection.password: ""
   hibernate.connection.username: "sa"
 ```
+
+# Developed Using
+- IntelliJ IDEA 2024.1.4 (Ultimate Edition) Build #IU-241.18034.62
+- IntelliJ Plugins
+  - com.demonwav.minecraft-dev (2024.1-1.7.6)
+- Oracle OpenJDK 22.0.1 (language level set to 8)
 
 # LICENSE
 
