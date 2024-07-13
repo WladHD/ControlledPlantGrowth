@@ -44,9 +44,12 @@ Especially regarding plants in development or on-hold refer to section
 - Sugar Cane
 - Melons
 - Pumpkins
+- Bamboo
+- Cocoa Beans
 
 #### All Planned and Supported Plants
 
+Crops and plants taken from https://minecraft.fandom.com/wiki/Crops
 - Y = Implemented
 - X = To be implemented
 - R = Will be implemented if requested
@@ -62,7 +65,7 @@ Especially regarding plants in development or on-hold refer to section
 | Torchflower Seeds | R            |
 | Pitcher Pod       | R            |
 | Bamboo            | Y            |
-| Cocoa Beans       | X            |
+| Cocoa Beans       | Y            |
 | Sugar Cane        | Y            |
 | Sweet Berries     | Y            |
 | Cactus            | Y            |

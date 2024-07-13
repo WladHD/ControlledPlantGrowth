@@ -26,6 +26,7 @@ import java.util.logging.Level;
 public class SettingsDAO extends LoadLocalYML<SettingsDTO>
         implements ISettingsDAO<SettingsDTO, SettingsPlantGrowthDTO> {
 
+    private final HashMap<Material, SettingsPlantGrowthDTO> cachedPlantGrowth = new HashMap<>();
     private SettingsDTO cachedCurrentSettings;
 
     public SettingsDAO() {
@@ -67,8 +68,6 @@ public class SettingsDAO extends LoadLocalYML<SettingsDTO>
 
         return activeSettings.stream().findFirst().orElse(null);
     }
-
-    private final HashMap<Material, SettingsPlantGrowthDTO> cachedPlantGrowth = new HashMap<>();
 
     public SettingsPlantGrowthDTO getPlantSettings(Material m) {
         if (cachedPlantGrowth.containsKey(m)) {
@@ -211,9 +210,10 @@ public class SettingsDAO extends LoadLocalYML<SettingsDTO>
 
         settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.BAMBOO, true, 15).setIgnoreAnalyze(true));
 
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.COCOA, true, 16));
 
         // AIR == default setting parsed when none is found
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.AIR, true, 20));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.AIR, true, 20).setIgnoreAnalyze(true));
 
         defaultSettings.setPlantGrowthList(settingsPlantGrowths);
 

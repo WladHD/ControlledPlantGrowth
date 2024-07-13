@@ -11,11 +11,11 @@ public enum SettingsDTOVersion {
 
     public final String versionString;
 
-    public String toString() {
-        return MessageFormat.format("v{0}", versionString);
-    }
-
     public static SettingsDTOVersion getCurrentVersion() {
         return SETTINGS_V2;
+    }
+
+    public String toString() {
+        return MessageFormat.format("v{0}", versionString);
     }
 }

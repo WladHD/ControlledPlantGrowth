@@ -11,6 +11,7 @@ public class SetupPlantConcepts implements Runnable {
                         new PlantInstanceCactusSugar(),
                         new PlantInstancePumpkin(),
                         new PlantInstanceMelon(),
-                        new PlantInstanceBamboo());
+                        new PlantInstanceBamboo(),
+                        new PlantInstanceCocoa());
     }
 }

@@ -1,7 +1,6 @@
 package de.wladtheninja.controlledplantgrowth.growables.growthlogic;
 
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptBasic;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 

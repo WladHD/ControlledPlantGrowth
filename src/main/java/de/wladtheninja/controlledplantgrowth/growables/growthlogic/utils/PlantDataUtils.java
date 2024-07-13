@@ -70,7 +70,9 @@ public class PlantDataUtils {
                     settings.getTimeForNextPlantGrowthInSteps().size() == realMaximumAge ?
                     (TimeUnit.MILLISECONDS.convert(settings.getTimeForNextPlantGrowthInSteps().get(tempSimulatedAge),
                             TimeUnit.SECONDS)) :
-                    (TimeUnit.MILLISECONDS.convert(settings.getTimeForPlantMature() == null ? 1 : settings.getTimeForPlantMature(), TimeUnit.SECONDS)) /
+                    (TimeUnit.MILLISECONDS.convert(settings.getTimeForPlantMature() == null ?
+                            1 :
+                            settings.getTimeForPlantMature(), TimeUnit.SECONDS)) /
                             realMaximumAge;
 
             previousUpdateTime += increaseBy;

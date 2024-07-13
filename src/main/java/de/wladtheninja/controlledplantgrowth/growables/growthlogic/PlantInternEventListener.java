@@ -13,7 +13,6 @@ import de.wladtheninja.controlledplantgrowth.growables.instances.PlantInstanceBa
 import de.wladtheninja.controlledplantgrowth.utils.DebounceUtil;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
