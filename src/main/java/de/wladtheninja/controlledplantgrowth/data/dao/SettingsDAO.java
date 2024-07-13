@@ -222,9 +222,12 @@ public class SettingsDAO extends LoadLocalYML<SettingsDTO>
                 16).setArray(RandomArrayFiller.createRandomArrayWithSum(25, 18 * 60), TimeUnit.SECONDS)
                 .setIgnoreAnalyze(true));
 
-        // AIR == default setting parsed when none is found
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.AIR, true, 20).setIgnoreAnalyze(true));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.OAK_SAPLING, true, 16));
 
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.BIRCH_SAPLING, true, 16));
+
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.SPRUCE_SAPLING, true, 16));
+        
         defaultSettings.setPlantGrowthList(settingsPlantGrowths);
 
         return defaultSettings;

@@ -51,9 +51,13 @@ Especially regarding plants in development or on-hold refer to section
 #### All Planned and Supported Plants
 
 Crops and plants taken from https://minecraft.fandom.com/wiki/Crops
+
 - Y = Implemented
 - X = To be implemented
 - R = Will be implemented if requested
+
+<details>
+<summary>expand to see all supported, planned and on-hold plants</summary>
 
 | Pant              | Implemented? |
 |-------------------|--------------|
@@ -77,7 +81,24 @@ Crops and plants taken from https://minecraft.fandom.com/wiki/Crops
 | Chorus Fruit      | R            |
 | Fungus            | R            |
 | Glow Berries      | R            |
-| Saplings          | X            |
+
+</details>
+
+<details>
+<summary>expand to see all supported, planned and on-hold trees (saplings)</summary>
+
+| Pant         | Implemented? |
+|--------------|--------------|
+| Oak          | Y            |
+| Birch        | X            |
+| Spruce       | X            |
+| Giant spruce | X            |
+| Jungle       | X            |
+| Giant jungle | X            |
+| Acacia       | X            |
+| Dark oak     | X            |
+
+</details>
 
 ### Commands
 
@@ -116,27 +137,27 @@ plantGrowthList:
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: true
     timeForPlantMature: 1080
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
   - material: "POTATOES"
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: true
     timeForPlantMature: 1080
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
   - material: "CARROTS"
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: true
     timeForPlantMature: 1080
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
   - material: "NETHER_WART"
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: true
     timeForPlantMature: 1800
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
   - material: "SWEET_BERRY_BUSH"
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: true
     timeForPlantMature: 1080
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
   - material: "MELON_STEM"
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: false
@@ -187,7 +208,7 @@ plantGrowthList:
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: true
     timeForPlantMature: 960
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
   - material: "KELP"
     ignoreInAutomaticChunkAnalysis: true
     useTimeForPlantMature: false
@@ -222,10 +243,11 @@ plantGrowthList:
     ignoreInAutomaticChunkAnalysis: true
     useTimeForPlantMature: true
     timeForPlantMature: 1200
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
 maximumAmountOfPlantsInATimeWindowCluster: 1
 maximumTimeWindowInMillisecondsForPlantsToBeClustered: 1
 ```
+
 </details>
 
 <details>
@@ -255,12 +277,14 @@ hibernateConfigLocalPlantCache:
   hibernate.connection.username: "sa"
 currentSettingsVersion: "SETTINGS_V2"
 ```
+
 </details>
 
 # Developed Using
+
 - IntelliJ IDEA 2024.1.4 (Ultimate Edition) Build #IU-241.18034.62
 - IntelliJ Plugins
-  - com.demonwav.minecraft-dev (2024.1-1.7.6)
+    - com.demonwav.minecraft-dev (2024.1-1.7.6)
 - Oracle OpenJDK 22.0.1 (language level set to 8)
 
 # LICENSE

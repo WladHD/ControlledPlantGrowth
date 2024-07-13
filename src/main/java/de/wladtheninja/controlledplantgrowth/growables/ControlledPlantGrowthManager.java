@@ -1,5 +1,7 @@
 package de.wladtheninja.controlledplantgrowth.growables;
 
+import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
+import de.wladtheninja.controlledplantgrowth.data.dto.embedded.SettingsPlantGrowthDTO;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptBasic;
 import de.wladtheninja.controlledplantgrowth.growables.growthlogic.*;
 import lombok.AccessLevel;
@@ -7,10 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bukkit.Material;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -42,6 +41,17 @@ public class ControlledPlantGrowthManager {
         if (i == null) {
             return;
         }
+
+        Optional<SettingsPlantGrowthDTO> settingsDTO = i.getAcceptedSettingPlantMaterials()
+                .stream()
+                .map(fl -> PlantDataManager.getInstance().getSettingsDataBase().getPlantSettings(fl))
+                .filter(Objects::nonNull)
+                .findFirst();
+
+        if (!settingsDTO.isPresent() || settingsDTO.get().getMaterial() == Material.AIR) {
+            return;
+        }
+
 
         i.getAcceptedPlantMaterials().forEach(mat -> hashMapRetrieve.put(mat, i));
         materialsForSettings.addAll(i.getAcceptedSettingPlantMaterials());
