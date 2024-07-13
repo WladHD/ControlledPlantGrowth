@@ -141,13 +141,17 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
 
                 final ChunkSnapshot cs = arrayDeque.pop();
 
-                List<BlockData> foundMats = cacheSupportedBlockData.stream()
-                        .filter(bd -> !PlantDataManager.getInstance()
+                List<BlockData> foundMats = cacheSupportedBlockData.stream().filter(bd -> {
+                    try {
+                        return !PlantDataManager.getInstance()
                                 .getSettingsDataBase()
                                 .getPlantSettings(bd.getMaterial())
-                                .isIgnoreInAutomaticChunkAnalysis())
-                        .filter(cs::contains)
-                        .collect(Collectors.toList());
+                                .isIgnoreInAutomaticChunkAnalysis();
+                    }
+                    catch (Exception e) {
+                        return false;
+                    }
+                }).filter(cs::contains).collect(Collectors.toList());
 
                 World world = Bukkit.getWorld(cs.getWorldName());
 
@@ -168,13 +172,6 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
                         for (int y = minHeight; y < maxHeight; y++) {
                             final Material blockType = cs.getBlockType(x, y, z);
 
-                            if (PlantDataManager.getInstance()
-                                    .getSettingsDataBase()
-                                    .getPlantSettings(blockType)
-                                    .isIgnoreInAutomaticChunkAnalysis()) {
-                                continue;
-                            }
-
                             IPlantConceptBasic ipc = ControlledPlantGrowthManager.getInstance()
                                     .retrieveSuitedPlantConcept(blockType);
 
@@ -182,14 +179,25 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
                                 continue;
                             }
 
+                            try {
+                                if (PlantDataManager.getInstance()
+                                        .getSettingsDataBase()
+                                        .getPlantSettings(blockType)
+                                        .isIgnoreInAutomaticChunkAnalysis()) {
+                                    continue;
+                                }
+                            }
+                            catch (Exception ex) {
+                                continue;
+                            }
+
+
 
                             Bukkit.getLogger()
                                     .log(Level.FINER,
-                                            MessageFormat.format("[ChunkAnalyzer] {0} at x{1} y{2} z{3} will be " +
-                                                            "analyzed" +
-                                                            " .." +
-                                                            ". ",
-                                                    blockType, x, y, z));
+                                            MessageFormat.format(
+                                                    "[ChunkAnalyzer] {0} at x{1} y{2} z{3} will be " + "analyzed" +
+                                                            " .." + ". ", blockType, x, y, z));
 
                             ControlledPlantGrowthManager.getInstance()
                                     .getInternEventListener()

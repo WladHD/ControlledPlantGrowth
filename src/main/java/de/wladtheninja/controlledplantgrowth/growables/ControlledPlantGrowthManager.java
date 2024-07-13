@@ -42,11 +42,14 @@ public class ControlledPlantGrowthManager {
             return;
         }
 
-        Optional<SettingsPlantGrowthDTO> settingsDTO = i.getAcceptedSettingPlantMaterials()
-                .stream()
-                .map(fl -> PlantDataManager.getInstance().getSettingsDataBase().getPlantSettings(fl))
-                .filter(Objects::nonNull)
-                .findFirst();
+        Optional<SettingsPlantGrowthDTO> settingsDTO = i.getAcceptedSettingPlantMaterials().stream().map(fl -> {
+            try {
+                return PlantDataManager.getInstance().getSettingsDataBase().getPlantSettings(fl);
+            }
+            catch (Exception ignored) {
+                return null;
+            }
+        }).filter(Objects::nonNull).findFirst();
 
         if (!settingsDTO.isPresent() || settingsDTO.get().getMaterial() == Material.AIR) {
             return;

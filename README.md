@@ -90,12 +90,12 @@ Crops and plants taken from https://minecraft.fandom.com/wiki/Crops
 | Pant         | Implemented? |
 |--------------|--------------|
 | Oak          | Y            |
-| Birch        | X            |
-| Spruce       | X            |
+| Birch        | Y            |
+| Spruce       | Y            |
 | Giant spruce | X            |
 | Jungle       | X            |
 | Giant jungle | X            |
-| Acacia       | X            |
+| Acacia       | Y            |
 | Dark oak     | X            |
 
 </details>

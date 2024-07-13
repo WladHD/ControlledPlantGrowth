@@ -93,6 +93,12 @@ public class PlantInternEventListener implements IPlantInternEventListener {
             Bukkit.getLogger().log(Level.FINER, "PlantNoAgeableInterfaceException ...");
             Bukkit.getLogger().log(Level.FINER, e.getMessage(), e);
         }
+        catch (Exception e) {
+            if (isSaved) {
+                PlantDataManager.getInstance().getPlantDataBase().delete(definitePlantRootLocation);
+            }
+            return;
+        }
 
         if (newAgeAndTimestamp == null) {
             if (isSaved) {

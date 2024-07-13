@@ -3,7 +3,6 @@ package de.wladtheninja.controlledplantgrowth.growables.types;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptTree;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.constraints.LightLevelPlantGrowthConstraint;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantConstraintViolationException;
-import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantRootBlockMissingException;
 import lombok.NonNull;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -52,12 +51,19 @@ public abstract class PlantTypeTree extends PlantTypeBasic implements IPlantConc
         for (int i = 0; i < giantCheckFirst.length; i++) {
             boolean deg90 = i % 2 == 0;
 
+            Bukkit.getLogger()
+                    .finer(MessageFormat.format("Checking Blockface {0} {1} a{2} b{3}",
+                            giantCheckFirst[i],
+                            i,
+                            b.getType(),
+                            b.getRelative(giantCheckFirst[i]).getType()));
+
             if (b.getRelative(giantCheckFirst[i]).getType() != b.getType()) {
                 list.clear();
 
                 i += deg90 ?
-                        2 :
-                        1;
+                        1 :
+                        0;
                 continue;
             }
 
@@ -116,6 +122,14 @@ public abstract class PlantTypeTree extends PlantTypeBasic implements IPlantConc
 
         List<Block> g2x2 = getGiant2x2Structure(b);
 
+        Bukkit.getLogger()
+                .finer(MessageFormat.format("Found structure for {2}: {0} sup? {1}",
+                        g2x2 == null ?
+                                null :
+                                g2x2.size(),
+                        isGiantTreeSupported(),
+                        getSaplingType()));
+
         if (g2x2 != null && isGiantTreeSupported()) {
             HashMap<Location, BlockData> cache = new HashMap<>();
 
@@ -130,6 +144,7 @@ public abstract class PlantTypeTree extends PlantTypeBasic implements IPlantConc
 
             if (generatedTree == 2) {
                 cache.keySet().forEach(loc -> {
+                    loc.getBlock().setType(getSaplingType());
                     loc.getBlock().setBlockData(cache.get(loc));
                 });
             }
@@ -159,12 +174,12 @@ public abstract class PlantTypeTree extends PlantTypeBasic implements IPlantConc
     }
 
     @Override
-    public @NonNull Block getPlantRootBlock(Block b) throws PlantRootBlockMissingException {
+    public @NonNull Block getPlantRootBlock(Block b) {
         return b;
     }
 
     @Override
-    public Material getPlantRootMaterial(Block b) throws PlantRootBlockMissingException {
+    public Material getPlantRootMaterial(Block b) {
         return b.getType();
     }
 }

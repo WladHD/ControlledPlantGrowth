@@ -9,7 +9,7 @@ public interface ISettingsDAO<T, S> extends ILoadLocalYML<T> {
 
     T getSettingPageByName(String name);
 
-    S getPlantSettings(Material mat);
+    S getPlantSettings(Material mat) throws Exception;
 
     void loadCurrentSettingsAndCache();
 

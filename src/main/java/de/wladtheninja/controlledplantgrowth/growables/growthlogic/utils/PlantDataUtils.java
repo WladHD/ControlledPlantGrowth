@@ -48,9 +48,15 @@ public class PlantDataUtils {
                 currentTimeStamp;
         int tempSimulatedAge = realCurrentAge;
 
-        SettingsPlantGrowthDTO settings = PlantDataManager.getInstance()
-                .getSettingsDataBase()
-                .getPlantSettings(ipc.getDatabasePlantType(plant.getLocation().getBlock()));
+        SettingsPlantGrowthDTO settings;
+        try {
+            settings = PlantDataManager.getInstance()
+                    .getSettingsDataBase()
+                    .getPlantSettings(ipc.getDatabasePlantType(plant.getLocation().getBlock()));
+        }
+        catch (Exception e) {
+            throw new RuntimeException();
+        }
 
         if (!settings.isUseTimeForPlantMature() &&
                 settings.getTimeForNextPlantGrowthInSteps().size() < realMaximumAge) {

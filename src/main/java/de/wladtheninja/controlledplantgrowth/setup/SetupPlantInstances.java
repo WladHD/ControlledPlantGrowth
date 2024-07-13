@@ -2,9 +2,7 @@ package de.wladtheninja.controlledplantgrowth.setup;
 
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
 import de.wladtheninja.controlledplantgrowth.growables.instances.*;
-import de.wladtheninja.controlledplantgrowth.growables.instances.trees.PlantInstanceTreeBirch;
-import de.wladtheninja.controlledplantgrowth.growables.instances.trees.PlantInstanceTreeOak;
-import de.wladtheninja.controlledplantgrowth.growables.instances.trees.PlantInstanceTreeSpruce;
+import de.wladtheninja.controlledplantgrowth.growables.instances.trees.*;
 
 public class SetupPlantInstances implements Runnable {
     @Override
@@ -19,6 +17,9 @@ public class SetupPlantInstances implements Runnable {
                         new PlantInstanceKelp(),
                         new PlantInstanceTreeOak(),
                         new PlantInstanceTreeBirch(),
-                        new PlantInstanceTreeSpruce());
+                        new PlantInstanceTreeSpruce(),
+                        new PlantInstanceTreeAcacia(),
+                        new PlantInstanceTreeDarkOak(),
+                        new PlantInstanceTreeJungle());
     }
 }
