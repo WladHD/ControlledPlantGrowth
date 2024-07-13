@@ -48,11 +48,12 @@ public class PlantDataUtils {
                 currentTimeStamp;
         int tempSimulatedAge = realCurrentAge;
 
-        SettingsPlantGrowthDTO settings = PlantDataManager.getInstance().getSettingsDataBase()
+        SettingsPlantGrowthDTO settings = PlantDataManager.getInstance()
+                .getSettingsDataBase()
                 .getPlantSettings(ipc.getDatabasePlantType(plant.getLocation().getBlock()));
 
         if (!settings.isUseTimeForPlantMature() &&
-                settings.getTimeForNextPlantGrowthInSteps().size() != realMaximumAge) {
+                settings.getTimeForNextPlantGrowthInSteps().size() < realMaximumAge) {
             Bukkit.getLogger()
                     .log(Level.WARNING,
                             MessageFormat.format(
@@ -72,10 +73,9 @@ public class PlantDataUtils {
                             TimeUnit.SECONDS)) :
                     (TimeUnit.MILLISECONDS.convert(settings.getTimeForPlantMature() == null ?
                             1 :
-                            settings.getTimeForPlantMature(), TimeUnit.SECONDS)) /
-                            realMaximumAge;
+                            settings.getTimeForPlantMature(), TimeUnit.SECONDS)) / realMaximumAge;
 
-            previousUpdateTime += increaseBy;
+            previousUpdateTime += Math.max(200, increaseBy);
             tempSimulatedAge += 1;
 
             Bukkit.getLogger()

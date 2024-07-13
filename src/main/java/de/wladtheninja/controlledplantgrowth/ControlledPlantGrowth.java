@@ -22,7 +22,7 @@ public final class ControlledPlantGrowth extends JavaPlugin {
                 new SetupCheckUpdate(),
                 new SetupDatabase(),
                 new SetupSettings(),
-                new SetupPlantConcepts(),
+                new SetupPlantInstances(),
                 new SetupEvents(this),
                 new SetupCommands()
         };

@@ -3,7 +3,6 @@ package de.wladtheninja.controlledplantgrowth.growables.types;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptAge;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptMultiBlockGrowthVertical;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.basic.IPlantConceptLocation;
-import de.wladtheninja.controlledplantgrowth.growables.concepts.constraints.IPlantGrowthConstraint;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantConstraintViolationException;
 import lombok.NonNull;
 import org.bukkit.Location;
@@ -20,11 +19,6 @@ public abstract class PlantTypeAgeingMultiBlockVertical extends PlantTypeBasic
 
     public PlantTypeAgeingMultiBlockVertical(List<Material> acceptedMaterials) {
         super(acceptedMaterials);
-    }
-
-    public PlantTypeAgeingMultiBlockVertical(List<Material> acceptedMaterials,
-                                             List<IPlantGrowthConstraint> constraints) {
-        super(acceptedMaterials, constraints);
     }
 
     @Override
@@ -110,7 +104,7 @@ public abstract class PlantTypeAgeingMultiBlockVertical extends PlantTypeBasic
     @Override
     public @NonNull Block getPlantRootBlock(Block b) {
 
-        while (b.getType() == b.getRelative(BlockFace.DOWN).getType()) {
+        while (containsAcceptedMaterial(b.getRelative(BlockFace.DOWN).getType())) {
             b = b.getRelative(BlockFace.DOWN);
         }
 

@@ -3,7 +3,7 @@ package de.wladtheninja.controlledplantgrowth.setup;
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
 import de.wladtheninja.controlledplantgrowth.growables.instances.*;
 
-public class SetupPlantConcepts implements Runnable {
+public class SetupPlantInstances implements Runnable {
     @Override
     public void run() {
         ControlledPlantGrowthManager.getInstance()
@@ -12,6 +12,7 @@ public class SetupPlantConcepts implements Runnable {
                         new PlantInstancePumpkin(),
                         new PlantInstanceMelon(),
                         new PlantInstanceBamboo(),
-                        new PlantInstanceCocoa());
+                        new PlantInstanceCocoa(),
+                        new PlantInstanceKelp());
     }
 }

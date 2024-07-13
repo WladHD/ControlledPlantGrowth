@@ -1,16 +1,12 @@
 package de.wladtheninja.controlledplantgrowth.growables.types;
 
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptMaxAgeRandom;
-import de.wladtheninja.controlledplantgrowth.growables.concepts.constraints.IPlantGrowthConstraint;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Getter
 public abstract class PlantTypeAgeingMultiBlockVerticalMaxAgeRandom extends PlantTypeAgeingMultiBlockVertical
@@ -22,9 +18,8 @@ public abstract class PlantTypeAgeingMultiBlockVerticalMaxAgeRandom extends Plan
     private final HashMap<Location, Integer> randomMaxAgeMap;
 
     public PlantTypeAgeingMultiBlockVerticalMaxAgeRandom(Material materialSapling,
-                                                         Material materialStem,
-                                                         List<IPlantGrowthConstraint> constraints) {
-        super(Arrays.asList(materialStem, materialSapling), constraints);
+                                                         Material materialStem) {
+        super(Arrays.asList(materialStem, materialSapling));
         this.materialSapling = materialSapling;
         this.materialStem = materialStem;
         this.random = new Random();
@@ -34,6 +29,11 @@ public abstract class PlantTypeAgeingMultiBlockVerticalMaxAgeRandom extends Plan
     @Override
     public Material getDatabasePlantType(Block b) {
         return getMaterialStem();
+    }
+
+    @Override
+    public List<Material> getAcceptedSettingPlantMaterials() {
+        return Collections.singletonList(getMaterialStem());
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth;
 import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
 import de.wladtheninja.controlledplantgrowth.data.dao.utils.LoadLocalYML;
+import de.wladtheninja.controlledplantgrowth.data.dao.utils.RandomArrayFiller;
 import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.embedded.SettingsPlantGrowthDTO;
 import de.wladtheninja.controlledplantgrowth.data.utils.DatabaseHibernateSettingsUtil;
@@ -182,6 +183,7 @@ public class SettingsDAO extends LoadLocalYML<SettingsDTO>
         defaultSettings.setMaximumTimeWindowInMillisecondsForPlantsToBeClustered(1);
         defaultSettings.setSettingsPageName("default");
         defaultSettings.setUseAggressiveChunkAnalysisAndLookForUnregisteredPlants(true);
+        defaultSettings.setRespectUnloadedChunks(true);
 
         ArrayList<SettingsPlantGrowthDTO> settingsPlantGrowths = new ArrayList<>();
 
@@ -208,9 +210,17 @@ public class SettingsDAO extends LoadLocalYML<SettingsDTO>
                 2, 3, 1, 4, 2, 2, 1, 3
         }, TimeUnit.MINUTES));
 
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.BAMBOO, true, 15).setIgnoreAnalyze(true));
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.BAMBOO,
+                false,
+                1).setArray(RandomArrayFiller.createRandomArrayWithSum(15, 17 * 60), TimeUnit.SECONDS)
+                .setIgnoreAnalyze(true));
 
         settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.COCOA, true, 16));
+
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.KELP,
+                false,
+                16).setArray(RandomArrayFiller.createRandomArrayWithSum(25, 18 * 60), TimeUnit.SECONDS)
+                .setIgnoreAnalyze(true));
 
         // AIR == default setting parsed when none is found
         settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.AIR, true, 20).setIgnoreAnalyze(true));

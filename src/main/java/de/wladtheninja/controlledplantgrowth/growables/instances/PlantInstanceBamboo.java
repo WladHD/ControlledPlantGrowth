@@ -6,28 +6,32 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Bamboo;
 
-import java.util.Collections;
-
 public class PlantInstanceBamboo extends PlantTypeAgeingMultiBlockVerticalMaxAgeRandom {
 
     public PlantInstanceBamboo() {
-        super(Material.BAMBOO_SAPLING,
-                Material.BAMBOO,
-                Collections.singletonList(new LightLevelPlantGrowthConstraint((byte) 9)));
+        super(Material.BAMBOO_SAPLING, Material.BAMBOO);
+
+        addGrowthConstraint(new LightLevelPlantGrowthConstraint((byte) 9));
     }
 
     @Override
-    public void setCurrentAge(Block b, int age) {
-        double maxAge = getMaximumAge(b);
+    public void setCurrentAge(final Block plantRootBlock, int age) {
+        double maxAge = getMaximumAge(plantRootBlock);
 
-        super.setCurrentAge(b, age);
+        super.setCurrentAge(plantRootBlock, age);
 
-        int currentAge = getCurrentAge(b);
+        int currentAge = getCurrentAge(plantRootBlock);
 
         for (int i = 0; i <= currentAge; i++) {
-            Block current = b.getRelative(0, i, 0);
+            Block current = plantRootBlock.getRelative(0, i, 0);
 
             double percentRunning = Math.min(i / maxAge, 1);
+
+            if (!containsAcceptedMaterial(current.getType()) && current.getType() != Material.AIR) {
+                getRandomMaxAgeMap().put(plantRootBlock.getLocation(), age);
+                break;
+            }
+
             if (!(current.getBlockData() instanceof Bamboo)) {
                 continue;
             }
@@ -41,8 +45,7 @@ public class PlantInstanceBamboo extends PlantTypeAgeingMultiBlockVerticalMaxAge
                             Bamboo.Leaves.NONE));
             current.setBlockData(bamboo);
             bamboo.setAge(Math.min(Math.max(bamboo.getAge(),
-                            (int) Math.round(bamboo.getMaximumAge() * (1 - percentRunning))),
-                    bamboo.getMaximumAge()));
+                    (int) Math.round(bamboo.getMaximumAge() * (1 - percentRunning))), bamboo.getMaximumAge()));
         }
     }
 

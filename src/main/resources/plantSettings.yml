@@ -1,0 +1,131 @@
+settingsPageName: "default"
+settingsVersion: "SETTINGS_V2"
+disableNaturalGrowth: false
+respectUnloadedChunks: true
+useAggressiveChunkAnalysisAndLookForUnregisteredPlants: true
+plantGrowthList:
+  - material: "WHEAT"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: false
+    timeForPlantMature: 60
+    timeForNextPlantGrowthInSteps:
+      - 180
+      - 180
+      - 180
+      - 240
+      - 120
+      - 120
+      - 60
+  - material: "BEETROOTS"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: true
+    timeForPlantMature: 1080
+    timeForNextPlantGrowthInSteps: []
+  - material: "POTATOES"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: true
+    timeForPlantMature: 1080
+    timeForNextPlantGrowthInSteps: []
+  - material: "CARROTS"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: true
+    timeForPlantMature: 1080
+    timeForNextPlantGrowthInSteps: []
+  - material: "NETHER_WART"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: true
+    timeForPlantMature: 1800
+    timeForNextPlantGrowthInSteps: []
+  - material: "SWEET_BERRY_BUSH"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: true
+    timeForPlantMature: 1080
+    timeForNextPlantGrowthInSteps: []
+  - material: "MELON_STEM"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: false
+    timeForPlantMature: 60
+    timeForNextPlantGrowthInSteps:
+      - 120
+      - 120
+      - 120
+      - 240
+      - 120
+      - 120
+      - 60
+      - 180
+  - material: "PUMPKIN_STEM"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: false
+    timeForPlantMature: 60
+    timeForNextPlantGrowthInSteps:
+      - 120
+      - 180
+      - 60
+      - 240
+      - 120
+      - 120
+      - 60
+      - 180
+  - material: "BAMBOO"
+    ignoreInAutomaticChunkAnalysis: true
+    useTimeForPlantMature: false
+    timeForPlantMature: 60
+    timeForNextPlantGrowthInSteps:
+      - 70
+      - 76
+      - 65
+      - 69
+      - 78
+      - 62
+      - 64
+      - 63
+      - 72
+      - 68
+      - 68
+      - 81
+      - 64
+      - 53
+      - 67
+  - material: "COCOA"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: true
+    timeForPlantMature: 960
+    timeForNextPlantGrowthInSteps: []
+  - material: "KELP"
+    ignoreInAutomaticChunkAnalysis: true
+    useTimeForPlantMature: false
+    timeForPlantMature: 960
+    timeForNextPlantGrowthInSteps:
+      - 48
+      - 49
+      - 50
+      - 41
+      - 41
+      - 41
+      - 37
+      - 38
+      - 43
+      - 42
+      - 41
+      - 40
+      - 37
+      - 36
+      - 49
+      - 40
+      - 37
+      - 45
+      - 58
+      - 42
+      - 44
+      - 42
+      - 36
+      - 56
+      - 47
+  - material: "AIR"
+    ignoreInAutomaticChunkAnalysis: true
+    useTimeForPlantMature: true
+    timeForPlantMature: 1200
+    timeForNextPlantGrowthInSteps: []
+maximumAmountOfPlantsInATimeWindowCluster: 1
+maximumTimeWindowInMillisecondsForPlantsToBeClustered: 1

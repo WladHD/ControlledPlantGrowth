@@ -46,6 +46,7 @@ Especially regarding plants in development or on-hold refer to section
 - Pumpkins
 - Bamboo
 - Cocoa Beans
+- Kelp
 
 #### All Planned and Supported Plants
 
@@ -70,7 +71,7 @@ Crops and plants taken from https://minecraft.fandom.com/wiki/Crops
 | Sweet Berries     | Y            |
 | Cactus            | Y            |
 | Mushrooms         | R            |
-| Kelp              | X            |
+| Kelp              | Y            |
 | Sea Pickle        | R            |
 | Nether Wart       | Y            |
 | Chorus Fruit      | R            |
@@ -87,110 +88,174 @@ Crops and plants taken from https://minecraft.fandom.com/wiki/Crops
 |                      	/cpg forceload                       | controlledplantgrowth.forceload    	 | Forces all loaded chunks to be scanned for plants. Use when `useAggressiveChunkAnalysisAndLookForUnregisteredPlants` is set to `false`. If mentioned setting is true, command should not have an effect.                                                     	 |
 |                         /cpg help                          |      controlledplantgrowth.help      |                                                                                                      Print the abbreviated version of this description :)                                                                                                      |
 
-### Configuration File
+### Configuration Files
+
+<details>
+  <summary>... explaining `plantSettings.yml`</summary>
 
 ```yaml
-# Set true if you want to save plantGrowthSettings using databaseHibernateSettings
-loadConfigFromDatabase: false
+settingsPageName: "default"
+settingsVersion: "SETTINGS_V2"
+disableNaturalGrowth: false
+respectUnloadedChunks: true
+useAggressiveChunkAnalysisAndLookForUnregisteredPlants: true
+plantGrowthList:
+  - material: "WHEAT"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: false
+    timeForPlantMature: 60
+    timeForNextPlantGrowthInSteps:
+      - 180
+      - 180
+      - 180
+      - 240
+      - 120
+      - 120
+      - 60
+  - material: "BEETROOTS"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: true
+    timeForPlantMature: 1080
+    timeForNextPlantGrowthInSteps: []
+  - material: "POTATOES"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: true
+    timeForPlantMature: 1080
+    timeForNextPlantGrowthInSteps: []
+  - material: "CARROTS"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: true
+    timeForPlantMature: 1080
+    timeForNextPlantGrowthInSteps: []
+  - material: "NETHER_WART"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: true
+    timeForPlantMature: 1800
+    timeForNextPlantGrowthInSteps: []
+  - material: "SWEET_BERRY_BUSH"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: true
+    timeForPlantMature: 1080
+    timeForNextPlantGrowthInSteps: []
+  - material: "MELON_STEM"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: false
+    timeForPlantMature: 60
+    timeForNextPlantGrowthInSteps:
+      - 120
+      - 120
+      - 120
+      - 240
+      - 120
+      - 120
+      - 60
+      - 180
+  - material: "PUMPKIN_STEM"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: false
+    timeForPlantMature: 60
+    timeForNextPlantGrowthInSteps:
+      - 120
+      - 180
+      - 60
+      - 240
+      - 120
+      - 120
+      - 60
+      - 180
+  - material: "BAMBOO"
+    ignoreInAutomaticChunkAnalysis: true
+    useTimeForPlantMature: false
+    timeForPlantMature: 60
+    timeForNextPlantGrowthInSteps:
+      - 70
+      - 76
+      - 65
+      - 69
+      - 78
+      - 62
+      - 64
+      - 63
+      - 72
+      - 68
+      - 68
+      - 81
+      - 64
+      - 53
+      - 67
+  - material: "COCOA"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: true
+    timeForPlantMature: 960
+    timeForNextPlantGrowthInSteps: []
+  - material: "KELP"
+    ignoreInAutomaticChunkAnalysis: true
+    useTimeForPlantMature: false
+    timeForPlantMature: 960
+    timeForNextPlantGrowthInSteps:
+      - 48
+      - 49
+      - 50
+      - 41
+      - 41
+      - 41
+      - 37
+      - 38
+      - 43
+      - 42
+      - 41
+      - 40
+      - 37
+      - 36
+      - 49
+      - 40
+      - 37
+      - 45
+      - 58
+      - 42
+      - 44
+      - 42
+      - 36
+      - 56
+      - 47
+  - material: "AIR"
+    ignoreInAutomaticChunkAnalysis: true
+    useTimeForPlantMature: true
+    timeForPlantMature: 1200
+    timeForNextPlantGrowthInSteps: []
+maximumAmountOfPlantsInATimeWindowCluster: 1
+maximumTimeWindowInMillisecondsForPlantsToBeClustered: 1
+```
+</details>
+
+<details>
+  <summary>... explaining `config.yml`</summary>
+
+```yaml
+notifyOnSpigotRelease: true
+notifyOnGitHubExperimentalRelease: false
+loadPlantSettingsFromDatabase: false
 enableDebugLog: false
-plantGrowthSettings:
-  # ignore
-  id: null
-  # ignore
-  active: true
-  # Sets if random ticks / natural growth are disabled for plants. I prefer the randomness, so I keep it off.  
-  disableNaturalGrowth: false
-  # debug option
-  showInfoWhenDefaultSettingIsUsed: false
-  # If true all chunks on chunk load will be asynchronously analyzed for unregistered plants. I measured no impact, 
-  # but if you want to disable it you can set following to false:
-  useAggressiveChunkAnalysisAndLookForUnregisteredPlants: true
-  plantGrowthList:
-    # EXAMPLE OF PLANT WITH NON-LINEAR GROWTH (wheat has 8 age steps, so we need 7 entries)
-    - material: "WHEAT"
-      # Set to false if you want to use non-linear growth
-      useTimeForPlantMature: false
-      timeForPlantMature: 1
-      timeForNextPlantGrowthInSteps:
-        - 180
-        - 180
-        - 180
-        - 240
-        - 120
-        - 120
-        - 60
-    # EXAMPLE OF PLANT WITH LINEAR GROWTH
-    - material: "BEETROOTS"
-      # Set to true if you want to use linear growth
-      useTimeForPlantMature: true
-      timeForPlantMature: 1080
-      timeForNextPlantGrowthInSteps: [ ]
-    - material: "POTATOES"
-      useTimeForPlantMature: true
-      timeForPlantMature: 1080
-      timeForNextPlantGrowthInSteps: [ ]
-    - material: "CARROTS"
-      useTimeForPlantMature: true
-      timeForPlantMature: 1080
-      timeForNextPlantGrowthInSteps: [ ]
-    - material: "NETHER_WART"
-      useTimeForPlantMature: true
-      timeForPlantMature: 1800
-      timeForNextPlantGrowthInSteps: [ ]
-    - material: "SWEET_BERRY_BUSH"
-      useTimeForPlantMature: true
-      timeForPlantMature: 1080
-      timeForNextPlantGrowthInSteps: [ ]
-      # EXAMPLE OF ATTACHED PLANT WITH NON-LINEAR GROWTH
-      # (melon has 8 age steps and one where the fruit is grown, so in total 9)
-      # ERGO: we need 8 entries of times (last time is when the root is mature 
-      # and a melon block wants to spawn)
-    - material: "MELON_STEM"
-      useTimeForPlantMature: false
-      timeForPlantMature: 1
-      timeForNextPlantGrowthInSteps:
-        - 120
-        - 120
-        - 120
-        - 240
-        - 120
-        - 120
-        - 60
-        - 180
-    # same concept as in MELON_STEM
-    - material: "PUMPKIN_STEM"
-      useTimeForPlantMature: false
-      timeForPlantMature: 1
-      timeForNextPlantGrowthInSteps:
-        - 120
-        - 180
-        - 60
-        - 240
-        - 120
-        - 120
-        - 60
-        - 180
-    # DEFAULT SETTING
-    - material: "AIR"
-      useTimeForPlantMature: true
-      timeForPlantMature: 1200
-      timeForNextPlantGrowthInSteps: [ ]
-  # EXPERIMENTAL EFFICIENCY SETTINGS
-  # Number of plants that can maximally grow per group
-  maximumAmountOfPlantsInATimeWindowCluster: 1
-  # Maximal difference between update timers to consider plants part of one growth step
-  # Those plants will be grouped to one update time, following the max amount in maximumAmountOfPlantsInATimeWindowCluster
-  maximumTimeWindowInMillisecondsForPlantsToBeClustered: 1
-# Database setting, where all registered plants will be saved.
-# Optionally can be used for settings as well if loadConfigFromDatabase is true
-databaseHibernateSettings:
+activeSettingsPage: "default"
+hibernateConfigPlantSettings:
   hibernate.connection.driver_class: "org.h2.Driver"
-  hibernate.connection.url: "jdbc:h2:./plugins/ControlledPlantGrowth/data/db;AUTO_SERVER=TRUE"
+  hibernate.connection.url: "jdbc:h2:./plugins/ControlledPlantGrowth/data/plantSettings;AUTO_SERVER=TRUE"
   hibernate.hbm2ddl.auto: "update"
   hibernate.dialect: "org.hibernate.dialect.H2Dialect"
+  hibernate.show_sql: "false"
   hibernate.connection.password: ""
   hibernate.connection.username: "sa"
+hibernateConfigLocalPlantCache:
+  hibernate.connection.driver_class: "org.h2.Driver"
+  hibernate.connection.url: "jdbc:h2:./plugins/ControlledPlantGrowth/data/plantCache;AUTO_SERVER=TRUE"
+  hibernate.hbm2ddl.auto: "update"
+  hibernate.dialect: "org.hibernate.dialect.H2Dialect"
+  hibernate.show_sql: "false"
+  hibernate.connection.password: ""
+  hibernate.connection.username: "sa"
+currentSettingsVersion: "SETTINGS_V2"
 ```
+</details>
 
 # Developed Using
 - IntelliJ IDEA 2024.1.4 (Ultimate Edition) Build #IU-241.18034.62
