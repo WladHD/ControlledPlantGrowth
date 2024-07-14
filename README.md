@@ -30,11 +30,12 @@ Especially regarding plants in development or on-hold refer to section
 - Select how much time maximally has to pass in order for the plant type to fully mature.
 - Plants that have multiple steps of growth (f. e. wheat) will grow continuously for immersive gameplay.
 - Random ticks / "natural growth" is by default enabled to allow a more random growth (can be turned off).
-- A player does not have to be in the chunk for the plants to grow
-- The plugin does not keep the chunk loaded like a chunk loader, making it more efficient.
+- A player does not have to be in the chunk for the plants to grow.
+- The plugin does not load chunks, making it resource friendly.
 
 ### Supported Plants
 
+Supported Plants
 - Wheat
 - Beetroot
 - Potatoes
@@ -48,16 +49,26 @@ Especially regarding plants in development or on-hold refer to section
 - Cocoa Beans
 - Kelp
 
+Supported Trees / Saplings
+- Oak
+- Birch
+- Spruce
+- Giant spruce (2x2 Mega-Tree)
+- Jungle
+- Giant jungle (2x2 Mega-Tree)
+- Acacia
+- Dark oak
+- Cherry
+
 #### All Planned and Supported Plants
 
-Crops and plants taken from https://minecraft.fandom.com/wiki/Crops
-
 - Y = Implemented
-- X = To be implemented
-- R = Will be implemented if requested
+- D = In development
+- R = Only if requested
 
 <details>
 <summary>expand to see all supported, planned and on-hold plants</summary>
+refererence to https://minecraft.fandom.com/wiki/Crops
 
 | Pant              | Implemented? |
 |-------------------|--------------|
@@ -67,17 +78,17 @@ Crops and plants taken from https://minecraft.fandom.com/wiki/Crops
 | Potato            | Y            |
 | Melon             | Y            |
 | Pumpkin           | Y            |
-| Torchflower Seeds | R            |
-| Pitcher Pod       | R            |
 | Bamboo            | Y            |
 | Cocoa Beans       | Y            |
 | Sugar Cane        | Y            |
 | Sweet Berries     | Y            |
 | Cactus            | Y            |
-| Mushrooms         | R            |
 | Kelp              | Y            |
-| Sea Pickle        | R            |
 | Nether Wart       | Y            |
+| Torchflower Seeds | R            |
+| Pitcher Pod       | R            |
+| Mushrooms         | R            |
+| Sea Pickle        | R            |
 | Chorus Fruit      | R            |
 | Fungus            | R            |
 | Glow Berries      | R            |
@@ -86,28 +97,35 @@ Crops and plants taken from https://minecraft.fandom.com/wiki/Crops
 
 <details>
 <summary>expand to see all supported, planned and on-hold trees (saplings)</summary>
+refererence to https://minecraft.fandom.com/wiki/Tree#Types_of_trees
 
-| Pant         | Implemented? |
-|--------------|--------------|
-| Oak          | Y            |
-| Birch        | Y            |
-| Spruce       | Y            |
-| Giant spruce | X            |
-| Jungle       | X            |
-| Giant jungle | X            |
-| Acacia       | Y            |
-| Dark oak     | X            |
+| Tree          | Implemented? |
+|---------------|--------------|
+| Oak           | Y            |
+| Birch         | Y            |
+| Spruce        | Y            |
+| Giant spruce  | Y            |
+| Jungle        | Y            |
+| Giant jungle  | Y            |
+| Acacia        | Y            |
+| Dark oak      | Y            |
+| Cherry        | Y            |
+| Mangrove      | R            |
+| Azalea        | R            |
+| Huge fungus   | R            |
+| Huge mushroom | R            |
+| Chorus plant  | R            |
 
 </details>
 
 ### Commands
 
-|                          Command	                          |             Permission 	             |                                                                                                                          Description	                                                                                                                          |
-|:----------------------------------------------------------:|:------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| /cpg set <material> <time / [1,2,3...maxAge]> [timeUnit] 	 |     controlledplantgrowth.set 	      |                                                                             Sets the time of a specified plant to mature, saves the new config and applies the changes to plants 	                                                                             |
-|                        /cpg info 	                         |  controlledplantgrowth.info       	  |                                                                         Lists current configuration of plants and their time to mature                                              	                                                                          |
-|                      	/cpg forceload                       | controlledplantgrowth.forceload    	 | Forces all loaded chunks to be scanned for plants. Use when `useAggressiveChunkAnalysisAndLookForUnregisteredPlants` is set to `false`. If mentioned setting is true, command should not have an effect.                                                     	 |
-|                         /cpg help                          |      controlledplantgrowth.help      |                                                                                                      Print the abbreviated version of this description :)                                                                                                      |
+|                          Command	                          |             Permission 	             |                                                                                                                                                                                              Description	                                                                                                                                                                                              |
+|:----------------------------------------------------------:|:------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| /cpg set <material> <time / [1,2,3...maxAge]> [timeUnit] 	 |     controlledplantgrowth.set 	      |                                                                                                                       Sets the time of a specified plant to mature, saves the new config and applies the changes to plants. Defining an array of growth steps is possible now. 	                                                                                                                       |
+|                   /cpg info [material] 	                   |  controlledplantgrowth.info       	  |                                                                                                                                             Lists current configuration of plants and their time to mature.                                             	                                                                                                                                              |
+|                      	/cpg forceload                       | controlledplantgrowth.forceload    	 | Forces all <br/><br/><br/><br/><br/><br/>loaded chunks to be scanned for plants, which have the `ignoreInAutomaticChunkAnalysis` set to `false`. Only effective when `useAggressiveChunkAnalysisAndLookForUnregisteredPlants` is set to `false`. If mentioned setting is set to true, the chunks will be automatically analyzed on load (default).                                                   	 |
+|                         /cpg help                          |      controlledplantgrowth.help      |                                                                                                                                                                          Print the abbreviated version of this description :)                                                                                                                                                                          |
 
 ### Configuration Files
 

@@ -3,6 +3,7 @@ package de.wladtheninja.controlledplantgrowth.growables.types;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptAttachedFruit;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.constraints.IPlantGrowthConstraint;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantConstraintViolationException;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantNoAgeableInterfaceException;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantRootBlockMissingException;
 import lombok.Getter;
 import lombok.NonNull;
@@ -71,7 +72,7 @@ public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgei
     }
 
     @Override
-    public int getCurrentAge(Block b) {
+    public int getCurrentAge(Block b) throws PlantNoAgeableInterfaceException {
         if (isBlockException(b)) {
             return getMaximumAge(b);
         }
@@ -93,7 +94,7 @@ public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgei
     }
 
     @Override
-    public void setCurrentAge(Block b, int age) {
+    public void setCurrentAge(Block b, int age) throws PlantNoAgeableInterfaceException {
         Bukkit.getLogger()
                 .log(Level.FINER,
                         MessageFormat.format("Growing {0}, reaching age: {1} ot of {2}",

@@ -15,11 +15,11 @@ import org.bukkit.command.CommandSender;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @PlantCommandData(name = "forceload",
-                  onlyPlayerCMD = false,
                   permission = "controlledplantgrowth.forceload",
                   usage = "forceload",
                   description = "Search in all loaded chunks for plants to manage")
@@ -69,6 +69,18 @@ public class ControlledPlantGrowthForceloadCommand implements IPlantCommandExecu
                                       @NonNull Command command,
                                       @NonNull String label,
                                       String @NonNull [] args) {
+
+        if (!PlantDataManager.getInstance()
+                .getSettingsDataBase()
+                .getCurrentSettingsFromCache()
+                .isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants()) {
+            return new ArrayList<>();
+        }
+
+        if (args.length >= 2 && !args[1].equals("confirm")) {
+            return Collections.singletonList("confirm");
+        }
+
         return new ArrayList<>();
     }
 }

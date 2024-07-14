@@ -7,8 +7,10 @@ import de.wladtheninja.controlledplantgrowth.growables.growthlogic.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
+import java.text.MessageFormat;
 import java.util.*;
 
 
@@ -42,16 +44,18 @@ public class ControlledPlantGrowthManager {
             return;
         }
 
-        Optional<SettingsPlantGrowthDTO> settingsDTO = i.getAcceptedSettingPlantMaterials().stream().map(fl -> {
-            try {
-                return PlantDataManager.getInstance().getSettingsDataBase().getPlantSettings(fl);
-            }
-            catch (Exception ignored) {
-                return null;
-            }
-        }).filter(Objects::nonNull).findFirst();
+        Optional<SettingsPlantGrowthDTO> settingsDTO = i.getAcceptedSettingPlantMaterials()
+                .stream()
+                .map(fl -> PlantDataManager.getInstance().getSettingsDataBase().getPlantSettingNullable(fl))
+                .filter(Objects::nonNull)
+                .findFirst();
 
         if (!settingsDTO.isPresent() || settingsDTO.get().getMaterial() == Material.AIR) {
+            return;
+        }
+
+        if (hashMapRetrieve.containsValue(i)) {
+            Bukkit.getLogger().info(MessageFormat.format("{0} was already registered ... ", i.getClass().getName()));
             return;
         }
 

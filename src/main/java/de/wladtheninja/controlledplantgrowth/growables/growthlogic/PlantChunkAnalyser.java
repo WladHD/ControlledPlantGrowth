@@ -1,6 +1,8 @@
 package de.wladtheninja.controlledplantgrowth.growables.growthlogic;
 
+import de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth;
 import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
+import de.wladtheninja.controlledplantgrowth.data.dao.err.PlantSettingNotFoundException;
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptBasic;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptMultiBlockGrowthVertical;
@@ -148,7 +150,7 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
                                 .getPlantSettings(bd.getMaterial())
                                 .isIgnoreInAutomaticChunkAnalysis();
                     }
-                    catch (Exception e) {
+                    catch (PlantSettingNotFoundException e) {
                         return false;
                     }
                 }).filter(cs::contains).collect(Collectors.toList());
@@ -156,7 +158,8 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
                 World world = Bukkit.getWorld(cs.getWorldName());
 
                 if (world == null) {
-                    throw new RuntimeException();
+                    ControlledPlantGrowth.handleException(new RuntimeException());
+                    return;
                 }
 
                 int minHeight = world.getMinHeight();
@@ -187,10 +190,9 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
                                     continue;
                                 }
                             }
-                            catch (Exception ex) {
+                            catch (PlantSettingNotFoundException ex) {
                                 continue;
                             }
-
 
 
                             Bukkit.getLogger()

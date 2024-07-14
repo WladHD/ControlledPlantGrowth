@@ -4,11 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth;
 import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
+import de.wladtheninja.controlledplantgrowth.data.dao.err.PlantSettingNotFoundException;
 import de.wladtheninja.controlledplantgrowth.data.dao.utils.LoadLocalYML;
 import de.wladtheninja.controlledplantgrowth.data.dao.utils.RandomArrayFiller;
 import de.wladtheninja.controlledplantgrowth.data.dto.SettingsDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.embedded.SettingsPlantGrowthDTO;
 import de.wladtheninja.controlledplantgrowth.data.utils.DatabaseHibernateSettingsUtil;
+import lombok.NonNull;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.hibernate.Session;
@@ -70,7 +72,7 @@ public class SettingsDAO extends LoadLocalYML<SettingsDTO>
         return activeSettings.stream().findFirst().orElse(null);
     }
 
-    public SettingsPlantGrowthDTO getPlantSettings(Material m) {
+    public @NonNull SettingsPlantGrowthDTO getPlantSettings(Material m) throws PlantSettingNotFoundException {
         if (cachedPlantGrowth.containsKey(m)) {
             return cachedPlantGrowth.get(m);
         }
@@ -78,7 +80,15 @@ public class SettingsDAO extends LoadLocalYML<SettingsDTO>
         getCurrentSettingsFromCache().getPlantGrowthList()
                 .forEach(set -> cachedPlantGrowth.put(set.getMaterial(), set));
 
-        return cachedPlantGrowth.getOrDefault(m, cachedPlantGrowth.getOrDefault(Material.AIR, null));
+
+        final SettingsPlantGrowthDTO res = cachedPlantGrowth.getOrDefault(m,
+                cachedPlantGrowth.getOrDefault(Material.AIR, null));
+
+        if (res == null) {
+            throw new PlantSettingNotFoundException(m);
+        }
+
+        return res;
     }
 
     @Override
@@ -227,7 +237,15 @@ public class SettingsDAO extends LoadLocalYML<SettingsDTO>
         settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.BIRCH_SAPLING, true, 16));
 
         settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.SPRUCE_SAPLING, true, 16));
-        
+
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.ACACIA_SAPLING, true, 16));
+
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.DARK_OAK_SAPLING, true, 16));
+
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.JUNGLE_SAPLING, true, 16));
+
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.CHERRY_SAPLING, true, 16));
+
         defaultSettings.setPlantGrowthList(settingsPlantGrowths);
 
         return defaultSettings;

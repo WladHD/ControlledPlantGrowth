@@ -130,7 +130,8 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
             query.setParameter("z", location.getBlockZ());
 
             if (location.getWorld() == null) {
-                throw new RuntimeException("World in given location is null.");
+                ControlledPlantGrowth.handleException(new RuntimeException("World in given location is null."));
+                return null;
             }
 
             query.setParameter("worldUID", location.getWorld().getUID());
@@ -149,8 +150,10 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
         }
 
         if (retrievedBlocks.size() > 1) {
-            throw new RuntimeException(
-                    "This is illegal since the cords are treated as unique primary key ... but yet here we are.");
+            ControlledPlantGrowth.handleException(new RuntimeException(
+                    "This is illegal since the cords are treated as unique primary key ... but yet here we are."));
+            return null;
+
         }
 
         return retrievedBlocks.isEmpty() ?

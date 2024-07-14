@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 public class PlantClockwork implements IPlantClockwork {
     @Getter
     private final DebounceUtil debounceUtil = new DebounceUtil();
-    ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-    ScheduledFuture<?> scheduledFuture;
+    private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> scheduledFuture;
 
     public List<PlantBaseBlockDTO> filterLoadedChunks(List<PlantBaseBlockDTO> plants) {
         if (plants == null) {

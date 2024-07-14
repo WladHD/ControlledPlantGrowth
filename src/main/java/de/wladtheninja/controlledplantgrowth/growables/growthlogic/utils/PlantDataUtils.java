@@ -1,6 +1,7 @@
 package de.wladtheninja.controlledplantgrowth.growables.growthlogic.utils;
 
 import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
+import de.wladtheninja.controlledplantgrowth.data.dao.err.PlantSettingNotFoundException;
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
 import de.wladtheninja.controlledplantgrowth.data.dto.embedded.SettingsPlantGrowthDTO;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptAge;
@@ -22,7 +23,7 @@ public class PlantDataUtils {
     public static Map.Entry<Integer, Long> calculateAgeAndNextUpdate(long currentTimeStamp,
                                                                      IPlantConceptBasic ipc,
                                                                      PlantBaseBlockDTO plant)
-            throws PlantNoAgeableInterfaceException {
+            throws PlantNoAgeableInterfaceException, PlantSettingNotFoundException {
         final Block definitePlantRootBlock = plant.getLocation().getBlock();
 
         if (!ipc.containsAcceptedMaterial(definitePlantRootBlock.getType())) {
@@ -48,15 +49,10 @@ public class PlantDataUtils {
                 currentTimeStamp;
         int tempSimulatedAge = realCurrentAge;
 
-        SettingsPlantGrowthDTO settings;
-        try {
-            settings = PlantDataManager.getInstance()
-                    .getSettingsDataBase()
-                    .getPlantSettings(ipc.getDatabasePlantType(plant.getLocation().getBlock()));
-        }
-        catch (Exception e) {
-            throw new RuntimeException();
-        }
+        SettingsPlantGrowthDTO settings = PlantDataManager.getInstance()
+                .getSettingsDataBase()
+                .getPlantSettings(ipc.getDatabasePlantType(plant.getLocation().getBlock()));
+
 
         if (!settings.isUseTimeForPlantMature() &&
                 settings.getTimeForNextPlantGrowthInSteps().size() < realMaximumAge) {

@@ -1,13 +1,18 @@
 package de.wladtheninja.controlledplantgrowth.data.dao.utils;
 
+import de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth;
+
 import java.util.Arrays;
 import java.util.Random;
 
 public class RandomArrayFiller {
     public static int[] createRandomArrayWithSum(int numberOfElements, int desiredSum) {
         if (numberOfElements > desiredSum) {
-            throw new IllegalArgumentException(
-                    "It's not possible to create an array with each element at least 1 and the total sum less than n.");
+
+            ControlledPlantGrowth.handleException(new IllegalArgumentException(
+                    "It's not possible to create an array with each element at least 1 and the total sum less than n" +
+                            "."));
+            return null;
         }
 
         int[] arr = new int[numberOfElements];

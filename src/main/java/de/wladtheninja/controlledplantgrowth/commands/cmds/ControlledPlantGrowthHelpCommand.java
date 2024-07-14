@@ -7,11 +7,10 @@ import lombok.NonNull;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @PlantCommandData(name = "help",
-                  onlyPlayerCMD = false,
                   permission = "controlledplantgrowth.help",
                   usage = "help",
                   description = "Prints out all commands of the ControlledPlantGrowth plugin")
@@ -34,6 +33,6 @@ public class ControlledPlantGrowthHelpCommand implements IPlantCommandExecutor {
                                       @NonNull Command command,
                                       @NonNull String label,
                                       String @NonNull [] args) {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 }

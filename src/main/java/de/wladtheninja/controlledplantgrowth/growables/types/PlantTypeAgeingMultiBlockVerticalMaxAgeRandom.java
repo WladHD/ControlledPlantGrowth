@@ -1,6 +1,7 @@
 package de.wladtheninja.controlledplantgrowth.growables.types;
 
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptMaxAgeRandom;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantNoAgeableInterfaceException;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -52,7 +53,7 @@ public abstract class PlantTypeAgeingMultiBlockVerticalMaxAgeRandom extends Plan
 
 
     @Override
-    public void setCurrentAge(Block b, int setAge) {
+    public void setCurrentAge(Block b, int setAge) throws PlantNoAgeableInterfaceException {
         if (setAge > 0 && b.getType() == getMaterialSapling()) {
             b.setType(getMaterialStem());
         }

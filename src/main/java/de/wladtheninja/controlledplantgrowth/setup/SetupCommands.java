@@ -8,6 +8,8 @@ import de.wladtheninja.controlledplantgrowth.commands.cmds.ControlledPlantGrowth
 import de.wladtheninja.controlledplantgrowth.commands.cmds.ControlledPlantGrowthSetCommand;
 import org.bukkit.command.PluginCommand;
 
+import java.util.logging.Level;
+
 public class SetupCommands implements Runnable {
     @Override
     public void run() {
@@ -18,11 +20,13 @@ public class SetupCommands implements Runnable {
         mainCommandManager.registerCommand(new ControlledPlantGrowthInfoCommand());
         mainCommandManager.registerCommand(new ControlledPlantGrowthForceloadCommand());
 
-        final PluginCommand mainCommand =
-                ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class).getCommand("controlledPlantGrowth");
+        final PluginCommand mainCommand = ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class)
+                .getCommand("controlledPlantGrowth");
 
         if (mainCommand == null) {
-            throw new RuntimeException("Main command missing ...");
+            ControlledPlantGrowth.handleException(new RuntimeException("Plugin instance could not be found"),
+                    Level.SEVERE);
+            return;
         }
 
         mainCommand.setExecutor(mainCommandManager);

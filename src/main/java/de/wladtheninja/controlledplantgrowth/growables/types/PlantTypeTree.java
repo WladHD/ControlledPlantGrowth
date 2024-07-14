@@ -1,5 +1,6 @@
 package de.wladtheninja.controlledplantgrowth.growables.types;
 
+import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptTree;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.constraints.LightLevelPlantGrowthConstraint;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantConstraintViolationException;
@@ -23,16 +24,6 @@ public abstract class PlantTypeTree extends PlantTypeBasic implements IPlantConc
     private final Material saplingMaterial;
     private final TreeType saplingTreeType;
     private final TreeType saplingTreeTypeGiant;
-
-    public PlantTypeTree(Material sapling, TreeType saplingTreeType, TreeType saplingTreeTypeGiant) {
-        super(Collections.singletonList(sapling));
-        this.saplingMaterial = sapling;
-        this.saplingTreeType = saplingTreeType;
-        this.saplingTreeTypeGiant = saplingTreeTypeGiant;
-
-        addGrowthConstraint(new LightLevelPlantGrowthConstraint((byte) 9));
-    }
-
     private final BlockFace[] giantCheckFirst = new BlockFace[]{
             BlockFace.NORTH,
             BlockFace.NORTH_EAST,
@@ -45,6 +36,15 @@ public abstract class PlantTypeTree extends PlantTypeBasic implements IPlantConc
             BlockFace.NORTH
     };
 
+    public PlantTypeTree(Material sapling, TreeType saplingTreeType, TreeType saplingTreeTypeGiant) {
+        super(Collections.singletonList(sapling));
+        this.saplingMaterial = sapling;
+        this.saplingTreeType = saplingTreeType;
+        this.saplingTreeTypeGiant = saplingTreeTypeGiant;
+
+        addGrowthConstraint(new LightLevelPlantGrowthConstraint((byte) 9));
+    }
+
     @Override
     public List<Block> getGiant2x2Structure(Block b) {
         List<Block> list = new ArrayList<>();
@@ -53,7 +53,7 @@ public abstract class PlantTypeTree extends PlantTypeBasic implements IPlantConc
             boolean deg90 = i % 2 == 0;
 
             Bukkit.getLogger()
-                    .finer(MessageFormat.format("Checking Blockface {0} {1} a{2} b{3}",
+                    .finer(MessageFormat.format("Checking BlockFace {0} {1} a{2} b{3}",
                             giantCheckFirst[i],
                             i,
                             b.getType(),
@@ -134,9 +134,14 @@ public abstract class PlantTypeTree extends PlantTypeBasic implements IPlantConc
         if (g2x2 != null && isGiantTreeSupported()) {
             HashMap<Location, BlockData> cache = new HashMap<>();
 
-            g2x2.forEach(bl -> {
-                cache.put(b.getLocation(), b.getBlockData());
-                b.setType(Material.AIR);
+            g2x2.forEach(block2x2 -> {
+                cache.put(block2x2.getLocation(), block2x2.getBlockData());
+                block2x2.setType(Material.AIR);
+                block2x2.getState().update();
+
+                if (block2x2 != b) {
+                    PlantDataManager.getInstance().getPlantDataBase().delete(block2x2.getLocation());
+                }
             });
 
             generatedTree = b.getWorld().generateTree(b.getLocation(), getGiantTreeType()) ?
@@ -144,9 +149,10 @@ public abstract class PlantTypeTree extends PlantTypeBasic implements IPlantConc
                     2;
 
             if (generatedTree == 2) {
-                cache.keySet().forEach(loc -> {
-                    loc.getBlock().setType(getSaplingType());
-                    loc.getBlock().setBlockData(cache.get(loc));
+                cache.keySet().forEach(keySetLoc -> {
+                    keySetLoc.getBlock().setType(cache.get(keySetLoc).getMaterial());
+                    keySetLoc.getBlock().setBlockData(cache.get(keySetLoc));
+                    keySetLoc.getBlock().getState().update();
                 });
             }
         }
@@ -157,7 +163,9 @@ public abstract class PlantTypeTree extends PlantTypeBasic implements IPlantConc
                     4 :
                     5;
             if (generatedTree != 4) {
+                b.setType(getSaplingType());
                 b.setBlockData(bd);
+                b.getState().update();
             }
         }
 

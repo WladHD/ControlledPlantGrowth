@@ -1,9 +1,11 @@
 package de.wladtheninja.controlledplantgrowth.growables.types;
 
+import de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptAge;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.basic.IPlantConceptLocation;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.constraints.IPlantGrowthConstraint;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantConstraintViolationException;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantNoAgeableInterfaceException;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantRootBlockMissingException;
 import lombok.NonNull;
 import org.bukkit.Location;
@@ -12,7 +14,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 
-import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,11 +45,9 @@ public abstract class PlantTypeAgeingOneBlock extends PlantTypeBasic
     }
 
     @Override
-    public int getCurrentAge(Block b) {
+    public int getCurrentAge(Block b) throws PlantNoAgeableInterfaceException {
         if (!(b.getBlockData() instanceof Ageable)) {
-            throw new RuntimeException(MessageFormat.format("Block {0} at {1} does not inherit Ageable interface.",
-                    b.getType(),
-                    b.getLocation().toVector()));
+            throw new PlantNoAgeableInterfaceException(b);
         }
 
         final Ageable ag = (Ageable) b.getBlockData();
@@ -56,9 +55,9 @@ public abstract class PlantTypeAgeingOneBlock extends PlantTypeBasic
     }
 
     @Override
-    public void setCurrentAge(Block b, int age) {
+    public void setCurrentAge(Block b, int age) throws PlantNoAgeableInterfaceException {
         if (!(b.getBlockData() instanceof Ageable)) {
-            throw new RuntimeException("Block does not inherit Ageable interface.");
+            throw new PlantNoAgeableInterfaceException(b);
         }
 
         try {
@@ -76,14 +75,18 @@ public abstract class PlantTypeAgeingOneBlock extends PlantTypeBasic
 
     @Override
     public void increaseGrowthStep(Block b) {
-        setCurrentAge(b, getCurrentAge(b) + 1);
+        try {
+            setCurrentAge(b, getCurrentAge(b) + 1);
+        }
+        catch (PlantNoAgeableInterfaceException e) {
+            ControlledPlantGrowth.handleException(e);
+        }
     }
 
     @Override
-    public int getMaximumAge(Block b) {
+    public int getMaximumAge(Block b) throws PlantNoAgeableInterfaceException {
         if (!(b.getBlockData() instanceof Ageable)) {
-            throw new RuntimeException(MessageFormat.format(
-                    "Block {0} is provided as Ageable, yet does not inherit" + " Ageable interface.", b.getType()));
+            throw new PlantNoAgeableInterfaceException(b);
         }
 
         final Ageable ag = (Ageable) b.getBlockData();

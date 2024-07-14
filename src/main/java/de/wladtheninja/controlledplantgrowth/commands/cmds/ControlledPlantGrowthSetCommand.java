@@ -15,10 +15,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -55,7 +52,7 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
             ControlledPlantGrowthCommandManager.getInstance()
                     .getCommands()
                     .forEach(cmd -> cmd.sendUsageInformation(sender, label));
-            return false;
+            return true;
         }
 
         final List<Material> acceptedMats = ControlledPlantGrowthManager.getInstance()
@@ -196,20 +193,16 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
     public List<String> onTabComplete(@NonNull CommandSender sender,
                                       @NonNull Command command,
                                       @NonNull String label,
-                                      String[] args) {
+                                      String @NonNull [] args) {
 
-        final List<String> acceptedMats = ControlledPlantGrowthManager.getInstance()
-                .retrieveAllSupportedMaterialsForSettings()
-                .stream()
-                .map(Enum::toString)
-                .collect(Collectors.toList());
+        final List<String> acceptedMats = getFilteredAcceptedMaterialsOnArg(args, 1);
 
-        if (args.length == 1) {
-            return new ArrayList<>();
+        if (args.length <= 1) {
+            return Collections.emptyList();
         }
 
-        // /cmd set mat time
-        if (args.length == 2 && acceptedMats.stream().noneMatch(s -> s.equalsIgnoreCase(args[1]))) {
+        // args.length >= 2
+        if (acceptedMats != null) {
             return acceptedMats;
         }
 
@@ -218,7 +211,7 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
         Material parsedMat = Material.valueOf(args[1].toUpperCase());
         IPlantConceptBasic ipc = ControlledPlantGrowthManager.getInstance().retrieveSuitedPlantConcept(parsedMat);
 
-        if (args.length == 3 && !isInteger(args[2]) && (parseIntArray(args[2]) == null ||
+        if (args.length >= 3 && !isInteger(args[2]) && (parseIntArray(args[2]) == null ||
                 parseIntArray(args[2]).size() != ipc.getSettingsMaximalAge(parsedMat))) {
             return Stream.of(123,
                     Arrays.toString(IntStream.rangeClosed(1, ipc.getSettingsMaximalAge(parsedMat)).toArray())
@@ -226,11 +219,11 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
         }
 
 
-        if (args.length == 4 && acceptedTimeUnits.stream().noneMatch(s -> s.toString().equalsIgnoreCase(args[3]))) {
+        if (args.length >= 4 && acceptedTimeUnits.stream().noneMatch(s -> s.toString().equalsIgnoreCase(args[3]))) {
             return acceptedTimeUnits.stream().map(Enum::toString).collect(Collectors.toList());
         }
 
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     public List<Integer> parseIntArray(String input) {

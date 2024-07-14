@@ -1,9 +1,11 @@
 package de.wladtheninja.controlledplantgrowth.growables.types;
 
+import de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptAge;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptMultiBlockGrowthVertical;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.basic.IPlantConceptLocation;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantConstraintViolationException;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantNoAgeableInterfaceException;
 import lombok.NonNull;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -35,7 +37,7 @@ public abstract class PlantTypeAgeingMultiBlockVertical extends PlantTypeBasic
     }
 
     @Override
-    public int getCurrentAge(Block b) {
+    public int getCurrentAge(Block b) throws PlantNoAgeableInterfaceException {
         int age = -1;
         final Block plantRootBlock = getPlantRootBlock(b);
         final Material plantMaterial = plantRootBlock.getType();
@@ -47,14 +49,14 @@ public abstract class PlantTypeAgeingMultiBlockVertical extends PlantTypeBasic
         }
 
         if (age < 0) {
-            throw new RuntimeException("PlantRootBlock is missing. Perform sanity check before calling plant methods.");
+            throw new PlantNoAgeableInterfaceException(b);
         }
 
         return age;
     }
 
     @Override
-    public void setCurrentAge(Block b, int setAge) {
+    public void setCurrentAge(Block b, int setAge) throws PlantNoAgeableInterfaceException {
 
         try {
             handleConstraintCheckOrElseThrowError(this, b);
@@ -91,7 +93,12 @@ public abstract class PlantTypeAgeingMultiBlockVertical extends PlantTypeBasic
 
     @Override
     public void increaseGrowthStep(Block b) {
-        setCurrentAge(b, getCurrentAge(b) + 1);
+        try {
+            setCurrentAge(b, getCurrentAge(b) + 1);
+        }
+        catch (PlantNoAgeableInterfaceException e) {
+            ControlledPlantGrowth.handleException(e);
+        }
     }
 
 

@@ -1,6 +1,7 @@
 package de.wladtheninja.controlledplantgrowth.growables.instances;
 
 import de.wladtheninja.controlledplantgrowth.growables.concepts.constraints.LightLevelPlantGrowthConstraint;
+import de.wladtheninja.controlledplantgrowth.growables.concepts.err.PlantNoAgeableInterfaceException;
 import de.wladtheninja.controlledplantgrowth.growables.types.PlantTypeAgeingMultiBlockVerticalMaxAgeRandom;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -15,7 +16,7 @@ public class PlantInstanceBamboo extends PlantTypeAgeingMultiBlockVerticalMaxAge
     }
 
     @Override
-    public void setCurrentAge(final Block plantRootBlock, int age) {
+    public void setCurrentAge(final Block plantRootBlock, int age) throws PlantNoAgeableInterfaceException {
         double maxAge = getMaximumAge(plantRootBlock);
 
         super.setCurrentAge(plantRootBlock, age);

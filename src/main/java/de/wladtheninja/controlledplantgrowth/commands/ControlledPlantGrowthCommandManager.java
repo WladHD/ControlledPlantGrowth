@@ -79,11 +79,17 @@ public class ControlledPlantGrowthCommandManager implements CommandExecutor, Tab
         final List<String> defaultCommands = getCommands().stream()
                 .filter(cmd -> cmd.getCommandData().permission().isEmpty() ||
                         sender.hasPermission(cmd.getCommandData().permission()))
-                .map(cmd -> cmd.getCommandData().name())
+                .map(cmd -> cmd.getCommandData().name().toLowerCase())
                 .collect(Collectors.toList());
 
         if (args.length == 0) {
             return defaultCommands;
+        }
+
+        if (defaultCommands.stream().noneMatch(dc -> dc.equalsIgnoreCase(args[0].trim().toLowerCase()))) {
+            return defaultCommands.stream()
+                    .filter(dc -> dc.startsWith(args[0].trim().toLowerCase()))
+                    .collect(Collectors.toList());
         }
 
         final String cmd = args[0];

@@ -20,6 +20,7 @@ public class SetupPlantInstances implements Runnable {
                         new PlantInstanceTreeSpruce(),
                         new PlantInstanceTreeAcacia(),
                         new PlantInstanceTreeDarkOak(),
-                        new PlantInstanceTreeJungle());
+                        new PlantInstanceTreeJungle(),
+                        new PlantInstanceTreeCherry());
     }
 }

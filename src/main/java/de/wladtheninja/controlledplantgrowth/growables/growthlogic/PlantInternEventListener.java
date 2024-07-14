@@ -2,6 +2,7 @@ package de.wladtheninja.controlledplantgrowth.growables.growthlogic;
 
 import de.wladtheninja.controlledplantgrowth.ControlledPlantGrowth;
 import de.wladtheninja.controlledplantgrowth.data.PlantDataManager;
+import de.wladtheninja.controlledplantgrowth.data.dao.err.PlantSettingNotFoundException;
 import de.wladtheninja.controlledplantgrowth.data.dto.PlantBaseBlockDTO;
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
 import de.wladtheninja.controlledplantgrowth.growables.concepts.IPlantConceptAge;
@@ -84,19 +85,19 @@ public class PlantInternEventListener implements IPlantInternEventListener {
             plantDto = new PlantBaseBlockDTO(ipc, definitePlantRootLocation.getBlock());
         }
 
-        Map.Entry<Integer, Long> newAgeAndTimestamp = null;
+        Map.Entry<Integer, Long> newAgeAndTimestamp;
 
         try {
             newAgeAndTimestamp = PlantDataUtils.calculateAgeAndNextUpdate(System.currentTimeMillis(), ipc, plantDto);
         }
-        catch (PlantNoAgeableInterfaceException e) {
-            Bukkit.getLogger().log(Level.FINER, "PlantNoAgeableInterfaceException ...");
-            Bukkit.getLogger().log(Level.FINER, e.getMessage(), e);
-        }
-        catch (Exception e) {
+        catch (PlantSettingNotFoundException | PlantNoAgeableInterfaceException e) {
             if (isSaved) {
                 PlantDataManager.getInstance().getPlantDataBase().delete(definitePlantRootLocation);
             }
+            return;
+        }
+        catch (Exception ex) {
+            ControlledPlantGrowth.handleException(ex);
             return;
         }
 
@@ -225,12 +226,6 @@ public class PlantInternEventListener implements IPlantInternEventListener {
             PlantDataManager.getInstance().getPlantDataBase().merge(pl);
             onPlantStructureUpdateEvent(ipc, pl.getLocation());
         });
-    }
-
-    public enum PlantModifyCause {
-        PLAYER,
-        NATURAL,
-        ENTITY
     }
 
 }
