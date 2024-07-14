@@ -1,8 +1,20 @@
+# Receive official release updates?
 notifyOnSpigotRelease: true
+# Receive experimental release updates?
 notifyOnGitHubExperimentalRelease: false
+# Use hibernateConfigPlantSettings instead of local plantSettings.yml
 loadPlantSettingsFromDatabase: false
+# Enable debug log?
 enableDebugLog: false
+# ID of settings page in database (hibernateConfigPlantSettings)
+# You can have multiple presets and swap between them ...
+# If loadPlantSettingsFromDatabase is false it has no effect
 activeSettingsPage: "default"
+# Configure the database connection if you want to save the plantSettings.yml in a (remote) database.
+# Currently, this is configured to be connected to a local database in CPG's plugin folder
+# Follow the instructions on https://www.tutorialspoint.com/hibernate/hibernate_configuration.htm
+# to connect to a MySQL or PostgreSQL database.
+# If you are stuck, open an issue on my GitHub and request an example for your database type.
 hibernateConfigPlantSettings:
   hibernate.connection.driver_class: "org.h2.Driver"
   hibernate.connection.url: "jdbc:h2:./plugins/ControlledPlantGrowth/data/plantSettings;AUTO_SERVER=TRUE"
@@ -11,6 +23,9 @@ hibernateConfigPlantSettings:
   hibernate.show_sql: "false"
   hibernate.connection.password: ""
   hibernate.connection.username: "sa"
+# LEAVE AS IS IF YOU DON'T KNOW WHAT YOU ARE DOING
+# hibernateConfigLocalPlantCache is more or less an experimental rudiment, this database is ALWAYS used
+# It is responsible for caching plant coordinates in real time, so it should be local for best performance
 hibernateConfigLocalPlantCache:
   hibernate.connection.driver_class: "org.h2.Driver"
   hibernate.connection.url: "jdbc:h2:./plugins/ControlledPlantGrowth/data/plantCache;AUTO_SERVER=TRUE"
@@ -19,4 +34,7 @@ hibernateConfigLocalPlantCache:
   hibernate.show_sql: "false"
   hibernate.connection.password: ""
   hibernate.connection.username: "sa"
+# Internal version of the config / settings content (will be used to merge settings / config without
+# having to delete the plugin folder in the future)
+# Don't change
 currentSettingsVersion: "SETTINGS_V2"

@@ -55,7 +55,7 @@ public class ControlledPlantGrowthCommandManager implements CommandExecutor, Tab
                     label,
                     args[0]));
             onCommand(sender, command, label, new String[]{"help"});
-            return false;
+            return true;
         }
 
         IPlantCommandExecutor executor = parsedCmd.get();
@@ -64,7 +64,7 @@ public class ControlledPlantGrowthCommandManager implements CommandExecutor, Tab
                 !sender.hasPermission(executor.getCommandData().permission())) {
             sender.sendMessage(MessageFormat.format("This command requires the permission ''{0}''.",
                     executor.getCommandData().permission()));
-            return false;
+            return true;
         }
 
         return parsedCmd.get().onCommand(sender, command, label, args);

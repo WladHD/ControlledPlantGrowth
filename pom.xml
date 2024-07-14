@@ -14,7 +14,9 @@
     <description>A plugin for specifying maturing timers for plants.
         Plants will fully mature in the defined
         amount, even if the player leaves the chunk.
-        The plugin affects the real time growth as well as the offline growth, making it as immersive as possible.
+        The plugin affects the real time growth (player present in chunk) as well as the offline growth (player left
+        chunk), making it as
+        immersive as possible.
     </description>
     <properties>
         <java.version>1.8</java.version>
@@ -145,16 +147,6 @@
             <version>2.11.0</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
-            <version>1.12.0</version>
-            <scope>provided</scope>
-        </dependency>
-
-
 
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
         <dependency>
