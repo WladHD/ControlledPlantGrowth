@@ -32,7 +32,7 @@ Especially regarding plants in development or on-hold, refer to section
 - Random ticks / "natural growth" is by default enabled to allow a more random growth (can be turned off).
 - A player does not have to be in the chunk for the plants to grow.
 - The plugin does not load chunks, making it resource friendly.
-- If you don't want a specific plant to be managed by my plugin (f. e. clash with other plugins you have),
+- If you don't want a specific plant to be managed by my plugin (f. e. clash with other plugins),
   remove it (manually) from the `plantSettings.yml`.
 
 ### Supported Plants
@@ -124,13 +124,13 @@ refererence to https://minecraft.fandom.com/wiki/Tree#Types_of_trees
 
 ### Commands
 
-|                          Command	                          |             Permission 	             |                                                                                                                                                                                              Description	                                                                                                                                                                                              |
-|:----------------------------------------------------------:|:------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| /cpg set <material> <time / [1,2,3...maxAge]> [timeUnit] 	 |     controlledplantgrowth.set 	      |                                                                                                                       Sets the time of a specified plant to mature, saves the new config and applies the changes to plants. Defining an array of growth steps is possible now. 	                                                                                                                       |
-|                   /cpg info [material] 	                   |  controlledplantgrowth.info       	  |                                                                                                                                             Lists current configuration of plants and their time to mature.                                             	                                                                                                                                              |
-|                      	/cpg forceload                       | controlledplantgrowth.forceload    	 | Forces all <br/><br/><br/><br/><br/><br/>loaded chunks to be scanned for plants, which have the `ignoreInAutomaticChunkAnalysis` set to `false`. Only effective when `useAggressiveChunkAnalysisAndLookForUnregisteredPlants` is set to `false`. If mentioned setting is set to true, the chunks will be automatically analyzed on load (default).                                                   	 |
-|                         /cpg help                          |      controlledplantgrowth.help      |                                                                                                                                                                          Print the abbreviated version of this description :)                                                                                                                                                                          |
-|                             -                              |      controlledplantgrowth.view      |                                                                                                                                                              Permission to be able to see the /cpg command(s) in the vanilla autocomplete                                                                                                                                                              |
+|                          Command	                          |             Permission 	             |                                                                                                                                                                               Description	                                                                                                                                                                               |
+|:----------------------------------------------------------:|:------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| /cpg set <material> <time / [1,2,3...maxAge]> [timeUnit] 	 |     controlledplantgrowth.set 	      |                                                                                                        Sets the time of a specified plant to mature, saves the new config and applies the changes to plants. Defining an array of growth steps is possible now. 	                                                                                                        |
+|                   /cpg info [material] 	                   |  controlledplantgrowth.info       	  |                                                                                                                              Lists current configuration of plants and their time to mature.                                             	                                                                                                                               |
+|                      	/cpg forceload                       | controlledplantgrowth.forceload    	 | Forces all loaded chunks to be scanned for plants, which have the `ignoreInAutomaticChunkAnalysis` set to `false`. Only effective when `useAggressiveChunkAnalysisAndLookForUnregisteredPlants` is set to `false`. If mentioned setting is set to true, the chunks will be automatically analyzed on load (default).                                                   	 |
+|                         /cpg help                          |      controlledplantgrowth.help      |                                                                                                                                                           Print the abbreviated version of this description :)                                                                                                                                                           |
+|                             -                              |      controlledplantgrowth.view      |                                                                                                                                              Permission to be able to see the /cpg command(s) in the vanilla autocomplete.                                                                                                                                               |
 
 ### Configuration Files
 
@@ -189,27 +189,27 @@ plantGrowthList:
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: true
     timeForPlantMature: 1080
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
   - material: "POTATOES"
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: true
     timeForPlantMature: 1080
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
   - material: "CARROTS"
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: true
     timeForPlantMature: 1080
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
   - material: "NETHER_WART"
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: true
     timeForPlantMature: 1800
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
   - material: "SWEET_BERRY_BUSH"
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: true
     timeForPlantMature: 1080
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
   # EXAMPLE 3: MELONS and PUMPKINS have a stem, that has the ages from 0 to 7
   # THE FRUIT is then grown, resulting in an age from 0 to 8 (8 growth steps, 9 unique ages).
   # Therefore, timeForNextPlantGrowthInSteps contains 8 elements
@@ -266,7 +266,7 @@ plantGrowthList:
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: true
     timeForPlantMature: 960
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
   # KELP can grow to a max. of 26 blocks = an array of 25 is needed
   # or useTimeForPlantMature = true if you want to have constant growth (refer to EXAMPLE 1 and 2)
   - material: "KELP"
@@ -307,37 +307,37 @@ plantGrowthList:
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: true
     timeForPlantMature: 960
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
   - material: "BIRCH_SAPLING"
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: true
     timeForPlantMature: 960
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
   - material: "SPRUCE_SAPLING"
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: true
     timeForPlantMature: 960
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
   - material: "ACACIA_SAPLING"
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: true
     timeForPlantMature: 960
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
   - material: "DARK_OAK_SAPLING"
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: true
     timeForPlantMature: 960
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
   - material: "JUNGLE_SAPLING"
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: true
     timeForPlantMature: 960
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
   - material: "CHERRY_SAPLING"
     ignoreInAutomaticChunkAnalysis: false
     useTimeForPlantMature: true
     timeForPlantMature: 960
-    timeForNextPlantGrowthInSteps: []
+    timeForNextPlantGrowthInSteps: [ ]
 # EXPERIMENTAL EFFICIENCY SETTINGS:
 
 # The plugin searches for overdue plants and searches for plants that have to yet be updated.
