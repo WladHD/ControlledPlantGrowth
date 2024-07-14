@@ -414,6 +414,20 @@ currentSettingsVersion: "SETTINGS_V2"
     - com.demonwav.minecraft-dev (2024.1-1.7.6)
 - Oracle OpenJDK 22.0.1 (language level set to 8)
 
+# Contributing / Using the Framework
+You can either fork this project to integrate your personal changes into this plugin.
+Or you can include this plugin as Maven dependency and use the
+ControlledPlantGrowthManager to register your own PlantType.
+
+Newest version:
+````xml
+<dependency>
+  <groupId>de.wladtheninja</groupId>
+  <artifactId>controlledplantgrowth</artifactId>
+  <version>2.0.0</version>
+</dependency>
+````
+
 # LICENSE
 
 MIT License
