@@ -48,7 +48,9 @@ jobs:
         run: |
           cd spigot
           echo "eula=true" > eula.txt
-          java -Xms512M -Xmx1024M -jar spigot.jar --nogui
+          java -Xms512M -Xmx1024M -jar spigot.jar nogui &
+          SERVER_PID=$!
+          echo $SERVER_PID > ../server_pid.txt
 
       - name: Wait for Spigot Server To Start
         run: |
