@@ -48,6 +48,8 @@ jobs:
 
       - name: Start Spigot server
         run: |
+          ls
+          pwd
           cd spigot
           echo "eula=true" > eula.txt
           java -Xms512M -Xmx1024M -jar spigot.jar nogui &
