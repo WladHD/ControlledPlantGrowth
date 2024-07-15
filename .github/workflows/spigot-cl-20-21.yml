@@ -43,7 +43,7 @@ jobs:
           cd buildtools
           java -jar BuildTools.jar --rev ${{ matrix.spigot-version }}
           mkdir -p ../spigot
-          cp ./spigot-${{ matrix.spigot-version }}.jar ../spigot/spigot.jar
+          cp ./spigot*.jar ../spigot/spigot.jar
           cd ..
 
       - name: Copy Plugin JAR
