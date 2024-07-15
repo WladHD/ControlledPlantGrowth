@@ -1,4 +1,4 @@
-name: Spigot Versions CI
+name: Test Spigot Versions (1.20 - 1.21)
 
 on:
   push:
@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        spigot-version: ['1.21']
+        spigot-version: [ '1.20', '1.20.1', '1.20.2', '1.20.3', '1.20.4', '1.20.5', '1.20.6', '1.21' ]
 
     steps:
       - name: Checkout Repository
