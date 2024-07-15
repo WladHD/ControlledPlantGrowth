@@ -74,8 +74,10 @@ jobs:
             echo "Plugin failed to load."
             echo "::set-output name=result::failed"
             exit 1
+          fi
 
       - name: Stop Spigot server
         run: |
           SERVER_PID=$(cat ../server_pid.txt)
           kill $SERVER_PID
+          exit 0
