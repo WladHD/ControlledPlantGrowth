@@ -21,7 +21,10 @@ jobs:
           distribution: 'corretto'
 
       - name: Build with Maven
-        run: mvn package
+        run: |
+          mvn package
+          ls
+          pwd
 
       - name: Download BuildTools
         run: |
@@ -38,6 +41,8 @@ jobs:
 
       - name: Copy plugin JAR
         run: |
+          ls
+          pwd
           mkdir -p ./spigot/plugins
           cp ./target/*.jar ./spigot/plugins/CPG.jar
 
