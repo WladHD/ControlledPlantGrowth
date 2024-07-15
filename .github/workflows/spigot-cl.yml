@@ -37,6 +37,8 @@ jobs:
           java -jar BuildTools.jar --rev ${{ matrix.spigot-version }}
           mkdir -p ../spigot
           cp ./spigot-${{ matrix.spigot-version }}.jar ../spigot/spigot.jar
+          ls
+          pwd
           cd ..
 
       - name: Copy plugin JAR
@@ -44,7 +46,7 @@ jobs:
           ls
           pwd
           mkdir -p ./spigot/plugins
-          cp ./target/*.jar ./spigot/plugins/CPG.jar
+          cp ./target/controlledplantgrowth*[0-9].jar ./spigot/plugins
 
       - name: Start Spigot server
         run: |
