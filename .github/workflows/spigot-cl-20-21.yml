@@ -26,6 +26,12 @@ jobs:
           ls
           pwd
 
+      - name: Set up JDK 21 for Spigot Builds
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+
       - name: Download BuildTools
         run: |
           mkdir buildtools
