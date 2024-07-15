@@ -14,7 +14,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 22
+      - name: Set up JDK 22 for Maven Build
         uses: actions/setup-java@v4
         with:
           java-version: '22'
@@ -37,30 +37,27 @@ jobs:
           java -jar BuildTools.jar --rev ${{ matrix.spigot-version }}
           mkdir -p ../spigot
           cp ./spigot-${{ matrix.spigot-version }}.jar ../spigot/spigot.jar
-          ls
-          pwd
           cd ..
 
       - name: Copy plugin JAR
         run: |
-          ls
-          pwd
           mkdir -p ./spigot/plugins
           cp ./target/controlledplantgrowth*[0-9].jar ./spigot/plugins
 
       - name: Start Spigot server
         run: |
-          ls
-          pwd
           cd spigot
           echo "eula=true" > eula.txt
           java -Xms512M -Xmx1024M -jar spigot.jar nogui &
           SERVER_PID=$!
-          echo $SERVER_PID > ../server_pid.txt
+          echo $SERVER_PID > ./serverPid.txt
+          echo "Started Spigot server with PID"
+          echo $SERVER_PID
 
       - name: Wait for Spigot server to start
         run: |
           while ! grep -q ")! For help, type" spigot/logs/latest.log; do
+            echo "Server not started yet ... waiting"
             sleep 5
           done
 
@@ -69,15 +66,15 @@ jobs:
         run: |
           if grep -q "ControlledPlantGrowth is enabled!" spigot/logs/latest.log; then
             echo "Plugin loaded successfully."
-            echo "::set-output name=result::passed"
+            echo "result=passed" >>$GITHUB_OUTPUT
           else
             echo "Plugin failed to load."
-            echo "::set-output name=result::failed"
+            echo "result=failed" >>$GITHUB_OUTPUT
             exit 1
           fi
 
       - name: Stop Spigot server
         run: |
-          SERVER_PID=$(cat ../server_pid.txt)
+          SERVER_PID=$(cat ./serverPid.txt)
           kill $SERVER_PID
           exit 0
