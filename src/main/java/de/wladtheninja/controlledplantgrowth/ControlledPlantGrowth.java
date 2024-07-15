@@ -55,8 +55,9 @@ public final class ControlledPlantGrowth extends JavaPlugin {
         }
 
         Arrays.stream(setups).forEach(Runnable::run);
-    }
 
+        Bukkit.getLogger().info("ControlledPlantGrowth is enabled!");
+    }
     @Override
     public void onDisable() {
         DatabaseHibernateLocalPlantCacheUtil.getInstance().shutdown();
