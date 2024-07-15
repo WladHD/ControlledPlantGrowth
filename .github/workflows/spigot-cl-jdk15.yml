@@ -7,7 +7,7 @@ jobs:
   test-plugin:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         spigot-version: [ '1.15', '1.15.2', '1.16.1','1.16.5' ]
 
@@ -27,10 +27,10 @@ jobs:
           ls
           pwd
 
-      - name: Set up JDK 14 for Spigot Builds
+      - name: Set up JDK 13 for Spigot Builds
         uses: actions/setup-java@v4
         with:
-          java-version: '15'
+          java-version: '13'
           distribution: 'corretto'
 
       - name: Download BuildTools

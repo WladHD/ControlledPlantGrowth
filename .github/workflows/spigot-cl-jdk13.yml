@@ -7,7 +7,7 @@ jobs:
   test-plugin:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         spigot-version: [ '1.13', '1.14', '1.14.4' ]
 

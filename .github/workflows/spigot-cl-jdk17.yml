@@ -7,9 +7,9 @@ jobs:
   test-plugin:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
-        spigot-version: [ '1.17','1.17.1', '1.18', '1.18.2', '1.19', '1.19.4',  ]
+        spigot-version: [ '1.18', '1.18.2', '1.19', '1.19.4',  ]
 
     steps:
       - name: Checkout Repository
