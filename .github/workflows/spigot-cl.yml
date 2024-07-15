@@ -85,7 +85,7 @@ jobs:
           echo "## Plugin Test Summary" > summary.md
           echo "" >> summary.md
           for version in 1.8 1.20 1.21; do
-            if [[ "${{ needs.test-plugin.outputs[result_$version] }}" == "passed" ]]; then
+            if [[ "${{ needs.test-plugin.outputs.result }}" == "passed" ]]; then
               echo "- Spigot $version: **Passed**" >> summary.md
             else
               echo "- Spigot $version: **Failed**" >> summary.md
