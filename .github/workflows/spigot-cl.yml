@@ -33,12 +33,13 @@ jobs:
           cd buildtools
           java -jar BuildTools.jar --rev ${{ matrix.spigot-version }}
           mkdir -p ../spigot
-          cp Spigot/Spigot-Server/target/spigot-${{ matrix.spigot-version }}.jar ../spigot/spigot.jar
+          cp ./spigot-${{ matrix.spigot-version }}.jar ../spigot/spigot.jar
+          cd ..
 
       - name: Copy plugin JAR
         run: |
-          mkdir -p spigot/plugins
-          cp target/*.jar spigot/plugins/CPG.jar
+          mkdir -p ./spigot/plugins
+          cp ./target/*.jar ./spigot/plugins/CPG.jar
 
       - name: Start Spigot server
         run: |
@@ -69,26 +70,3 @@ jobs:
         run: |
           SERVER_PID=$(cat ../server_pid.txt)
           kill $SERVER_PID
-
-  summary:
-    runs-on: ubuntu-latest
-    needs: [test-plugin]
-    steps:
-      - name: Create summary
-        run: |
-          echo "## Plugin Test Summary" > summary.md
-          echo "" >> summary.md
-          for version in 1.21; do
-            if [[ "${{ needs.test-plugin.outputs.result }}" == "passed" ]]; then
-              echo "- Spigot $version: **Passed**" >> summary.md
-            else
-              echo "- Spigot $version: **Failed**" >> summary.md
-            fi
-          done
-          cat summary.md
-
-      - name: Upload summary
-        uses: actions/upload-artifact@v4
-        with:
-          name: Spigot Server Version Test Summary
-          path: summary.md
