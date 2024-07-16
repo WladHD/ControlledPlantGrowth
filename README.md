@@ -8,10 +8,10 @@ My goal is to develop a lightweight plugin that can force plants to be grown in 
 Plants placed by villagers and plants in general will be managed too.**
 
 Plants with multiple age levels will reflect those changes as well.
-F. e. a wheat field will grow continuously to feel as immersive as possible.
+E.g., a wheat field will grow continuously to feel as immersive as possible.
 
 Here is a gif that shows how you can adjust the growth time and its resulting effects.
-In this example the default setting of 20 minutes was changed to 5 seconds.
+In this example, the default setting of 20 minutes was changed to 5 seconds.
 
 ![GIF of planting potatoes and showcasing the growth setting](https://github.com/WladHD/ControlledPlantGrowth/blob/assets/assets/ezgif-7-4abf2ad084.gif?raw=true)
 
@@ -21,7 +21,10 @@ Especially regarding plants in development or on-hold, refer to section
 
 ### Tested on Server Software
 
-- Paper 1.21 Build #44, #40 (experimental)
+- Paper 1.21 Build #69, #44, #40 (experimental)
+- Automated tests on Spigot Servers build by [BuildTools](https://hub.spigotmc.
+  org/jenkins/job/BuildTools/lastStableBuild/): 1.21, 1.20 - 1.20.5, 1.19.4
+  (refer to [Actions](https://github.com/WladHD/ControlledPlantGrowth/actions))
 
 ## Features
 
