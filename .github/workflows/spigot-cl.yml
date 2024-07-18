@@ -3,7 +3,7 @@ name: Test Spigot Versions (1.13 - 1.21)
 on:
   push:
     paths:
-      - 'src/main/**'
+      - 'src/main/java/**'
   pull_request:
 jobs:
   test-plugin:

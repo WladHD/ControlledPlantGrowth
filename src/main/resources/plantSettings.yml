@@ -100,6 +100,16 @@ plantGrowthList:
       - 120
       - 60
       - 180
+  - material: "CACTUS"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: true
+    timeForPlantMature: 1080
+    timeForNextPlantGrowthInSteps: []
+  - material: "SUGAR_CANE"
+    ignoreInAutomaticChunkAnalysis: false
+    useTimeForPlantMature: true
+    timeForPlantMature: 1080
+    timeForNextPlantGrowthInSteps: []
   # BAMBOO can grow to a max. of 16 blocks = an array of 15 is needed
   # or useTimeForPlantMature = true if you want to have constant growth (refer to EXAMPLE 1 and 2)
   - material: "BAMBOO"
