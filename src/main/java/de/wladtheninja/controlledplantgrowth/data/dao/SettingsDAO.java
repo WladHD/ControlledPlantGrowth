@@ -262,7 +262,7 @@ public class SettingsDAO
 
         settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.JUNGLE_SAPLING, true, 16));
 
-        if (Material.getMaterial(Material.CHERRY_SAPLING.toString()) != null) {
+        if (Material.getMaterial("CHERRY_SAPLING") != null) {
             settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.CHERRY_SAPLING, true, 16));
         }
 
