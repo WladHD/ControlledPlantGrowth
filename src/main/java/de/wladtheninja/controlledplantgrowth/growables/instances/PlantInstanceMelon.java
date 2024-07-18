@@ -7,14 +7,18 @@ import org.bukkit.Material;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class PlantInstanceMelon extends PlantTypeAgeingOneBlockFruitAttached {
+public class PlantInstanceMelon
+        extends PlantTypeAgeingOneBlockFruitAttached
+{
 
     public PlantInstanceMelon() {
         // see https://minecraft.fandom.com/wiki/Melon_Seeds for accepted grow blocks
-        super(Material.MELON,
+        super(
+                Material.MELON,
                 Material.MELON_STEM,
                 Material.ATTACHED_MELON_STEM,
-                Arrays.asList(Material.DIRT,
+                Arrays.asList(
+                        Material.DIRT,
                         Material.COARSE_DIRT,
                         Material.ROOTED_DIRT,
                         Material.GRASS_BLOCK,
@@ -23,7 +27,9 @@ public class PlantInstanceMelon extends PlantTypeAgeingOneBlockFruitAttached {
                         Material.MYCELIUM,
                         Material.MOSS_BLOCK,
                         Material.MUD,
-                        Material.MUDDY_MANGROVE_ROOTS),
-                Collections.singletonList(new LightLevelPlantGrowthConstraint((byte) 10)));
+                        Material.MUDDY_MANGROVE_ROOTS
+                ),
+                Collections.singletonList(new LightLevelPlantGrowthConstraint((byte) 10))
+        );
     }
 }

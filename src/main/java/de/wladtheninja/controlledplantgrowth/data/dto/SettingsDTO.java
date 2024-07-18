@@ -15,7 +15,9 @@ import java.util.List;
 @Getter
 @Setter
 @Entity(name = "SettingsDTO")
-public class SettingsDTO implements Serializable {
+public class SettingsDTO
+        implements Serializable
+{
 
     @Id
     private String settingsPageName;

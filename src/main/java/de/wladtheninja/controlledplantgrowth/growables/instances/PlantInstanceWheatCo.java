@@ -7,10 +7,15 @@ import org.bukkit.Material;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class PlantInstanceWheatCo extends PlantTypeAgeingOneBlock {
+public class PlantInstanceWheatCo
+        extends PlantTypeAgeingOneBlock
+{
     public PlantInstanceWheatCo() {
-        super(Arrays.asList(Material.WHEAT, Material.BEETROOTS, Material.POTATOES, Material.CARROTS,
-                        Material.NETHER_WART, Material.SWEET_BERRY_BUSH),
-                Collections.singletonList(new LightLevelPlantGrowthConstraint((byte) 9)));
+        super(
+                Arrays.asList(Material.WHEAT, Material.BEETROOTS, Material.POTATOES, Material.CARROTS,
+                              Material.NETHER_WART, Material.SWEET_BERRY_BUSH
+                ),
+                Collections.singletonList(new LightLevelPlantGrowthConstraint((byte) 9))
+        );
     }
 }

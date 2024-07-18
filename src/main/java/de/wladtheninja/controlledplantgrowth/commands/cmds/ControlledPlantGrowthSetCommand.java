@@ -28,7 +28,9 @@ import java.util.stream.Stream;
                   description =
                           "Sets the time of a specified plant to mature, saves the new config and applies the changes to " +
                                   "plants.")
-public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
+public class ControlledPlantGrowthSetCommand
+        implements IPlantCommandExecutor
+{
 
     private final List<TimeUnit> acceptedTimeUnits = Arrays.asList(TimeUnit.SECONDS, TimeUnit.MINUTES, TimeUnit.HOURS);
 
@@ -46,23 +48,24 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
     public boolean onCommand(@NonNull CommandSender sender,
                              @NonNull Command command,
                              @NonNull String label,
-                             String @NonNull [] args) {
+                             String @NonNull [] args)
+    {
 
         if (args.length < 3 || args.length > 4) {
             ControlledPlantGrowthCommandManager.getInstance()
-                    .getCommands()
-                    .forEach(cmd -> cmd.sendUsageInformation(sender, label));
+                                               .getCommands()
+                                               .forEach(cmd -> cmd.sendUsageInformation(sender, label));
             return true;
         }
 
         final List<Material> acceptedMats = ControlledPlantGrowthManager.getInstance()
-                .retrieveAllSupportedMaterialsForSettings();
+                                                                        .retrieveAllSupportedMaterialsForSettings();
 
         String material = args[1].toUpperCase();
         String timeOrTimeArray = args[2];
         String timeType = args.length == 4 ?
-                args[3].toUpperCase() :
-                null;
+                          args[3].toUpperCase() :
+                          null;
 
         Material parsedMat;
         int parsedTime = -1;
@@ -78,9 +81,11 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
         }
 
         if (!acceptedMats.contains(parsedMat)) {
-            sender.sendMessage(MessageFormat.format("{0} is not a supported material. Supported materials are: {1}",
+            sender.sendMessage(MessageFormat.format(
+                    "{0} is not a supported material. Supported materials are: {1}",
                     material,
-                    Arrays.toString(acceptedMats.toArray())));
+                    Arrays.toString(acceptedMats.toArray())
+            ));
             return true;
         }
 
@@ -104,20 +109,22 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
                 parsedTimeUnit = TimeUnit.valueOf(timeType);
             }
             catch (IllegalArgumentException e) {
-                sender.sendMessage(MessageFormat.format("{0} is not a valid time unit. Supported time units are:",
-                        Arrays.toString(acceptedTimeUnits.toArray())));
+                sender.sendMessage(MessageFormat.format(
+                        "{0} is not a valid time unit. Supported time units are:",
+                        Arrays.toString(acceptedTimeUnits.toArray())
+                ));
                 return true;
             }
         }
 
         SettingsDTO currentSettings = PlantDataManager.getInstance()
-                .getSettingsDataBase()
-                .getCurrentSettingsFromCache();
+                                                      .getSettingsDataBase()
+                                                      .getCurrentSettingsFromCache();
 
         Optional<SettingsPlantGrowthDTO> sdf = currentSettings.getPlantGrowthList()
-                .stream()
-                .filter(pgl -> pgl.getMaterial() == parsedMat)
-                .findFirst();
+                                                              .stream()
+                                                              .filter(pgl -> pgl.getMaterial() == parsedMat)
+                                                              .findFirst();
 
         IPlantConceptBasic ipc = ControlledPlantGrowthManager.getInstance().retrieveSuitedPlantConcept(parsedMat);
 
@@ -129,7 +136,8 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
                     parsedMat,
                     maxAgeIpc,
                     Arrays.toString(IntStream.rangeClosed(1, maxAgeIpc).toArray()).replace(" ", ""),
-                    parsedNonLinearTime.size()));
+                    parsedNonLinearTime.size()
+            ));
             return true;
         }
 
@@ -145,16 +153,18 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
 
             PlantDataManager.getInstance().getSettingsDataBase().saveCachedCurrentSettings();
 
-            sender.sendMessage(MessageFormat.format("Growth time for {0} was successfully updated to {1} {2}.",
+            sender.sendMessage(MessageFormat.format(
+                    "Growth time for {0} was successfully updated to {1} {2}.",
                     parsedMat,
                     useParsedTime ?
-                            parsedTime :
-                            Arrays.toString(parsedNonLinearTime.toArray()).replace(" ", ""),
-                    parsedTimeUnit));
+                    parsedTime :
+                    Arrays.toString(parsedNonLinearTime.toArray()).replace(" ", ""),
+                    parsedTimeUnit
+            ));
 
             ControlledPlantGrowthManager.getInstance()
-                    .getInternEventListener()
-                    .onForcePlantsReloadByDatabaseTypeEvent(parsedMat);
+                                        .getInternEventListener()
+                                        .onForcePlantsReloadByDatabaseTypeEvent(parsedMat);
             return true;
         }
 
@@ -171,21 +181,23 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
         }
 
         PlantDataManager.getInstance()
-                .getSettingsDataBase()
-                .getCurrentSettingsFromCache()
-                .getPlantGrowthList()
-                .add(settingsPlantGrowthDTO);
+                        .getSettingsDataBase()
+                        .getCurrentSettingsFromCache()
+                        .getPlantGrowthList()
+                        .add(settingsPlantGrowthDTO);
         PlantDataManager.getInstance().getSettingsDataBase().saveCachedCurrentSettings();
         ControlledPlantGrowthManager.getInstance()
-                .getInternEventListener()
-                .onForcePlantsReloadByDatabaseTypeEvent(parsedMat);
+                                    .getInternEventListener()
+                                    .onForcePlantsReloadByDatabaseTypeEvent(parsedMat);
 
-        sender.sendMessage(MessageFormat.format("Growth time for {0} was successfully updated to {1} {2}.",
+        sender.sendMessage(MessageFormat.format(
+                "Growth time for {0} was successfully updated to {1} {2}.",
                 parsedMat,
                 useParsedTime ?
-                        parsedTime :
-                        Arrays.toString(parsedNonLinearTime.toArray()).replace(" ", ""),
-                parsedTimeUnit));
+                parsedTime :
+                Arrays.toString(parsedNonLinearTime.toArray()).replace(" ", ""),
+                parsedTimeUnit
+        ));
         return true;
     }
 
@@ -193,7 +205,8 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
     public List<String> onTabComplete(@NonNull CommandSender sender,
                                       @NonNull Command command,
                                       @NonNull String label,
-                                      String @NonNull [] args) {
+                                      String @NonNull [] args)
+    {
 
         final List<String> acceptedMats = getFilteredAcceptedMaterialsOnArg(args, 1);
 
@@ -212,10 +225,13 @@ public class ControlledPlantGrowthSetCommand implements IPlantCommandExecutor {
         IPlantConceptBasic ipc = ControlledPlantGrowthManager.getInstance().retrieveSuitedPlantConcept(parsedMat);
 
         if (args.length >= 3 && !isInteger(args[2]) && (parseIntArray(args[2]) == null ||
-                parseIntArray(args[2]).size() != ipc.getSettingsMaximalAge(parsedMat))) {
-            return Stream.of(123,
+                parseIntArray(args[2]).size() != ipc.getSettingsMaximalAge(parsedMat)))
+        {
+            return Stream.of(
+                    123,
                     Arrays.toString(IntStream.rangeClosed(1, ipc.getSettingsMaximalAge(parsedMat)).toArray())
-                            .replace(" ", "")).map(String::valueOf).collect(Collectors.toList());
+                          .replace(" ", "")
+            ).map(String::valueOf).collect(Collectors.toList());
         }
 
 

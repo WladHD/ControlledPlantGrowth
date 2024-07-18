@@ -8,7 +8,9 @@ import org.bukkit.block.Block;
 
 import java.util.List;
 
-public interface IPlantConceptBasic extends IPlantConceptLocation, IPlantConceptGrowthInformation {
+public interface IPlantConceptBasic
+        extends IPlantConceptLocation, IPlantConceptGrowthInformation
+{
 
     List<Material> getAcceptedPlantMaterials();
 

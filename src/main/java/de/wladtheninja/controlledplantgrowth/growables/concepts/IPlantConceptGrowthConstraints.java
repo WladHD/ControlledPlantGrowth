@@ -6,7 +6,9 @@ import org.bukkit.block.Block;
 
 import java.util.List;
 
-public interface IPlantConceptGrowthConstraints extends IPlantConceptBasic {
+public interface IPlantConceptGrowthConstraints
+        extends IPlantConceptBasic
+{
 
     List<IPlantGrowthConstraint> checkGrowthConstraintViolations(Block b);
 

@@ -7,15 +7,19 @@ import org.bukkit.Material;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class PlantInstancePumpkin extends PlantTypeAgeingOneBlockFruitAttached {
+public class PlantInstancePumpkin
+        extends PlantTypeAgeingOneBlockFruitAttached
+{
 
 
     public PlantInstancePumpkin() {
         // see https://minecraft.fandom.com/wiki/Pumpkin_Seeds for accepted grow blocks
-        super(Material.PUMPKIN,
+        super(
+                Material.PUMPKIN,
                 Material.PUMPKIN_STEM,
                 Material.ATTACHED_PUMPKIN_STEM,
-                Arrays.asList(Material.DIRT,
+                Arrays.asList(
+                        Material.DIRT,
                         Material.COARSE_DIRT,
                         Material.ROOTED_DIRT,
                         Material.GRASS_BLOCK,
@@ -24,7 +28,9 @@ public class PlantInstancePumpkin extends PlantTypeAgeingOneBlockFruitAttached {
                         Material.MYCELIUM,
                         Material.MOSS_BLOCK,
                         Material.MUD,
-                        Material.MUDDY_MANGROVE_ROOTS),
-                Collections.singletonList(new LightLevelPlantGrowthConstraint((byte) 9)));
+                        Material.MUDDY_MANGROVE_ROOTS
+                ),
+                Collections.singletonList(new LightLevelPlantGrowthConstraint((byte) 9))
+        );
     }
 }

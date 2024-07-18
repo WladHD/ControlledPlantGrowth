@@ -11,7 +11,9 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.logging.Level;
 
-public final class ControlledPlantGrowth extends JavaPlugin {
+public final class ControlledPlantGrowth
+        extends JavaPlugin
+{
 
     public final static int SPIGOT_RESOURCE_ID = 117871;
     public final static long GITHUB_REPOSITORY_ID = 824412371;
@@ -35,9 +37,13 @@ public final class ControlledPlantGrowth extends JavaPlugin {
 
         if (level == Level.SEVERE) {
             Bukkit.getLogger()
-                    .log(Level.SEVERE,
-                            MessageFormat.format("Disabling {0} ...",
-                                    ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class)));
+                  .log(
+                          Level.SEVERE,
+                          MessageFormat.format(
+                                  "Disabling {0} ...",
+                                  ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class)
+                          )
+                  );
             Bukkit.getPluginManager().disablePlugin(ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class));
         }
     }
@@ -58,6 +64,7 @@ public final class ControlledPlantGrowth extends JavaPlugin {
 
         Bukkit.getLogger().info("ControlledPlantGrowth is enabled!");
     }
+
     @Override
     public void onDisable() {
         DatabaseHibernateLocalPlantCacheUtil.getInstance().shutdown();

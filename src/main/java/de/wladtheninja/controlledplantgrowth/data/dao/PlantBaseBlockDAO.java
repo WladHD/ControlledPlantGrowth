@@ -19,7 +19,9 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> {
+public class PlantBaseBlockDAO
+        implements IPlantBaseBlockDAO<PlantBaseBlockDTO>
+{
 
     @Override
     public List<PlantBaseBlockDTO> getAll() {
@@ -45,11 +47,15 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
     @Override
     public PlantBaseBlockDTO merge(PlantBaseBlockDTO obj) {
         Bukkit.getLogger()
-                .log(Level.FINER,
-                        MessageFormat.format("[DB] Saving {0} at {1} (DB Type {2})",
-                                obj.getLocation().getBlock().getType(),
-                                obj.getLocation().toVector(),
-                                obj.getPlantType()));
+              .log(
+                      Level.FINER,
+                      MessageFormat.format(
+                              "[DB] Saving {0} at {1} (DB Type {2})",
+                              obj.getLocation().getBlock().getType(),
+                              obj.getLocation().toVector(),
+                              obj.getPlantType()
+                      )
+              );
         try (Session session = DatabaseHibernateLocalPlantCacheUtil.getInstance().getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
@@ -88,8 +94,10 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
     @Override
     public boolean delete(Location l) {
         Bukkit.getLogger()
-                .log(Level.FINER,
-                        MessageFormat.format("[DB] Deleting {0} at {1}", l.getBlock().getType(), l.toVector()));
+              .log(
+                      Level.FINER,
+                      MessageFormat.format("[DB] Deleting {0} at {1}", l.getBlock().getType(), l.toVector())
+              );
         int deletedCount = 0;
 
         try (Session session = DatabaseHibernateLocalPlantCacheUtil.getInstance().getSessionFactory().openSession()) {
@@ -100,11 +108,11 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
                             "and plantBaseBlockIdDTO.z = :z and plantBaseBlockIdDTO.worldUID = :worldUID";
 
             deletedCount = session.createMutationQuery(hql)
-                    .setParameter("x", l.getBlockX())
-                    .setParameter("y", l.getBlockY())
-                    .setParameter("z", l.getBlockZ())
-                    .setParameter("worldUID", Objects.requireNonNull(l.getWorld()).getUID())
-                    .executeUpdate();
+                                  .setParameter("x", l.getBlockX())
+                                  .setParameter("y", l.getBlockY())
+                                  .setParameter("z", l.getBlockZ())
+                                  .setParameter("worldUID", Objects.requireNonNull(l.getWorld()).getUID())
+                                  .executeUpdate();
 
             transaction.commit();
         }
@@ -157,8 +165,8 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
         }
 
         return retrievedBlocks.isEmpty() ?
-                null :
-                retrievedBlocks.getFirst();
+               null :
+               retrievedBlocks.getFirst();
     }
 
     @Override
@@ -224,11 +232,13 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
             Query<PlantBaseBlockDTO> query = session.createQuery(hql, PlantBaseBlockDTO.class);
             query.setParameter("timeBoundaryLow", timeStamp);
             query.setParameter("growStage", -1);
-            query.setMaxResults(Math.max(1,
+            query.setMaxResults(Math.max(
+                    1,
                     PlantDataManager.getInstance()
-                            .getSettingsDataBase()
-                            .getCurrentSettingsFromCache()
-                            .getMaximumAmountOfPlantsInATimeWindowCluster()));
+                                    .getSettingsDataBase()
+                                    .getCurrentSettingsFromCache()
+                                    .getMaximumAmountOfPlantsInATimeWindowCluster()
+            ));
             pbb = query.getResultList();
 
 
@@ -244,10 +254,10 @@ public class PlantBaseBlockDAO implements IPlantBaseBlockDAO<PlantBaseBlockDTO> 
 
             final long finalClusterWindowMilliseconds = groupMilliseconds;
             return pbb.stream()
-                    .filter(others -> Math.abs(others.getTimeNextGrowthStage() - first.getTimeNextGrowthStage()) <
-                            finalClusterWindowMilliseconds)
-                    .limit(limit)
-                    .collect(Collectors.toList());
+                      .filter(others -> Math.abs(others.getTimeNextGrowthStage() - first.getTimeNextGrowthStage()) <
+                              finalClusterWindowMilliseconds)
+                      .limit(limit)
+                      .collect(Collectors.toList());
         }
 
         return pbb;

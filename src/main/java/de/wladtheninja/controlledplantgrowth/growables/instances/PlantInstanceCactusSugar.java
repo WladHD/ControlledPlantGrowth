@@ -6,7 +6,9 @@ import org.bukkit.block.Block;
 
 import java.util.Arrays;
 
-public class PlantInstanceCactusSugar extends PlantTypeAgeingMultiBlockVertical {
+public class PlantInstanceCactusSugar
+        extends PlantTypeAgeingMultiBlockVertical
+{
 
     public PlantInstanceCactusSugar() {
         super(Arrays.asList(Material.CACTUS, Material.SUGAR_CANE));

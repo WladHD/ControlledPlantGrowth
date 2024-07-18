@@ -7,7 +7,9 @@ import org.bukkit.plugin.Plugin;
 import static org.bukkit.Bukkit.getServer;
 
 @RequiredArgsConstructor
-public class SetupEvents implements Runnable {
+public class SetupEvents
+        implements Runnable
+{
 
     private final Plugin plugin;
 

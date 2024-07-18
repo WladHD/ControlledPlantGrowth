@@ -7,7 +7,9 @@ import org.bukkit.block.data.Directional;
 
 import java.util.Collections;
 
-public class PlantInstanceCocoa extends PlantTypeAgeingOneBlock {
+public class PlantInstanceCocoa
+        extends PlantTypeAgeingOneBlock
+{
     public PlantInstanceCocoa() {
         super(Collections.singletonList(Material.COCOA));
     }

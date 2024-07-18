@@ -44,8 +44,8 @@ public class DatabaseHibernateLocalPlantCacheUtil {
 
             BootstrapServiceRegistry brs =
                     new BootstrapServiceRegistryBuilder().applyClassLoader(ControlledPlantGrowth.class.getClassLoader())
-                            .enableAutoClose()
-                            .build();
+                                                         .enableAutoClose()
+                                                         .build();
 
             StandardServiceRegistry serviceRegistry =
                     new StandardServiceRegistryBuilder(brs).applySettings(configuration.getProperties()).build();

@@ -14,16 +14,19 @@ import java.util.List;
                   permission = "controlledplantgrowth.help",
                   usage = "help",
                   description = "Prints out all commands of the ControlledPlantGrowth plugin")
-public class ControlledPlantGrowthHelpCommand implements IPlantCommandExecutor {
+public class ControlledPlantGrowthHelpCommand
+        implements IPlantCommandExecutor
+{
     @Override
     public boolean onCommand(@NonNull CommandSender sender,
                              @NonNull Command command,
                              @NonNull String label,
-                             String @NonNull [] args) {
+                             String @NonNull [] args)
+    {
 
         ControlledPlantGrowthCommandManager.getInstance()
-                .getCommands()
-                .forEach(cmd -> cmd.sendUsageInformation(sender, label));
+                                           .getCommands()
+                                           .forEach(cmd -> cmd.sendUsageInformation(sender, label));
 
         return true;
     }
@@ -32,7 +35,8 @@ public class ControlledPlantGrowthHelpCommand implements IPlantCommandExecutor {
     public List<String> onTabComplete(@NonNull CommandSender sender,
                                       @NonNull Command command,
                                       @NonNull String label,
-                                      String @NonNull [] args) {
+                                      String @NonNull [] args)
+    {
         return Collections.emptyList();
     }
 }

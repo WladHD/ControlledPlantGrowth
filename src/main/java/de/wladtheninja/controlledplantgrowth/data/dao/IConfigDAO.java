@@ -4,7 +4,9 @@ import de.wladtheninja.controlledplantgrowth.data.dao.utils.ILoadLocalYML;
 
 import java.io.File;
 
-public interface IConfigDAO<T> extends ILoadLocalYML<T> {
+public interface IConfigDAO<T>
+        extends ILoadLocalYML<T>
+{
 
     void loadCurrentConfigAndCache();
 

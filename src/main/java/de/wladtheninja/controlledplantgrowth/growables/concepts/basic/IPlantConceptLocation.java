@@ -11,8 +11,10 @@ public interface IPlantConceptLocation {
     Block getGroundBlock(Block b);
 
     @NonNull
-    Block getPlantRootBlock(Block b) throws PlantRootBlockMissingException;
+    Block getPlantRootBlock(Block b)
+            throws PlantRootBlockMissingException;
 
-    Material getPlantRootMaterial(Block b) throws PlantRootBlockMissingException;
+    Material getPlantRootMaterial(Block b)
+            throws PlantRootBlockMissingException;
 
 }

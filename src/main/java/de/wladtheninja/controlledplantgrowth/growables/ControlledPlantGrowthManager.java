@@ -45,10 +45,12 @@ public class ControlledPlantGrowthManager {
         }
 
         Optional<SettingsPlantGrowthDTO> settingsDTO = i.getAcceptedSettingPlantMaterials()
-                .stream()
-                .map(fl -> PlantDataManager.getInstance().getSettingsDataBase().getPlantSettingNullable(fl))
-                .filter(Objects::nonNull)
-                .findFirst();
+                                                        .stream()
+                                                        .map(fl -> PlantDataManager.getInstance()
+                                                                                   .getSettingsDataBase()
+                                                                                   .getPlantSettingNullable(fl))
+                                                        .filter(Objects::nonNull)
+                                                        .findFirst();
 
         if (!settingsDTO.isPresent() || settingsDTO.get().getMaterial() == Material.AIR) {
             return;

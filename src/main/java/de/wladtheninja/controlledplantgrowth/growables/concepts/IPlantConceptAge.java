@@ -7,13 +7,18 @@ import org.bukkit.block.Block;
 
 import java.util.logging.Level;
 
-public interface IPlantConceptAge extends IPlantConceptGrowthInformation {
+public interface IPlantConceptAge
+        extends IPlantConceptGrowthInformation
+{
 
-    int getCurrentAge(Block b) throws PlantNoAgeableInterfaceException;
+    int getCurrentAge(Block b)
+            throws PlantNoAgeableInterfaceException;
 
-    void setCurrentAge(Block b, int age) throws PlantNoAgeableInterfaceException;
+    void setCurrentAge(Block b, int age)
+            throws PlantNoAgeableInterfaceException;
 
-    int getMaximumAge(Block b) throws PlantNoAgeableInterfaceException;
+    int getMaximumAge(Block b)
+            throws PlantNoAgeableInterfaceException;
 
     @Override
     default boolean isMature(Block b) {

@@ -28,7 +28,7 @@ public class GitHubVersionRetriever {
             }
             catch (Exception e) {
                 plugin.getLogger()
-                        .info(MessageFormat.format("Unable to check for updates on GitHub: {0}", e.getMessage()));
+                      .info(MessageFormat.format("Unable to check for updates on GitHub: {0}", e.getMessage()));
             }
         });
     }

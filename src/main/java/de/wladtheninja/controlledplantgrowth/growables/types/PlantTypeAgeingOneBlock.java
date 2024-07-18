@@ -17,8 +17,10 @@ import org.bukkit.block.data.BlockData;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class PlantTypeAgeingOneBlock extends PlantTypeBasic
-        implements IPlantConceptAge, IPlantConceptLocation {
+public abstract class PlantTypeAgeingOneBlock
+        extends PlantTypeBasic
+        implements IPlantConceptAge, IPlantConceptLocation
+{
 
     public PlantTypeAgeingOneBlock(List<Material> acceptedMaterials) {
         super(acceptedMaterials);
@@ -45,7 +47,9 @@ public abstract class PlantTypeAgeingOneBlock extends PlantTypeBasic
     }
 
     @Override
-    public int getCurrentAge(Block b) throws PlantNoAgeableInterfaceException {
+    public int getCurrentAge(Block b)
+            throws PlantNoAgeableInterfaceException
+    {
         if (!(b.getBlockData() instanceof Ageable)) {
             throw new PlantNoAgeableInterfaceException(b);
         }
@@ -55,7 +59,9 @@ public abstract class PlantTypeAgeingOneBlock extends PlantTypeBasic
     }
 
     @Override
-    public void setCurrentAge(Block b, int age) throws PlantNoAgeableInterfaceException {
+    public void setCurrentAge(Block b, int age)
+            throws PlantNoAgeableInterfaceException
+    {
         if (!(b.getBlockData() instanceof Ageable)) {
             throw new PlantNoAgeableInterfaceException(b);
         }
@@ -84,7 +90,9 @@ public abstract class PlantTypeAgeingOneBlock extends PlantTypeBasic
     }
 
     @Override
-    public int getMaximumAge(Block b) throws PlantNoAgeableInterfaceException {
+    public int getMaximumAge(Block b)
+            throws PlantNoAgeableInterfaceException
+    {
         if (!(b.getBlockData() instanceof Ageable)) {
             throw new PlantNoAgeableInterfaceException(b);
         }
@@ -100,12 +108,16 @@ public abstract class PlantTypeAgeingOneBlock extends PlantTypeBasic
     }
 
     @Override
-    public @NonNull Block getPlantRootBlock(Block b) throws PlantRootBlockMissingException {
+    public @NonNull Block getPlantRootBlock(Block b)
+            throws PlantRootBlockMissingException
+    {
         return b;
     }
 
     @Override
-    public Material getPlantRootMaterial(Block b) throws PlantRootBlockMissingException {
+    public Material getPlantRootMaterial(Block b)
+            throws PlantRootBlockMissingException
+    {
         return getPlantRootBlock(b).getType();
     }
 }

@@ -26,7 +26,9 @@ public class SpigotVersionRetriever {
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
             try (InputStream is = new URL(MessageFormat.format(
                     "https://api.spiget.org/v2/resources/{0,number,#}/versions/latest",
-                    this.resourceId)).openStream(); Scanner sc = new Scanner(is)) {
+                    this.resourceId
+            )).openStream(); Scanner sc = new Scanner(is))
+            {
 
                 StringBuilder sb = new StringBuilder();
 
@@ -40,7 +42,7 @@ public class SpigotVersionRetriever {
             }
             catch (IOException e) {
                 plugin.getLogger()
-                        .info(MessageFormat.format("Unable to check for updates on SpigotMC: {0}", e.getMessage()));
+                      .info(MessageFormat.format("Unable to check for updates on SpigotMC: {0}", e.getMessage()));
                 ControlledPlantGrowth.handleException(e);
             }
         });

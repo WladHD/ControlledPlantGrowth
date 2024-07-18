@@ -5,7 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class ParameterRunnable<T> implements Runnable {
+public abstract class ParameterRunnable<T>
+        implements Runnable
+{
 
     private T param;
 

@@ -26,8 +26,10 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-public class SettingsDAO extends LoadLocalYML<SettingsDTO>
-        implements ISettingsDAO<SettingsDTO, SettingsPlantGrowthDTO> {
+public class SettingsDAO
+        extends LoadLocalYML<SettingsDTO>
+        implements ISettingsDAO<SettingsDTO, SettingsPlantGrowthDTO>
+{
 
     private final HashMap<Material, SettingsPlantGrowthDTO> cachedPlantGrowth = new HashMap<>();
     private SettingsDTO cachedCurrentSettings;
@@ -38,9 +40,9 @@ public class SettingsDAO extends LoadLocalYML<SettingsDTO>
 
     private static boolean isUsingDB() {
         return PlantDataManager.getInstance()
-                .getConfigDataBase()
-                .getCurrentConfigFromCache()
-                .isLoadPlantSettingsFromDatabase();
+                               .getConfigDataBase()
+                               .getCurrentConfigFromCache()
+                               .isLoadPlantSettingsFromDatabase();
     }
 
     private static String getConfigSettingsPageName() {
@@ -72,17 +74,21 @@ public class SettingsDAO extends LoadLocalYML<SettingsDTO>
         return activeSettings.stream().findFirst().orElse(null);
     }
 
-    public @NonNull SettingsPlantGrowthDTO getPlantSettings(Material m) throws PlantSettingNotFoundException {
+    public @NonNull SettingsPlantGrowthDTO getPlantSettings(Material m)
+            throws PlantSettingNotFoundException
+    {
         if (cachedPlantGrowth.containsKey(m)) {
             return cachedPlantGrowth.get(m);
         }
 
         getCurrentSettingsFromCache().getPlantGrowthList()
-                .forEach(set -> cachedPlantGrowth.put(set.getMaterial(), set));
+                                     .forEach(set -> cachedPlantGrowth.put(set.getMaterial(), set));
 
 
-        final SettingsPlantGrowthDTO res = cachedPlantGrowth.getOrDefault(m,
-                cachedPlantGrowth.getOrDefault(Material.AIR, null));
+        final SettingsPlantGrowthDTO res = cachedPlantGrowth.getOrDefault(
+                m,
+                cachedPlantGrowth.getOrDefault(Material.AIR, null)
+        );
 
         if (res == null) {
             throw new PlantSettingNotFoundException(m);
@@ -105,11 +111,15 @@ public class SettingsDAO extends LoadLocalYML<SettingsDTO>
         }
 
         Bukkit.getLogger()
-                .log(Level.FINER,
-                        MessageFormat.format("Loaded settings ''{0}'' v{1} contain {2} records for plants",
-                                getCurrentSettingsFromCache().getSettingsPageName(),
-                                getCurrentSettingsFromCache().getSettingsVersion(),
-                                getCurrentSettingsFromCache().getPlantGrowthList().size()));
+              .log(
+                      Level.FINER,
+                      MessageFormat.format(
+                              "Loaded settings ''{0}'' v{1} contain {2} records for plants",
+                              getCurrentSettingsFromCache().getSettingsPageName(),
+                              getCurrentSettingsFromCache().getSettingsVersion(),
+                              getCurrentSettingsFromCache().getPlantGrowthList().size()
+                      )
+              );
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Bukkit.getLogger().log(Level.FINER, gson.toJson(getCurrentSettingsFromCache()));
@@ -220,17 +230,25 @@ public class SettingsDAO extends LoadLocalYML<SettingsDTO>
                 2, 3, 1, 4, 2, 2, 1, 3
         }, TimeUnit.MINUTES));
 
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.BAMBOO,
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.CACTUS, true, 18));
+
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.SUGAR_CANE, true, 18));
+
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(
+                Material.BAMBOO,
                 false,
-                1).setArray(RandomArrayFiller.createRandomArrayWithSum(15, 17 * 60), TimeUnit.SECONDS)
-                .setIgnoreAnalyze(true));
+                1
+        ).setArray(RandomArrayFiller.createRandomArrayWithSum(15, 17 * 60), TimeUnit.SECONDS)
+         .setIgnoreAnalyze(true));
 
         settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.COCOA, true, 16));
 
-        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.KELP,
+        settingsPlantGrowths.add(new SettingsPlantGrowthDTO(
+                Material.KELP,
                 false,
-                16).setArray(RandomArrayFiller.createRandomArrayWithSum(25, 18 * 60), TimeUnit.SECONDS)
-                .setIgnoreAnalyze(true));
+                16
+        ).setArray(RandomArrayFiller.createRandomArrayWithSum(25, 18 * 60), TimeUnit.SECONDS)
+         .setIgnoreAnalyze(true));
 
         settingsPlantGrowths.add(new SettingsPlantGrowthDTO(Material.OAK_SAPLING, true, 16));
 

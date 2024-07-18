@@ -33,23 +33,29 @@ public class DebounceUtil {
     }
 
     public void debounceUsingBukkitScheduler(final Object key, final Runnable runnable, long delay) {
-        final BukkitTask prev = delayedMapSpigot.put(key,
+        final BukkitTask prev = delayedMapSpigot.put(
+                key,
                 Bukkit.getScheduler()
-                        .runTaskLaterAsynchronously(ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class),
-                                () -> {
-                                    try {
-                                        Bukkit.getScheduler()
-                                                .runTask(ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class),
-                                                        runnable);
-                                    }
-                                    catch (Exception ex) {
-                                        Bukkit.getLogger().log(Level.FINER, ex.getMessage(), ex);
-                                    }
-                                    finally {
-                                        delayedMapSpigot.remove(key);
-                                    }
-                                },
-                                delay));
+                      .runTaskLaterAsynchronously(
+                              ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class),
+                              () -> {
+                                  try {
+                                      Bukkit.getScheduler()
+                                            .runTask(
+                                                    ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class),
+                                                    runnable
+                                            );
+                                  }
+                                  catch (Exception ex) {
+                                      Bukkit.getLogger().log(Level.FINER, ex.getMessage(), ex);
+                                  }
+                                  finally {
+                                      delayedMapSpigot.remove(key);
+                                  }
+                              },
+                              delay
+                      )
+        );
 
         if (prev != null) {
             prev.cancel();

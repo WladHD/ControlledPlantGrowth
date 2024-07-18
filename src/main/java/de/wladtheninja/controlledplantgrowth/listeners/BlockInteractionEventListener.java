@@ -20,7 +20,9 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 
 import java.util.logging.Level;
 
-public class BlockInteractionEventListener implements Listener {
+public class BlockInteractionEventListener
+        implements Listener
+{
 
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -33,9 +35,10 @@ public class BlockInteractionEventListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onChunkLoad(ChunkLoadEvent event) {
         if (PlantDataManager.getInstance()
-                .getSettingsDataBase()
-                .getCurrentSettingsFromCache()
-                .isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants()) {
+                            .getSettingsDataBase()
+                            .getCurrentSettingsFromCache()
+                            .isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants())
+        {
             ControlledPlantGrowthManager.getInstance().getChunkAnalyser().onChunkLoaded(event.getChunk());
         }
     }
@@ -43,9 +46,10 @@ public class BlockInteractionEventListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onChunkUnload(ChunkUnloadEvent event) {
         if (PlantDataManager.getInstance()
-                .getSettingsDataBase()
-                .getCurrentSettingsFromCache()
-                .isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants()) {
+                            .getSettingsDataBase()
+                            .getCurrentSettingsFromCache()
+                            .isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants())
+        {
             ControlledPlantGrowthManager.getInstance().getChunkAnalyser().onChunkUnloaded(event.getChunk());
         }
     }
@@ -57,25 +61,27 @@ public class BlockInteractionEventListener implements Listener {
         }
 
         ControlledPlantGrowthManager.getInstance()
-                .getInternEventListener()
-                .onPossiblePlantStructureModifyEvent(event.getTo() == Material.AIR ?
-                        event.getBlock().getType() :
-                        event.getTo(), event.getBlock().getLocation());
+                                    .getInternEventListener()
+                                    .onPossiblePlantStructureModifyEvent(event.getTo() == Material.AIR ?
+                                                                         event.getBlock().getType() :
+                                                                         event.getTo(), event.getBlock().getLocation());
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerHarvestBlockEvent(PlayerHarvestBlockEvent event) {
         ControlledPlantGrowthManager.getInstance()
-                .getInternEventListener()
-                .onPossiblePlantStructureModifyEvent(event.getHarvestedBlock().getType(),
-                        event.getHarvestedBlock().getLocation());
+                                    .getInternEventListener()
+                                    .onPossiblePlantStructureModifyEvent(
+                                            event.getHarvestedBlock().getType(),
+                                            event.getHarvestedBlock().getLocation()
+                                    );
     }
 
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBlockGrowEvent(BlockGrowEvent event) {
         IPlantConceptBasic ipc = ControlledPlantGrowthManager.getInstance()
-                .retrieveSuitedPlantConcept(event.getBlock().getType());
+                                                             .retrieveSuitedPlantConcept(event.getBlock().getType());
 
         // redundant kinda ... nvm
         if (ipc == null) {
@@ -83,28 +89,38 @@ public class BlockInteractionEventListener implements Listener {
         }
 
         if (PlantDataManager.getInstance()
-                .getSettingsDataBase()
-                .getCurrentSettingsFromCache()
-                .isDisableNaturalGrowth()) {
+                            .getSettingsDataBase()
+                            .getCurrentSettingsFromCache()
+                            .isDisableNaturalGrowth())
+        {
             event.setCancelled(true);
         }
 
         ControlledPlantGrowthManager.getInstance()
-                .getInternEventListener()
-                .onPossiblePlantStructureModifyEvent(event.getBlock().getType(), event.getBlock().getLocation());
+                                    .getInternEventListener()
+                                    .onPossiblePlantStructureModifyEvent(
+                                            event.getBlock().getType(),
+                                            event.getBlock().getLocation()
+                                    );
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBlockBreakEvent(BlockBreakEvent event) {
         ControlledPlantGrowthManager.getInstance()
-                .getInternEventListener()
-                .onPossiblePlantStructureModifyEvent(event.getBlock().getType(), event.getBlock().getLocation());
+                                    .getInternEventListener()
+                                    .onPossiblePlantStructureModifyEvent(
+                                            event.getBlock().getType(),
+                                            event.getBlock().getLocation()
+                                    );
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBlockPlaceEvent(BlockPlaceEvent event) {
         ControlledPlantGrowthManager.getInstance()
-                .getInternEventListener()
-                .onPossiblePlantStructureModifyEvent(event.getBlock().getType(), event.getBlock().getLocation());
+                                    .getInternEventListener()
+                                    .onPossiblePlantStructureModifyEvent(
+                                            event.getBlock().getType(),
+                                            event.getBlock().getLocation()
+                                    );
     }
 }

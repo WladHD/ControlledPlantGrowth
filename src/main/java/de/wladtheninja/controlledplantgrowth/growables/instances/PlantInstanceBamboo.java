@@ -7,7 +7,9 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Bamboo;
 
-public class PlantInstanceBamboo extends PlantTypeAgeingMultiBlockVerticalMaxAgeRandom {
+public class PlantInstanceBamboo
+        extends PlantTypeAgeingMultiBlockVerticalMaxAgeRandom
+{
 
     public PlantInstanceBamboo() {
         super(Material.BAMBOO_SAPLING, Material.BAMBOO);
@@ -16,7 +18,9 @@ public class PlantInstanceBamboo extends PlantTypeAgeingMultiBlockVerticalMaxAge
     }
 
     @Override
-    public void setCurrentAge(final Block plantRootBlock, int age) throws PlantNoAgeableInterfaceException {
+    public void setCurrentAge(final Block plantRootBlock, int age)
+            throws PlantNoAgeableInterfaceException
+    {
         double maxAge = getMaximumAge(plantRootBlock);
 
         super.setCurrentAge(plantRootBlock, age);
@@ -40,13 +44,15 @@ public class PlantInstanceBamboo extends PlantTypeAgeingMultiBlockVerticalMaxAge
             Bamboo bamboo = (Bamboo) current.getBlockData();
 
             bamboo.setLeaves(percentRunning > 0.8 ?
-                    Bamboo.Leaves.LARGE :
-                    (percentRunning > 0.5 ?
-                            Bamboo.Leaves.SMALL :
-                            Bamboo.Leaves.NONE));
+                             Bamboo.Leaves.LARGE :
+                             (percentRunning > 0.5 ?
+                              Bamboo.Leaves.SMALL :
+                              Bamboo.Leaves.NONE));
             current.setBlockData(bamboo);
-            bamboo.setAge(Math.min(Math.max(bamboo.getAge(),
-                    (int) Math.round(bamboo.getMaximumAge() * (1 - percentRunning))), bamboo.getMaximumAge()));
+            bamboo.setAge(Math.min(Math.max(
+                    bamboo.getAge(),
+                    (int) Math.round(bamboo.getMaximumAge() * (1 - percentRunning))
+            ), bamboo.getMaximumAge()));
         }
     }
 

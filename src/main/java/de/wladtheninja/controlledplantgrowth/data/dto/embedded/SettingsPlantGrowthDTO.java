@@ -50,8 +50,8 @@ public class SettingsPlantGrowthDTO {
     public SettingsPlantGrowthDTO setArray(int[] numbers, TimeUnit sourceTime) {
         getTimeForNextPlantGrowthInSteps().clear();
         Arrays.stream(numbers)
-                .map(number -> (int) TimeUnit.SECONDS.convert(number, sourceTime))
-                .forEach(getTimeForNextPlantGrowthInSteps()::add);
+              .map(number -> (int) TimeUnit.SECONDS.convert(number, sourceTime))
+              .forEach(getTimeForNextPlantGrowthInSteps()::add);
 
         return this;
     }
@@ -60,8 +60,8 @@ public class SettingsPlantGrowthDTO {
     public void setArray(List<Integer> numbers, TimeUnit sourceTime) {
         getTimeForNextPlantGrowthInSteps().clear();
         numbers.stream()
-                .map(number -> (int) TimeUnit.SECONDS.convert(number, sourceTime))
-                .forEach(getTimeForNextPlantGrowthInSteps()::add);
+               .map(number -> (int) TimeUnit.SECONDS.convert(number, sourceTime))
+               .forEach(getTimeForNextPlantGrowthInSteps()::add);
 
     }
 

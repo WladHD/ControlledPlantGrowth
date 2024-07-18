@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class PlantTypeBasic
-        implements IPlantConceptBasic, IPlantConceptGrowthConstraints, IPlantConceptLocation {
+        implements IPlantConceptBasic, IPlantConceptGrowthConstraints, IPlantConceptLocation
+{
     private final ArrayList<IPlantGrowthConstraint> constraints;
     private final List<Material> acceptedMaterials;
 
@@ -23,7 +24,8 @@ public abstract class PlantTypeBasic
     }
 
     public PlantTypeBasic(List<Material> acceptedMaterials,
-                          List<IPlantGrowthConstraint> constraints) {
+                          List<IPlantGrowthConstraint> constraints)
+    {
 
         this.constraints = new ArrayList<>();
         this.acceptedMaterials = new ArrayList<>();
@@ -54,8 +56,11 @@ public abstract class PlantTypeBasic
     @Override
     public List<IPlantGrowthConstraint> checkGrowthConstraintViolations(Block b) {
         return getGrowthConstraints().stream()
-                .filter(iPlantGrowthConstraint -> !iPlantGrowthConstraint.isGrowthConditionFulfilled(this, b))
-                .collect(Collectors.toList());
+                                     .filter(iPlantGrowthConstraint -> !iPlantGrowthConstraint.isGrowthConditionFulfilled(
+                                             this,
+                                             b
+                                     ))
+                                     .collect(Collectors.toList());
     }
 
     @Override
@@ -75,7 +80,8 @@ public abstract class PlantTypeBasic
     @Override
     public void handleConstraintCheckOrElseThrowError(IPlantConceptBasic ipc,
                                                       Block b)
-            throws PlantConstraintViolationException {
+            throws PlantConstraintViolationException
+    {
         List<IPlantGrowthConstraint> violations = checkGrowthConstraintViolations(b);
 
         if (violations.isEmpty()) {

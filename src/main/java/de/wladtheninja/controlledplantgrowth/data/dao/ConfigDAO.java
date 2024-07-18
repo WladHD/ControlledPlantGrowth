@@ -13,7 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class ConfigDAO extends LoadLocalYML<ConfigDTO> implements IConfigDAO<ConfigDTO> {
+public class ConfigDAO
+        extends LoadLocalYML<ConfigDTO>
+        implements IConfigDAO<ConfigDTO>
+{
     private ConfigDTO currentConfig;
 
     public ConfigDAO() {
@@ -24,9 +27,13 @@ public class ConfigDAO extends LoadLocalYML<ConfigDTO> implements IConfigDAO<Con
         HashMap<String, String> hib = new HashMap<>();
 
         hib.put("hibernate.connection.driver_class", "org.h2.Driver");
-        hib.put("hibernate.connection.url",
-                MessageFormat.format("jdbc:h2:{0};AUTO_SERVER=TRUE",
-                        "./plugins/ControlledPlantGrowth/data/plantCache"));
+        hib.put(
+                "hibernate.connection.url",
+                MessageFormat.format(
+                        "jdbc:h2:{0};AUTO_SERVER=TRUE",
+                        "./plugins/ControlledPlantGrowth/data/plantCache"
+                )
+        );
         hib.put("hibernate.connection.username", "sa");
         hib.put("hibernate.connection.password", "");
         hib.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
@@ -40,9 +47,13 @@ public class ConfigDAO extends LoadLocalYML<ConfigDTO> implements IConfigDAO<Con
         HashMap<String, String> hib = new HashMap<>();
 
         hib.put("hibernate.connection.driver_class", "org.h2.Driver");
-        hib.put("hibernate.connection.url",
-                MessageFormat.format("jdbc:h2:{0};AUTO_SERVER=TRUE",
-                        "./plugins/ControlledPlantGrowth/data" + "/plantSettings"));
+        hib.put(
+                "hibernate.connection.url",
+                MessageFormat.format(
+                        "jdbc:h2:{0};AUTO_SERVER=TRUE",
+                        "./plugins/ControlledPlantGrowth/data" + "/plantSettings"
+                )
+        );
         hib.put("hibernate.connection.username", "sa");
         hib.put("hibernate.connection.password", "");
         hib.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
@@ -86,7 +97,8 @@ public class ConfigDAO extends LoadLocalYML<ConfigDTO> implements IConfigDAO<Con
             String msg = MessageFormat.format(
                     "Completely delete {0}. {1} was updated and can not use the old settings anymore.",
                     getConfigPath().getPath(),
-                    ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class).getName());
+                    ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class).getName()
+            );
             Bukkit.getLogger().log(Level.SEVERE, msg);
 
             ControlledPlantGrowth.handleException(null, Level.SEVERE);

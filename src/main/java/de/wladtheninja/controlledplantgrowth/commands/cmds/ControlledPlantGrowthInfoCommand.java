@@ -21,12 +21,15 @@ import java.util.stream.Collectors;
                   permission = "controlledplantgrowth.info",
                   usage = "info [material]",
                   description = "Prints out all growth timers set by the ControlledPlantGrowth plugin")
-public class ControlledPlantGrowthInfoCommand implements IPlantCommandExecutor {
+public class ControlledPlantGrowthInfoCommand
+        implements IPlantCommandExecutor
+{
     @Override
     public boolean onCommand(@NonNull CommandSender sender,
                              @NonNull Command command,
                              @NonNull String label,
-                             String @NonNull [] args) {
+                             String @NonNull [] args)
+    {
 
         Material focus;
 
@@ -39,18 +42,22 @@ public class ControlledPlantGrowthInfoCommand implements IPlantCommandExecutor {
             focus = Material.getMaterial(args[1].trim().toUpperCase());
 
             if (!PlantDataManager.getInstance().getSettingsDataBase().hasPlantSetting(focus)) {
-                sender.sendMessage(MessageFormat.format("{0} is not configured in the settings. Add to plantSettings" +
+                sender.sendMessage(MessageFormat.format(
+                        "{0} is not configured in the settings. Add to plantSettings" +
                                 ".yml if it is supported by {1}.",
                         args[1],
-                        ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class).getName()));
+                        ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class).getName()
+                ));
 
                 return true;
             }
 
             if (ControlledPlantGrowthManager.getInstance().retrieveSuitedPlantConcept(focus) == null) {
-                sender.sendMessage(MessageFormat.format("{0} is not supported by {1}.",
+                sender.sendMessage(MessageFormat.format(
+                        "{0} is not supported by {1}.",
                         args[1],
-                        ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class).getName()));
+                        ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class).getName()
+                ));
                 return true;
             }
 
@@ -60,22 +67,24 @@ public class ControlledPlantGrowthInfoCommand implements IPlantCommandExecutor {
         }
 
         List<SettingsPlantGrowthDTO> settings = PlantDataManager.getInstance()
-                .getSettingsDataBase()
-                .getCurrentSettingsFromCache()
-                .getPlantGrowthList();
+                                                                .getSettingsDataBase()
+                                                                .getCurrentSettingsFromCache()
+                                                                .getPlantGrowthList();
 
         if (focus != null) {
             settings = settings.stream().filter(setting -> setting.getMaterial() == focus).collect(Collectors.toList());
         }
 
 
-        settings.forEach(pgl -> sender.sendMessage(MessageFormat.format("{0} - {1}s",
+        settings.forEach(pgl -> sender.sendMessage(MessageFormat.format(
+                "{0} - {1}s",
                 pgl.getMaterial(),
                 pgl.isUseTimeForPlantMature() ?
-                        pgl.getTimeForPlantMature() == null ?
-                                1 :
-                                pgl.getTimeForPlantMature() :
-                        Arrays.toString(pgl.getTimeForNextPlantGrowthInSteps().toArray()))));
+                pgl.getTimeForPlantMature() == null ?
+                1 :
+                pgl.getTimeForPlantMature() :
+                Arrays.toString(pgl.getTimeForNextPlantGrowthInSteps().toArray())
+        )));
 
         return true;
     }
@@ -84,7 +93,8 @@ public class ControlledPlantGrowthInfoCommand implements IPlantCommandExecutor {
     public List<String> onTabComplete(@NonNull CommandSender sender,
                                       @NonNull Command command,
                                       @NonNull String label,
-                                      String @NonNull [] args) {
+                                      String @NonNull [] args)
+    {
 
         final List<String> acceptedMats1 = getFilteredAcceptedMaterialsOnArg(args, 1);
         if (args.length >= 2 && acceptedMats1 != null) {

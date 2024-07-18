@@ -9,7 +9,9 @@ import org.bukkit.block.data.Ageable;
 import java.util.Collections;
 import java.util.List;
 
-public class PlantInstanceKelp extends PlantTypeAgeingMultiBlockVerticalMaxAgeRandom {
+public class PlantInstanceKelp
+        extends PlantTypeAgeingMultiBlockVerticalMaxAgeRandom
+{
 
     private final int settingsMaxAge = ((Ageable) Material.KELP.createBlockData()).getMaximumAge();
 

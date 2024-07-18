@@ -13,7 +13,9 @@ import java.util.UUID;
 @Embeddable
 @Getter
 @Setter
-public class PlantLocation3dDTO implements Serializable {
+public class PlantLocation3dDTO
+        implements Serializable
+{
     private UUID worldUID;
     private int x;
     private int y;

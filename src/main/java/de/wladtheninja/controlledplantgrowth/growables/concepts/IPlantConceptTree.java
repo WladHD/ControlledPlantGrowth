@@ -6,7 +6,9 @@ import org.bukkit.block.Block;
 
 import java.util.List;
 
-public interface IPlantConceptTree extends IPlantConceptBasic {
+public interface IPlantConceptTree
+        extends IPlantConceptBasic
+{
 
     List<Block> getGiant2x2Structure(Block b);
 

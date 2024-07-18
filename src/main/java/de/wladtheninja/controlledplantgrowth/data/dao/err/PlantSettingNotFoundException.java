@@ -6,7 +6,9 @@ import org.bukkit.Material;
 import java.text.MessageFormat;
 
 @Getter
-public class PlantSettingNotFoundException extends Exception {
+public class PlantSettingNotFoundException
+        extends Exception
+{
 
     private final Material searchMaterial;
 

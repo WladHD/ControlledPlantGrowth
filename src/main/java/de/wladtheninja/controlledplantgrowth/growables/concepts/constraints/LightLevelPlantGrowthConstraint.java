@@ -9,7 +9,9 @@ import java.text.MessageFormat;
 
 @Getter
 @AllArgsConstructor
-public class LightLevelPlantGrowthConstraint implements IPlantGrowthConstraint {
+public class LightLevelPlantGrowthConstraint
+        implements IPlantGrowthConstraint
+{
 
     private final byte minLightLevel;
 
@@ -21,7 +23,9 @@ public class LightLevelPlantGrowthConstraint implements IPlantGrowthConstraint {
 
     @Override
     public String getGeneralViolationMessage() {
-        return MessageFormat.format("Current light level is to low for the plant to grow. Minimal light level: {0}",
-                minLightLevel);
+        return MessageFormat.format(
+                "Current light level is to low for the plant to grow. Minimal light level: {0}",
+                minLightLevel
+        );
     }
 }

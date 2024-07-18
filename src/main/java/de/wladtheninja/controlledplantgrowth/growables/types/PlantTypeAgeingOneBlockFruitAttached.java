@@ -21,8 +21,10 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgeingOneBlock
-        implements IPlantConceptAttachedFruit {
+public abstract class PlantTypeAgeingOneBlockFruitAttached
+        extends PlantTypeAgeingOneBlock
+        implements IPlantConceptAttachedFruit
+{
 
     private final Material materialFruit;
     private final Material materialStem;
@@ -36,7 +38,8 @@ public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgei
                                                 Material materialStem,
                                                 Material materialAttachedStem,
                                                 List<Material> acceptedSoilBlocksForFruit,
-                                                List<IPlantGrowthConstraint> constraints) {
+                                                List<IPlantGrowthConstraint> constraints)
+    {
         super(Arrays.asList(materialFruit, materialStem, materialAttachedStem), constraints);
 
         this.acceptedSoilBlocksForFruit = new ArrayList<>();
@@ -72,7 +75,9 @@ public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgei
     }
 
     @Override
-    public int getCurrentAge(Block b) throws PlantNoAgeableInterfaceException {
+    public int getCurrentAge(Block b)
+            throws PlantNoAgeableInterfaceException
+    {
         if (isBlockException(b)) {
             return getMaximumAge(b);
         }
@@ -94,13 +99,19 @@ public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgei
     }
 
     @Override
-    public void setCurrentAge(Block b, int age) throws PlantNoAgeableInterfaceException {
+    public void setCurrentAge(Block b, int age)
+            throws PlantNoAgeableInterfaceException
+    {
         Bukkit.getLogger()
-                .log(Level.FINER,
-                        MessageFormat.format("Growing {0}, reaching age: {1} ot of {2}",
-                                b.getType(),
-                                age,
-                                getMaximumAge(b)));
+              .log(
+                      Level.FINER,
+                      MessageFormat.format(
+                              "Growing {0}, reaching age: {1} ot of {2}",
+                              b.getType(),
+                              age,
+                              getMaximumAge(b)
+                      )
+              );
         if (isBlockException(b)) {
             return;
         }
@@ -119,17 +130,22 @@ public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgei
         }
 
         Optional<Block> growthSpot = getNearestBlocks(true).stream()
-                .map(b::getRelative)
-                .filter(bl -> bl.getType().isAir() &&
-                        acceptedSoilBlocksForFruit.contains(bl.getRelative(BlockFace.DOWN).getType()))
-                .findFirst();
+                                                           .map(b::getRelative)
+                                                           .filter(bl -> bl.getType().isAir() &&
+                                                                   acceptedSoilBlocksForFruit.contains(bl.getRelative(
+                                                                           BlockFace.DOWN).getType()))
+                                                           .findFirst();
 
         if (!growthSpot.isPresent()) {
             Bukkit.getLogger()
-                    .log(Level.FINER,
-                            MessageFormat.format("No growth spots for {0} at {1} present",
-                                    b.getType(),
-                                    b.getLocation().toVector()));
+                  .log(
+                          Level.FINER,
+                          MessageFormat.format(
+                                  "No growth spots for {0} at {1} present",
+                                  b.getType(),
+                                  b.getLocation().toVector()
+                          )
+                  );
             return;
         }
 
@@ -161,21 +177,27 @@ public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgei
     @Override
     public Block getPlantRootBlockByFruitBlock(Block b) {
         if (b.getType() != materialFruit) {
-            throw new RuntimeException(MessageFormat.format("This method is only designed to check the fruit {0}.",
-                    materialFruit));
+            throw new RuntimeException(MessageFormat.format(
+                    "This method is only designed to check the fruit {0}.",
+                    materialFruit
+            ));
         }
 
         List<Block> check = getNearestBlocks(false).stream()
-                .map(b::getRelative)
-                .filter(bl -> bl.getType() == materialAttachedStem)
-                .collect(Collectors.toList());
+                                                   .map(b::getRelative)
+                                                   .filter(bl -> bl.getType() == materialAttachedStem)
+                                                   .collect(Collectors.toList());
 
         if (check.isEmpty()) {
             Bukkit.getLogger()
-                    .log(Level.FINER,
-                            MessageFormat.format("A completely lonely fruit {0} was found at {1}",
-                                    b.getType(),
-                                    b.getLocation().toVector()));
+                  .log(
+                          Level.FINER,
+                          MessageFormat.format(
+                                  "A completely lonely fruit {0} was found at {1}",
+                                  b.getType(),
+                                  b.getLocation().toVector()
+                          )
+                  );
             return null;
         }
 
@@ -208,7 +230,9 @@ public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgei
     }
 
     @Override
-    public @NonNull Block getPlantRootBlock(Block b) throws PlantRootBlockMissingException {
+    public @NonNull Block getPlantRootBlock(Block b)
+            throws PlantRootBlockMissingException
+    {
         // redundant, but explicit
         if (b.getType() == materialAttachedStem || b.getType() == materialStem) {
             return b;
@@ -222,10 +246,14 @@ public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgei
 
         if (attachedPlantRoot == null) {
             Bukkit.getLogger()
-                    .log(Level.FINER,
-                            MessageFormat.format("A lonely fruit {0} was found at {1}",
-                                    b.getType(),
-                                    b.getLocation().toVector()));
+                  .log(
+                          Level.FINER,
+                          MessageFormat.format(
+                                  "A lonely fruit {0} was found at {1}",
+                                  b.getType(),
+                                  b.getLocation().toVector()
+                          )
+                  );
 
             throw new PlantRootBlockMissingException(b);
         }
@@ -240,8 +268,10 @@ public abstract class PlantTypeAgeingOneBlockFruitAttached extends PlantTypeAgei
         }
 
         if (b.getType() == getAttachedStemMaterial()) {
-            return Arrays.asList(b.getLocation(),
-                    b.getRelative(((Directional) b.getBlockData()).getFacing()).getLocation());
+            return Arrays.asList(
+                    b.getLocation(),
+                    b.getRelative(((Directional) b.getBlockData()).getFacing()).getLocation()
+            );
         }
 
         return null;

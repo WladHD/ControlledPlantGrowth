@@ -5,10 +5,12 @@ import java.io.IOException;
 
 public interface ILoadLocalYML<T> {
 
-    T loadYMLFile(File configFile) throws IOException;
+    T loadYMLFile(File configFile)
+            throws IOException;
 
     T getDefault();
 
-    void saveYMLFile(T currentFile, File configFile) throws IOException;
+    void saveYMLFile(T currentFile, File configFile)
+            throws IOException;
 
 }

@@ -19,7 +19,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class PlantTypeTree extends PlantTypeBasic implements IPlantConceptTree {
+public abstract class PlantTypeTree
+        extends PlantTypeBasic
+        implements IPlantConceptTree
+{
 
     private final Material saplingMaterial;
     private final TreeType saplingTreeType;
@@ -53,18 +56,20 @@ public abstract class PlantTypeTree extends PlantTypeBasic implements IPlantConc
             boolean deg90 = i % 2 == 0;
 
             Bukkit.getLogger()
-                    .finer(MessageFormat.format("Checking BlockFace {0} {1} a{2} b{3}",
-                            giantCheckFirst[i],
-                            i,
-                            b.getType(),
-                            b.getRelative(giantCheckFirst[i]).getType()));
+                  .finer(MessageFormat.format(
+                          "Checking BlockFace {0} {1} a{2} b{3}",
+                          giantCheckFirst[i],
+                          i,
+                          b.getType(),
+                          b.getRelative(giantCheckFirst[i]).getType()
+                  ));
 
             if (b.getRelative(giantCheckFirst[i]).getType() != b.getType()) {
                 list.clear();
 
                 i += deg90 ?
-                        1 :
-                        0;
+                     1 :
+                     0;
                 continue;
             }
 
@@ -124,12 +129,14 @@ public abstract class PlantTypeTree extends PlantTypeBasic implements IPlantConc
         List<Block> g2x2 = getGiant2x2Structure(b);
 
         Bukkit.getLogger()
-                .finer(MessageFormat.format("Found structure for {2}: {0} sup? {1}",
-                        g2x2 == null ?
-                                null :
-                                g2x2.size(),
-                        isGiantTreeSupported(),
-                        getSaplingType()));
+              .finer(MessageFormat.format(
+                      "Found structure for {2}: {0} sup? {1}",
+                      g2x2 == null ?
+                      null :
+                      g2x2.size(),
+                      isGiantTreeSupported(),
+                      getSaplingType()
+              ));
 
         if (g2x2 != null && isGiantTreeSupported()) {
             HashMap<Location, BlockData> cache = new HashMap<>();
@@ -145,8 +152,8 @@ public abstract class PlantTypeTree extends PlantTypeBasic implements IPlantConc
             });
 
             generatedTree = b.getWorld().generateTree(b.getLocation(), getGiantTreeType()) ?
-                    1 :
-                    2;
+                            1 :
+                            2;
 
             if (generatedTree == 2) {
                 cache.keySet().forEach(keySetLoc -> {
@@ -160,8 +167,8 @@ public abstract class PlantTypeTree extends PlantTypeBasic implements IPlantConc
             final BlockData bd = b.getBlockData();
             b.setType(Material.AIR);
             generatedTree = b.getWorld().generateTree(b.getLocation(), getTreeType()) ?
-                    4 :
-                    5;
+                            4 :
+                            5;
             if (generatedTree != 4) {
                 b.setType(getSaplingType());
                 b.setBlockData(bd);

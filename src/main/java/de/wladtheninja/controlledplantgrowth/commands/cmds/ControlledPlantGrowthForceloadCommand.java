@@ -23,26 +23,33 @@ import java.util.concurrent.atomic.AtomicInteger;
                   permission = "controlledplantgrowth.forceload",
                   usage = "forceload",
                   description = "Search in all loaded chunks for plants to manage")
-public class ControlledPlantGrowthForceloadCommand implements IPlantCommandExecutor {
+public class ControlledPlantGrowthForceloadCommand
+        implements IPlantCommandExecutor
+{
     @Override
     public boolean onCommand(@NonNull CommandSender sender,
                              @NonNull Command command,
                              @NonNull String label,
-                             String @NonNull [] args) {
+                             String @NonNull [] args)
+    {
 
         if (PlantDataManager.getInstance()
-                .getSettingsDataBase()
-                .getCurrentSettingsFromCache()
-                .isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants() &&
-                (args.length != 2 || !args[1].equalsIgnoreCase("confirm"))) {
+                            .getSettingsDataBase()
+                            .getCurrentSettingsFromCache()
+                            .isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants() &&
+                (args.length != 2 || !args[1].equalsIgnoreCase("confirm")))
+        {
             sender.sendMessage("Plugin already checks all chunks on load due to the setting " +
-                    "useAggressiveChunkAnalysisAndLookForUnregisteredPlants " + "in config is true.");
+                                       "useAggressiveChunkAnalysisAndLookForUnregisteredPlants " +
+                                       "in config is true.");
             sender.sendMessage("Rescan is most likely redundant. Do you still want to continue?");
 
             TextComponent message = new TextComponent(MessageFormat.format("/{0} forceload confirm", label));
             message.setColor(ChatColor.RED);
-            message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                    MessageFormat.format("{0} forceload confirm", label)));
+            message.setClickEvent(new ClickEvent(
+                    ClickEvent.Action.RUN_COMMAND,
+                    MessageFormat.format("{0} forceload confirm", label)
+            ));
 
             sender.spigot().sendMessage(message);
             return true;
@@ -60,7 +67,8 @@ public class ControlledPlantGrowthForceloadCommand implements IPlantCommandExecu
         sender.sendMessage(MessageFormat.format(
                 "All loaded chunks ({0}) successfully queued for scanning. You will receive a notification after all " +
                         "chunks have been analyzed. No further action is necessary.",
-                i.get()));
+                i.get()
+        ));
         return true;
     }
 
@@ -68,12 +76,14 @@ public class ControlledPlantGrowthForceloadCommand implements IPlantCommandExecu
     public List<String> onTabComplete(@NonNull CommandSender sender,
                                       @NonNull Command command,
                                       @NonNull String label,
-                                      String @NonNull [] args) {
+                                      String @NonNull [] args)
+    {
 
         if (!PlantDataManager.getInstance()
-                .getSettingsDataBase()
-                .getCurrentSettingsFromCache()
-                .isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants()) {
+                             .getSettingsDataBase()
+                             .getCurrentSettingsFromCache()
+                             .isUseAggressiveChunkAnalysisAndLookForUnregisteredPlants())
+        {
             return new ArrayList<>();
         }
 

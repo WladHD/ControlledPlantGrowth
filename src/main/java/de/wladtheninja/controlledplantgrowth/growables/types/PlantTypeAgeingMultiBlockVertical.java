@@ -15,8 +15,10 @@ import org.bukkit.block.BlockFace;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class PlantTypeAgeingMultiBlockVertical extends PlantTypeBasic
-        implements IPlantConceptAge, IPlantConceptLocation, IPlantConceptMultiBlockGrowthVertical {
+public abstract class PlantTypeAgeingMultiBlockVertical
+        extends PlantTypeBasic
+        implements IPlantConceptAge, IPlantConceptLocation, IPlantConceptMultiBlockGrowthVertical
+{
 
 
     public PlantTypeAgeingMultiBlockVertical(List<Material> acceptedMaterials) {
@@ -37,7 +39,9 @@ public abstract class PlantTypeAgeingMultiBlockVertical extends PlantTypeBasic
     }
 
     @Override
-    public int getCurrentAge(Block b) throws PlantNoAgeableInterfaceException {
+    public int getCurrentAge(Block b)
+            throws PlantNoAgeableInterfaceException
+    {
         int age = -1;
         final Block plantRootBlock = getPlantRootBlock(b);
         final Material plantMaterial = plantRootBlock.getType();
@@ -56,7 +60,9 @@ public abstract class PlantTypeAgeingMultiBlockVertical extends PlantTypeBasic
     }
 
     @Override
-    public void setCurrentAge(Block b, int setAge) throws PlantNoAgeableInterfaceException {
+    public void setCurrentAge(Block b, int setAge)
+            throws PlantNoAgeableInterfaceException
+    {
 
         try {
             handleConstraintCheckOrElseThrowError(this, b);

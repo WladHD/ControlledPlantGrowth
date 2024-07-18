@@ -7,12 +7,15 @@ import org.bukkit.Material;
 
 import java.io.File;
 
-public interface ISettingsDAO<T, S> extends ILoadLocalYML<T> {
+public interface ISettingsDAO<T, S>
+        extends ILoadLocalYML<T>
+{
 
     T getSettingPageByName(String name);
 
     @NonNull
-    S getPlantSettings(Material mat) throws PlantSettingNotFoundException;
+    S getPlantSettings(Material mat)
+            throws PlantSettingNotFoundException;
 
     default S getPlantSettingNullable(Material mat) {
         try {

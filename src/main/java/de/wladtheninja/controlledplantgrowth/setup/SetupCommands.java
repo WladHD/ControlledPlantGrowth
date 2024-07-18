@@ -10,7 +10,9 @@ import org.bukkit.command.PluginCommand;
 
 import java.util.logging.Level;
 
-public class SetupCommands implements Runnable {
+public class SetupCommands
+        implements Runnable
+{
     @Override
     public void run() {
         ControlledPlantGrowthCommandManager mainCommandManager = ControlledPlantGrowthCommandManager.getInstance();
@@ -21,11 +23,13 @@ public class SetupCommands implements Runnable {
         mainCommandManager.registerCommand(new ControlledPlantGrowthForceloadCommand());
 
         final PluginCommand mainCommand = ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class)
-                .getCommand("controlledPlantGrowth");
+                                                               .getCommand("controlledPlantGrowth");
 
         if (mainCommand == null) {
-            ControlledPlantGrowth.handleException(new RuntimeException("Plugin instance could not be found"),
-                    Level.SEVERE);
+            ControlledPlantGrowth.handleException(
+                    new RuntimeException("Plugin instance could not be found"),
+                    Level.SEVERE
+            );
             return;
         }
 

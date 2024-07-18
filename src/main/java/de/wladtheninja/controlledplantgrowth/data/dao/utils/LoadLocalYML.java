@@ -14,11 +14,15 @@ import java.text.MessageFormat;
 import java.util.logging.Level;
 
 @AllArgsConstructor
-public abstract class LoadLocalYML<T> implements ILoadLocalYML<T> {
+public abstract class LoadLocalYML<T>
+        implements ILoadLocalYML<T>
+{
     private final Class<T> fileDTO;
 
     @Override
-    public T loadYMLFile(File configFile) throws IOException {
+    public T loadYMLFile(File configFile)
+            throws IOException
+    {
         if (configFile == null) {
             return null;
         }
@@ -43,7 +47,9 @@ public abstract class LoadLocalYML<T> implements ILoadLocalYML<T> {
     public abstract T getDefault();
 
     @Override
-    public void saveYMLFile(T currentFile, File configFile) throws IOException {
+    public void saveYMLFile(T currentFile, File configFile)
+            throws IOException
+    {
         if (configFile == null) {
             return;
         }
@@ -54,10 +60,14 @@ public abstract class LoadLocalYML<T> implements ILoadLocalYML<T> {
 
         if (!pluginDirectory.exists() && !pluginDirectory.mkdirs()) {
             Bukkit.getLogger()
-                    .log(Level.SEVERE,
-                            MessageFormat.format("Could not create folder {0} for {1}",
-                                    pluginDirectory,
-                                    configFile.getName()));
+                  .log(
+                          Level.SEVERE,
+                          MessageFormat.format(
+                                  "Could not create folder {0} for {1}",
+                                  pluginDirectory,
+                                  configFile.getName()
+                          )
+                  );
         }
 
         yamlMapper.writeValue(configFile, currentFile);

@@ -9,7 +9,9 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class ConfigDTO implements Serializable {
+public class ConfigDTO
+        implements Serializable
+{
     private boolean notifyOnSpigotRelease;
     private boolean notifyOnGitHubExperimentalRelease;
     private boolean loadPlantSettingsFromDatabase;

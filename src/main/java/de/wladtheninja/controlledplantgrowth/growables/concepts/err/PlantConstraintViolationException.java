@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.logging.Level;
 
 @AllArgsConstructor
-public class PlantConstraintViolationException extends Exception {
+public class PlantConstraintViolationException
+        extends Exception
+{
 
     private final List<IPlantGrowthConstraint> violations;
     private final Block plant;
@@ -26,10 +28,11 @@ public class PlantConstraintViolationException extends Exception {
                         "constraints: ",
                 violations.size(),
                 violations.size() == 1 ?
-                        " was" :
-                        "s were",
+                " was" :
+                "s were",
                 plant.getType(),
-                plant.getLocation().toVector()));
+                plant.getLocation().toVector()
+        ));
 
         sb.append("\n");
 

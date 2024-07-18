@@ -18,7 +18,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class PlantClockwork implements IPlantClockwork {
+public class PlantClockwork
+        implements IPlantClockwork
+{
     @Getter
     private final DebounceUtil debounceUtil = new DebounceUtil();
     private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
@@ -30,9 +32,9 @@ public class PlantClockwork implements IPlantClockwork {
         }
 
         plants = plants.stream()
-                .filter(p -> Objects.requireNonNull(p.getLocation().getWorld())
-                        .isChunkLoaded(p.getChunkX(), p.getChunkZ()))
-                .collect(Collectors.toList());
+                       .filter(p -> Objects.requireNonNull(p.getLocation().getWorld())
+                                           .isChunkLoaded(p.getChunkX(), p.getChunkZ()))
+                       .collect(Collectors.toList());
 
         if (plants.isEmpty()) {
             return null;
@@ -43,8 +45,8 @@ public class PlantClockwork implements IPlantClockwork {
 
     public boolean checkOverduePlantUpdates(long currentTime) {
         List<PlantBaseBlockDTO> plants = PlantDataManager.getInstance()
-                .getPlantDataBase()
-                .getBeforeTimestamp(currentTime);
+                                                         .getPlantDataBase()
+                                                         .getBeforeTimestamp(currentTime);
 
         plants = filterLoadedChunks(plants);
 
@@ -58,16 +60,18 @@ public class PlantClockwork implements IPlantClockwork {
 
     public boolean checkFuturePlantUpdates(long currentTime) {
         List<PlantBaseBlockDTO> plants = PlantDataManager.getInstance()
-                .getPlantDataBase()
-                .getAfterTimestamp(currentTime,
-                        PlantDataManager.getInstance()
-                                .getSettingsDataBase()
-                                .getCurrentSettingsFromCache()
-                                .getMaximumTimeWindowInMillisecondsForPlantsToBeClustered(),
-                        PlantDataManager.getInstance()
-                                .getSettingsDataBase()
-                                .getCurrentSettingsFromCache()
-                                .getMaximumAmountOfPlantsInATimeWindowCluster());
+                                                         .getPlantDataBase()
+                                                         .getAfterTimestamp(
+                                                                 currentTime,
+                                                                 PlantDataManager.getInstance()
+                                                                                 .getSettingsDataBase()
+                                                                                 .getCurrentSettingsFromCache()
+                                                                                 .getMaximumTimeWindowInMillisecondsForPlantsToBeClustered(),
+                                                                 PlantDataManager.getInstance()
+                                                                                 .getSettingsDataBase()
+                                                                                 .getCurrentSettingsFromCache()
+                                                                                 .getMaximumAmountOfPlantsInATimeWindowCluster()
+                                                         );
 
 
         final List<PlantBaseBlockDTO> finalPlants = filterLoadedChunks(plants);
@@ -76,9 +80,11 @@ public class PlantClockwork implements IPlantClockwork {
             return false;
         }
 
-        scheduledFuture = scheduledExecutorService.schedule(() -> requestPlantGrowth(finalPlants, true),
+        scheduledFuture = scheduledExecutorService.schedule(
+                () -> requestPlantGrowth(finalPlants, true),
                 Math.max(plants.getFirst().getTimeNextGrowthStage() - System.currentTimeMillis(), 0),
-                TimeUnit.MILLISECONDS);
+                TimeUnit.MILLISECONDS
+        );
         return true;
     }
 
@@ -89,7 +95,7 @@ public class PlantClockwork implements IPlantClockwork {
         }
 
         Bukkit.getScheduler()
-                .runTask(ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class), this::startPlantUpdateQueue);
+              .runTask(ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class), this::startPlantUpdateQueue);
     }
 
     @Override
@@ -103,10 +109,14 @@ public class PlantClockwork implements IPlantClockwork {
         if (scheduledFuture != null) {
             scheduledFuture.cancel(true);
             Bukkit.getLogger()
-                    .log(Level.FINER,
-                            MessageFormat.format("CANCELLED! {0} done? {1}",
-                                    scheduledFuture.isCancelled(),
-                                    scheduledFuture.isDone()));
+                  .log(
+                          Level.FINER,
+                          MessageFormat.format(
+                                  "CANCELLED! {0} done? {1}",
+                                  scheduledFuture.isCancelled(),
+                                  scheduledFuture.isDone()
+                          )
+                  );
             scheduledFuture = null;
         }
 
@@ -130,15 +140,19 @@ public class PlantClockwork implements IPlantClockwork {
         }
 
         Bukkit.getScheduler()
-                .runTaskLater(ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class),
-                        this::queueNextBlockToUpdateForceMainThread,
-                        2);
+              .runTaskLater(
+                      ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class),
+                      this::queueNextBlockToUpdateForceMainThread,
+                      2
+              );
     }
 
     public void requestPlantGrowth(List<PlantBaseBlockDTO> plants, boolean updateQueueWhenCompleted) {
         Bukkit.getScheduler()
-                .runTask(ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class),
-                        new RequestPlantGrowthRunnable(plants, updateQueueWhenCompleted));
+              .runTask(
+                      ControlledPlantGrowth.getPlugin(ControlledPlantGrowth.class),
+                      new RequestPlantGrowthRunnable(plants, updateQueueWhenCompleted)
+              );
     }
 
 

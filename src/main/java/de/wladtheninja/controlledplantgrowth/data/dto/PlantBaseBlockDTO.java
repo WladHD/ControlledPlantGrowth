@@ -63,10 +63,12 @@ public class PlantBaseBlockDTO {
 
         if (location == null) {
             // TODO efficient to keep object persisted during runtime? maybe just return the object idk
-            setLocation(new Location(world,
+            setLocation(new Location(
+                    world,
                     plantBaseBlockIdDTO.getX(),
                     plantBaseBlockIdDTO.getY(),
-                    plantBaseBlockIdDTO.getZ()));
+                    plantBaseBlockIdDTO.getZ()
+            ));
         }
 
         return location;

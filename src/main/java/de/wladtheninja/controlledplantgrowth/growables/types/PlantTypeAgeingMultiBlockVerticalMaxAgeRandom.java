@@ -10,8 +10,10 @@ import org.bukkit.block.Block;
 import java.util.*;
 
 @Getter
-public abstract class PlantTypeAgeingMultiBlockVerticalMaxAgeRandom extends PlantTypeAgeingMultiBlockVertical
-        implements IPlantConceptMaxAgeRandom {
+public abstract class PlantTypeAgeingMultiBlockVerticalMaxAgeRandom
+        extends PlantTypeAgeingMultiBlockVertical
+        implements IPlantConceptMaxAgeRandom
+{
 
     private final Material materialSapling;
     private final Material materialStem;
@@ -19,7 +21,8 @@ public abstract class PlantTypeAgeingMultiBlockVerticalMaxAgeRandom extends Plan
     private final HashMap<Location, Integer> randomMaxAgeMap;
 
     public PlantTypeAgeingMultiBlockVerticalMaxAgeRandom(Material materialSapling,
-                                                         Material materialStem) {
+                                                         Material materialStem)
+    {
         super(Arrays.asList(materialStem, materialSapling));
         this.materialSapling = materialSapling;
         this.materialStem = materialStem;
@@ -53,7 +56,9 @@ public abstract class PlantTypeAgeingMultiBlockVerticalMaxAgeRandom extends Plan
 
 
     @Override
-    public void setCurrentAge(Block b, int setAge) throws PlantNoAgeableInterfaceException {
+    public void setCurrentAge(Block b, int setAge)
+            throws PlantNoAgeableInterfaceException
+    {
         if (setAge > 0 && b.getType() == getMaterialSapling()) {
             b.setType(getMaterialStem());
         }
@@ -73,8 +78,10 @@ public abstract class PlantTypeAgeingMultiBlockVerticalMaxAgeRandom extends Plan
             return getMaxAgeFromMap(b.getLocation());
         }
 
-        getRandomMaxAgeMap().put(b.getLocation(),
-                getMaxAgeUpperBound() - getRandom().nextInt((getMaxAgeUpperBound() - getMaxAgeLowerBound()) + 1));
+        getRandomMaxAgeMap().put(
+                b.getLocation(),
+                getMaxAgeUpperBound() - getRandom().nextInt((getMaxAgeUpperBound() - getMaxAgeLowerBound()) + 1)
+        );
 
         return getMaxAgeFromMap(b.getLocation());
     }

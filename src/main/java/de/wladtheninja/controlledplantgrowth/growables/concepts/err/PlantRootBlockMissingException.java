@@ -8,14 +8,18 @@ import java.text.MessageFormat;
 
 @Getter
 @Setter
-public class PlantRootBlockMissingException extends Exception {
+public class PlantRootBlockMissingException
+        extends Exception
+{
 
     private final Block plantRoot;
 
     public PlantRootBlockMissingException(Block plantRoot) {
-        this(MessageFormat.format("Plant {0} at {1} does not have a root block.",
+        this(MessageFormat.format(
+                "Plant {0} at {1} does not have a root block.",
                 plantRoot.getType(),
-                plantRoot.getLocation().toVector()), plantRoot);
+                plantRoot.getLocation().toVector()
+        ), plantRoot);
     }
 
     public PlantRootBlockMissingException(String err, Block plantRoot) {

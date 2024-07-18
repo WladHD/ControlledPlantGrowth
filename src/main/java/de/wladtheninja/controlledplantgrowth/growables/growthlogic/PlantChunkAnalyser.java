@@ -19,7 +19,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class PlantChunkAnalyser implements IPlantChunkAnalyser {
+public class PlantChunkAnalyser
+        implements IPlantChunkAnalyser
+{
 
     @Getter
     private final ArrayDeque<ChunkSnapshot> arrayDeque;
@@ -69,9 +71,13 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
         }
 
         Bukkit.getLogger()
-                .log(Level.FINER,
-                        MessageFormat.format("Chunk unloaded before analyze was possible: {0}",
-                                new ChunkCordsStore(c)));
+              .log(
+                      Level.FINER,
+                      MessageFormat.format(
+                              "Chunk unloaded before analyze was possible: {0}",
+                              new ChunkCordsStore(c)
+                      )
+              );
 
         analyzedChunks.removeIf(chunkCordsStore -> chunkCordsStore.isEqualTo(c));
     }
@@ -146,9 +152,9 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
                 List<BlockData> foundMats = cacheSupportedBlockData.stream().filter(bd -> {
                     try {
                         return !PlantDataManager.getInstance()
-                                .getSettingsDataBase()
-                                .getPlantSettings(bd.getMaterial())
-                                .isIgnoreInAutomaticChunkAnalysis();
+                                                .getSettingsDataBase()
+                                                .getPlantSettings(bd.getMaterial())
+                                                .isIgnoreInAutomaticChunkAnalysis();
                     }
                     catch (PlantSettingNotFoundException e) {
                         return false;
@@ -176,7 +182,7 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
                             final Material blockType = cs.getBlockType(x, y, z);
 
                             IPlantConceptBasic ipc = ControlledPlantGrowthManager.getInstance()
-                                    .retrieveSuitedPlantConcept(blockType);
+                                                                                 .retrieveSuitedPlantConcept(blockType);
 
                             if (ipc == null) {
                                 continue;
@@ -184,9 +190,10 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
 
                             try {
                                 if (PlantDataManager.getInstance()
-                                        .getSettingsDataBase()
-                                        .getPlantSettings(blockType)
-                                        .isIgnoreInAutomaticChunkAnalysis()) {
+                                                    .getSettingsDataBase()
+                                                    .getPlantSettings(blockType)
+                                                    .isIgnoreInAutomaticChunkAnalysis())
+                                {
                                     continue;
                                 }
                             }
@@ -196,15 +203,19 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
 
 
                             Bukkit.getLogger()
-                                    .log(Level.FINER,
-                                            MessageFormat.format(
-                                                    "[ChunkAnalyzer] {0} at x{1} y{2} z{3} will be " + "analyzed" +
-                                                            " .." + ". ", blockType, x, y, z));
+                                  .log(
+                                          Level.FINER,
+                                          MessageFormat.format(
+                                                  "[ChunkAnalyzer] {0} at x{1} y{2} z{3} will be " + "analyzed" +
+                                                          " .." + ". ", blockType, x, y, z)
+                                  );
 
                             ControlledPlantGrowthManager.getInstance()
-                                    .getInternEventListener()
-                                    .onPossiblePlantStructureModifyEvent(blockType,
-                                            new Location(world, x + xChunk * 16, y, z + zChunk * 16));
+                                                        .getInternEventListener()
+                                                        .onPossiblePlantStructureModifyEvent(
+                                                                blockType,
+                                                                new Location(world, x + xChunk * 16, y, z + zChunk * 16)
+                                                        );
 
                             if (ipc instanceof IPlantConceptMultiBlockGrowthVertical) {
                                 for (int j = y + 1; j < maxHeight && cs.getBlockType(x, j, z) == blockType; j++) {
@@ -222,12 +233,16 @@ public class PlantChunkAnalyser implements IPlantChunkAnalyser {
                 }
 
                 Bukkit.getLogger()
-                        .log(Level.FINER,
-                                MessageFormat.format("In Chunk {0};{1} found materials: {2} in {3} ms and",
-                                        cs.getX(),
-                                        cs.getZ(),
-                                        Arrays.toString(foundMats.stream().map(BlockData::getMaterial).toArray()),
-                                        finish - begin));
+                      .log(
+                              Level.FINER,
+                              MessageFormat.format(
+                                      "In Chunk {0};{1} found materials: {2} in {3} ms and",
+                                      cs.getX(),
+                                      cs.getZ(),
+                                      Arrays.toString(foundMats.stream().map(BlockData::getMaterial).toArray()),
+                                      finish - begin
+                              )
+                      );
 
 
             }
