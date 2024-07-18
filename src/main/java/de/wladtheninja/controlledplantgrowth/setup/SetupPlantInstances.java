@@ -3,6 +3,7 @@ package de.wladtheninja.controlledplantgrowth.setup;
 import de.wladtheninja.controlledplantgrowth.growables.ControlledPlantGrowthManager;
 import de.wladtheninja.controlledplantgrowth.growables.instances.*;
 import de.wladtheninja.controlledplantgrowth.growables.instances.trees.*;
+import org.bukkit.Material;
 
 public class SetupPlantInstances
         implements Runnable
@@ -22,9 +23,11 @@ public class SetupPlantInstances
                                             new PlantInstanceTreeBirch(),
                                             new PlantInstanceTreeSpruce(),
                                             new PlantInstanceTreeAcacia(),
-                                            new PlantInstanceTreeDarkOak(),
-                                            new PlantInstanceTreeJungle(),
-                                            new PlantInstanceTreeCherry()
+                                            new PlantInstanceTreeDarkOak(), new PlantInstanceTreeJungle()
                                     );
+
+        if (Material.getMaterial("CHERRY_SAPLING") != null) {
+            ControlledPlantGrowthManager.getInstance().registerPlantConceptInstance(new PlantInstanceTreeCherry());
+        }
     }
 }
