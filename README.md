@@ -22,7 +22,7 @@ Especially regarding plants in development or on-hold, refer to section
 ### Tested on Server Software
 
 - Paper 1.21 Build #69, #44, #40 (experimental)
-- Automated tests on Spigot Servers build
+- Automated, successful tests on Spigot Servers build
   by [BuildTools](https://hub.spigotmc.org/jenkins/job/BuildTools/lastStableBuild/): 1.21, 1.20–1.20.5, 1.19.2–1.19.4
   (refer to [Actions](https://github.com/WladHD/ControlledPlantGrowth/actions))
 
