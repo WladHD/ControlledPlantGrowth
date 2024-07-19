@@ -441,6 +441,11 @@ Newest version:
 </dependency>
 ````
 
+# State of the Plugin as of Version 2.0.0
+With the currently listed, supported plants I've covered my use case and am planning to only post bug fixes.
+You can also view all supported, in-development and on-hold plants in the [corresponding section of this README.md](#All-Planned-and-Supported-Plants).
+TLDR; new support for plants or features will be implemented only on request.
+
 # LICENSE
 
 MIT License
